@@ -28,7 +28,7 @@
 <section class="smart-scroll scrolling">
     <div class="container-fluid">
         <nav class="navbar navbar-expand-md navbar-dark fixed-top">
-            <a class="navbar-brand heading-black" href="landing.html">TFG</a>
+            <a class="navbar-brand heading-black" href="/">TFG</a>
             <button class="navbar-toggler navbar-toggler-right border-0" type="button" data-toggle="collapse" data-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-grid"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
             </button>
@@ -47,7 +47,7 @@
             <div class="col-md-8 col-sm-10 col-12 mx-auto my-auto text-center">
                 <h1 class="heading-black text-capitalize">Concienciación en ciberseguridad</h1>
                 <p class="lead py-3">Esta es una plataforma para enseñar a los usuarios nociones básicas en seguridad informática y fomentar el uso responsble de la tecnología</p>
-                <a href="/panel" class="btn btn-primary d-inline-flex flex-row align-items-center">
+                <a href="{{ url_for('signin') }}" class="btn btn-primary d-inline-flex flex-row align-items-center">
                 Empezar el curso
                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-right ml-2"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
                 </a>
@@ -58,44 +58,44 @@
 
 <!--footer-->
 <footer class="py-6">
-  <div class="container">
-    <div class="row">
-      <div class="col-sm-6 mr-auto">
-        <h5>SOBRE EL TRABAJO DE FIN DE GRADO</h5>
-        <p class="text-muted">
-          Este trabajo ha sido desarrollado por <strong>Irene García López</strong> y presentado como
-          Trabajo de Fin de Grado en Concienciación en Ciberseguridad</p>
-        </p>
-      </div>
+    <div class="container">
+        <div class="row">
+        <div class="col-sm-6 mr-auto">
+            <h5>SOBRE EL TRABAJO DE FIN DE GRADO</h5>
+            <p class="text-muted">
+            Este trabajo ha sido desarrollado por <strong>Irene García López</strong> y presentado como
+            Trabajo de Fin de Grado en Concienciación en Ciberseguridad</p>
+            </p>
+        </div>
 
-      <div class="col-sm-4">
-        <h5>CONTACTO</h5>
-        <ul class="list-unstyled text-muted">
-            <li class="mb-2">
-                <a href="mailto:i.garcialop.2021@alumnos.urjc.es" class="text-light d-flex align-items-center" target="_blank">
-                <i class="fa fa-envelope mr-2"></i> i.garcialop.2021@alumnos.urjc.es
-                </a>
-            </li>
-            <li>
-                <a href="https://github.com/irenegarccia" class="text-light d-flex align-items-center" target="_blank">
-                <i class="fa fa-github mr-2"></i> irenegarccia
-                </a>
-            </li>
-            <li>
-                <a href="https://www.linkedin.com/in/irenegarccia" class="text-light d-flex align-items-center" target="_blank">
-                <i class="fa fa-linkedin mr-2"></i> irenegarccia
-                </a>
-            </li>
-        </ul>
-      </div>
-    </div>
+        <div class="col-sm-4">
+            <h5>CONTACTO</h5>
+            <ul class="list-unstyled text-muted">
+                <li class="mb-2">
+                    <a href="mailto:i.garcialop.2021@alumnos.urjc.es" class="text-light d-flex align-items-center" target="_blank">
+                    <i class="fa fa-envelope mr-2"></i> i.garcialop.2021@alumnos.urjc.es
+                    </a>
+                </li>
+                <li>
+                    <a href="https://github.com/irenegarccia" class="text-light d-flex align-items-center" target="_blank">
+                    <i class="fa fa-github mr-2"></i> irenegarccia
+                    </a>
+                </li>
+                <li>
+                    <a href="https://www.linkedin.com/in/irenegarccia" class="text-light d-flex align-items-center" target="_blank">
+                    <i class="fa fa-linkedin mr-2"></i> irenegarccia
+                    </a>
+                </li>
+            </ul>
+        </div>
+        </div>
 
-    <div class="row mt-5">
-      <div class="col-12 text-muted text-center small-xl">
-        2025 - 2026 TFG Concienciación en Ciberseguridad
-      </div>
+        <div class="row mt-5">
+        <div class="col-12 text-muted text-center small-xl">
+            2025 - 2026 TFG Concienciación en Ciberseguridad
+        </div>
+        </div>
     </div>
-  </div>
 </footer>
 
 
