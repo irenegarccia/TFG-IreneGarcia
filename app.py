@@ -26,6 +26,11 @@ class User(UserMixin):
         self.password = password
 
 
+@app.context_processor
+def inject_user():
+    return dict(user=current_user)
+
+
 @login_manager.user_loader
 def load_user(user_id):
     u = USERS.get(user_id)
@@ -77,6 +82,12 @@ def signup():
 def logout():
     logout_user()
     return redirect(url_for("signin"))
+
+
+@app.route("/index")
+@app.route("/index.html")
+def index_redirect():
+    return redirect(url_for("panel"))
 
 
 @app.route("/panel")
