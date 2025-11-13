@@ -1,3 +1,129 @@
+document.addEventListener('DOMContentLoaded', function () {
+    const passwordInput = document.getElementById('password');
+    const confirmInput = document.getElementById('confirm_password');
+    const rulesBox = document.getElementById('password-rules');
+
+    let hasDetectedAutofill = false;
+    let lastPasswordValue = passwordInput ? passwordInput.value : "";
+
+    function updateRule(id, ok) {
+        const li = document.getElementById(id);
+        if (!li) return;
+        const icon = li.querySelector('.rule-icon');
+        if (ok) {
+            li.classList.remove('text-danger');
+            li.classList.add('text-success');
+            if (icon) icon.textContent = '✔';
+        } else {
+            li.classList.remove('text-success');
+            li.classList.add('text-danger');
+            if (icon) icon.textContent = '✖';
+        }
+    }
+
+    function checkPasswordRules(pass) {
+        const lengthOk  = pass.length >= 8;
+        const upperOk   = /[A-Z]/.test(pass);
+        const lowerOk   = /[a-z]/.test(pass);
+        const numberOk  = /[0-9]/.test(pass);
+        const specialOk = /[^A-Za-z0-9]/.test(pass);
+
+        updateRule('rule-length',  lengthOk);
+        updateRule('rule-upper',   upperOk);
+        updateRule('rule-lower',   lowerOk);
+        updateRule('rule-number',  numberOk);
+        updateRule('rule-special', specialOk);
+    }
+
+    function showRulesIfValue() {
+        if (!passwordInput || !rulesBox) return;
+        const val = passwordInput.value || "";
+        if (!val) {
+            rulesBox.classList.add('d-none');
+            return;
+        }
+        rulesBox.classList.remove('d-none');
+        checkPasswordRules(val);
+    }
+
+    if (passwordInput && rulesBox) {
+
+        passwordInput.addEventListener('input', function () {
+            showRulesIfValue();
+            lastPasswordValue = passwordInput.value;
+        });
+
+        passwordInput.addEventListener('focus', function () {
+            showRulesIfValue();
+            lastPasswordValue = passwordInput.value;
+        });
+
+        passwordInput.addEventListener('change', function () {
+            showRulesIfValue();
+            lastPasswordValue = passwordInput.value;
+        });
+
+        passwordInput.addEventListener('blur', function () {
+            rulesBox.classList.add('d-none');
+        });
+
+        let pollCount = 0;
+        const maxPolls = 12;
+
+        const autofillInterval = setInterval(function () {
+            if (!passwordInput) {
+                clearInterval(autofillInterval);
+                return;
+            }
+            const currentVal = passwordInput.value || "";
+            if (currentVal && currentVal !== lastPasswordValue && !hasDetectedAutofill) {
+                hasDetectedAutofill = true;
+                rulesBox.classList.remove('d-none');
+                checkPasswordRules(currentVal);
+                lastPasswordValue = currentVal;
+            }
+            pollCount++;
+            if (pollCount >= maxPolls || hasDetectedAutofill) {
+                clearInterval(autofillInterval);
+            }
+        }, 250);
+    }
+
+    document.querySelectorAll('.password-toggle').forEach(function (btn) {
+        btn.addEventListener('click', function () {
+            const targetSelector = btn.getAttribute('data-target');
+            const input = document.querySelector(targetSelector);
+            const icon = btn.querySelector('i');
+            if (!input) return;
+
+            if (input.type === 'password') {
+                input.type = 'text';
+                if (icon) {
+                    icon.classList.remove('fa-eye');
+                    icon.classList.add('fa-eye-slash');
+                }
+            } else {
+                input.type = 'password';
+                if (icon) {
+                    icon.classList.remove('fa-eye-slash');
+                    icon.classList.add('fa-eye');
+                }
+            }
+        });
+    });
+});
+
+document.addEventListener("DOMContentLoaded", function() {
+    const logoutBtn = document.getElementById("logout-btn");
+    const logoutModal = new bootstrap.Modal(document.getElementById("logoutModal"));
+
+    logoutBtn.addEventListener("click", function (e) {
+        e.preventDefault();
+        logoutModal.show();
+    });
+});
+
+
 (function ($) {
     "use strict";
 
@@ -206,6 +332,8 @@
             responsive: true
         }
     });
+
+    
 
     
 })(jQuery);

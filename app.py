@@ -29,22 +29,25 @@ def init_db():
             id TEXT PRIMARY KEY,
             name TEXT NOT NULL,
             email TEXT NOT NULL UNIQUE,
-            password TEXT NOT NULL
+            password TEXT NOT NULL,
+            age INTEGER NOT NULL,
+            gender TEXT NOT NULL,
+            studies TEXT NOT NULL
         );
         """)
         conn.commit()
         
 def get_user_by_username(username: str):
     with get_conn() as conn:
-        cur = conn.execute("SELECT id, name, email, password FROM users WHERE id = ?", (username,))
+        cur = conn.execute("SELECT id, name, email, password, age, gender, studies FROM users WHERE id = ?", (username,))
         row = cur.fetchone()
         return dict(row) if row else None
 
-def create_user(id_: str, name: str, email: str, raw_password: str):
+def create_user(id_: str, name: str, email: str, raw_password: str, age: int, gender: str, studies: str):
     pwd_hash = generate_password_hash(raw_password)
     with get_conn() as conn:
-        conn.execute("INSERT INTO users (id, name, email, password) VALUES (?, ?, ?, ?)",
-                     (id_, name, email, pwd_hash))
+        conn.execute("INSERT INTO users (id, name, email, password, age, gender, studies) VALUES (?, ?, ?, ?, ?, ?, ?)",
+                     (id_, name, email, pwd_hash, age, gender, studies))
         conn.commit()
 
 login_manager = LoginManager()
@@ -52,11 +55,14 @@ login_manager.init_app(app)
 login_manager.login_view = "signin"
 
 class User(UserMixin):
-    def __init__(self, id, name, email, password):
+    def __init__(self, id, name, email, password, age, gender, studies):
         self.id = id
         self.name = name
         self.email = email
         self.password = password
+        self.age = age
+        self.gender = gender
+        self.studies = studies
 
 
 @app.context_processor
@@ -67,7 +73,7 @@ def inject_user():
 @login_manager.user_loader
 def load_user(user_id):
     u = get_user_by_username(user_id)
-    return User(u["id"], u["name"], u["email"], u["password"]) if u else None
+    return User(u["id"], u["name"], u["email"], u["password"], u["age"], u["gender"], u["studies"]) if u else None
 
 
 @app.route("/")
@@ -82,7 +88,7 @@ def signin():
         password = request.form.get("password", "")
         u = get_user_by_username(username)
         if u and check_password_hash(u["password"], password):
-            login_user(User(u["id"], u["name"], u["email"], u["password"]))
+            login_user(User(u["id"], u["name"], u["email"], u["password"],  u["age"],  u["gender"],  u["studies"]))
             session["username"] = u["id"]
             return redirect(url_for("panel"))
         return render_template("signin.html", error="Usuario o contraseña incorrectos.")
@@ -96,14 +102,21 @@ def signup():
         username = request.form.get("username", "").strip().lower()
         email = request.form.get("email", "").strip().lower()
         password = request.form.get("password", "")
-        if not name or not username or not email or not password:
+        confirm_password = request.form.get("confirm_password", "")
+        age = request.form.get("age")
+        gender = request.form.get("gender")
+        studies = request.form.get("studies")
+
+        if not name or not username or not email or not password or not confirm_password or not age or not gender or not studies:
             return render_template("signup.html", error="Rellena todos los campos.")
+        if password != confirm_password:
+            return render_template("signup.html", error="Las contraseñas no coinciden.")
         if get_user_by_username(username):
             return render_template("signup.html", error="Ese usuario ya existe.")
 
-        create_user(username, name, email, password)
+        create_user(username, name, email, password, age, gender, studies)
         u = get_user_by_username(username)
-        login_user(User(u["id"], u["name"], u["email"], u["password"]))
+        login_user(User(u["id"], u["name"], u["email"], u["password"], u["age"], u["gender"], u["studies"]))
         session["username"] = u["id"]
         return redirect(url_for("panel"))
     return render_template("signup.html")
@@ -131,7 +144,7 @@ def panel():
 def default_admin():
     init_db()
     if not get_user_by_username("admin"):
-        create_user("admin", "admin", "admin@tfg.es", "admin")
+        create_user("admin", "admin", "admin@tfg.es", "Admin_22", 22, "Mujer", "Grado Universitario")
 
 ALLOWED_PAGES = {
     "index", "blank", "button", "chart", "element", "form",

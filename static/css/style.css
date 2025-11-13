@@ -106,6 +106,31 @@
     }
 }
 
+.form-floating > .form-control,
+.form-floating > .form-select {
+    background-color: var(--dark);
+    color: #fff;
+    border-color: var(--dark);
+}
+
+.form-floating > .form-control:focus,
+.form-floating > .form-select:focus {
+    background-color: var(--dark);
+    color: #fff;
+    border-color: var(--primary);
+    box-shadow: 0 0 0 0.25rem rgba(235, 22, 22, 0.25);
+}
+
+.form-floating > .form-select option {
+    background-color: var(--dark);
+    color: #fff;
+}
+
+.form-select:invalid {
+    color: var(--light) !important;
+}
+
+
 @media (max-width: 991.98px) {
     .sidebar {
         margin-left: -330px;
