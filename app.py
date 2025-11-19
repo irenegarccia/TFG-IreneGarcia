@@ -2,7 +2,7 @@ from flask import Flask, render_template, redirect, url_for, request, abort, ses
 from flask_login import LoginManager, UserMixin, login_user, logout_user, login_required, current_user
 from flask_session import Session
 from werkzeug.security import generate_password_hash, check_password_hash
-import sqlite3, os
+import sqlite3, os, string
 
 app = Flask(__name__, static_folder='static', static_url_path='/')
 app.secret_key = "secretkey"
@@ -49,6 +49,20 @@ def create_user(id_: str, name: str, email: str, raw_password: str, age: int, ge
         conn.execute("INSERT INTO users (id, name, email, password, age, gender, studies) VALUES (?, ?, ?, ?, ?, ?, ?)",
                      (id_, name, email, pwd_hash, age, gender, studies))
         conn.commit()
+
+def passwordValidation(password: str) -> bool:
+    if password is None:
+        return False
+    
+    if len(password) < 8:
+        return False
+    
+    return (
+        any(char.isupper() for char in password) and
+        any(char.islower() for char in password) and
+        any(char.isdigit() for char in password) and
+        any(char in string.punctuation for char in password)
+    )
 
 login_manager = LoginManager()
 login_manager.init_app(app)
@@ -111,6 +125,8 @@ def signup():
             return render_template("signup.html", error="Rellena todos los campos.")
         if password != confirm_password:
             return render_template("signup.html", error="Las contraseñas no coinciden.")
+        if not passwordValidation(password):
+            return render_template("signup.html", error="La contraseña debe tener al menos 8 caracteres e incluir mayúsculas, minúsculas, números y símbolos.")
         if get_user_by_username(username):
             return render_template("signup.html", error="Ese usuario ya existe.")
 
@@ -173,4 +189,4 @@ def not_found(e):
 
 if __name__ == "__main__":
     default_admin() 
-    app.run(debug=True)
+    app.run(host='0.0.0.0', port=5000, debug=True)
