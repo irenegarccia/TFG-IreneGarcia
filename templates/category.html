@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>{{ category.title }}</title>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+
+    <link href="{{ url_for('static', filename='img/favicon.ico') }}" rel="icon">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600&family=Roboto:wght@500;700&display=swap" rel="stylesheet">
+
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0/css/all.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.4.1/font/bootstrap-icons.css" rel="stylesheet">
+
+    <link href="{{ url_for('static', filename='lib/owlcarousel/assets/owl.carousel.min.css') }}" rel="stylesheet">
+    <link href="{{ url_for('static', filename='lib/tempusdominus/css/tempusdominus-bootstrap-4.min.css') }}" rel="stylesheet">
+
+    <link href="{{ url_for('static', filename='css/bootstrap.min.css') }}" rel="stylesheet">
+    <link href="{{ url_for('static', filename='css/style.css') }}" rel="stylesheet">
+</head>
+
+<body>
+<div class="container-fluid position-relative d-flex p-0">
+
+    <!-- Sidebar -->
+    <div class="sidebar pe-4 pb-3">
+        <nav class="navbar bg-secondary navbar-dark">
+            <a href="{{ url_for('panel') }}" class="navbar-brand mx-4 mb-3">
+                <h3 class="text-primary"><i class="fa fa-user-edit me-2"></i>Curso</h3>
+            </a>
+
+            <div class="d-flex align-items-center ms-4 mb-4">
+                <div class="position-relative">
+                    <img class="rounded-circle"
+                         src="{{ url_for('static', filename='img/user.jpg') }}"
+                         alt=""
+                         style="width: 40px; height: 40px;">
+                    <div class="bg-success rounded-circle border border-2 border-white position-absolute end-0 bottom-0 p-1"></div>
+                </div>
+                <div class="ms-3">
+                    <h6 class="mb-0">{{ user.id }}</h6>
+                </div>
+            </div>
+
+            <div class="navbar-nav w-100">
+                <a href="{{ url_for('panel') }}" class="nav-item nav-link">
+                    <i class="fa fa-tachometer-alt me-2"></i>Panel de Usuario
+                </a>
+
+                {% for c in categories %}
+                <a href="{{ url_for('category_page', category_code=c.category_code) }}"
+                   class="nav-item nav-link {% if c.category_code == category.category_code %}active{% endif %}">
+                    <i class="fa fa-folder me-2"></i>{{ c.title }}
+                </a>
+                {% endfor %}
+            </div>
+        </nav>
+    </div>
+
+    <!-- Content -->
+    <div class="content">
+
+        <!-- Navbar -->
+        <nav class="navbar navbar-expand bg-secondary navbar-dark sticky-top px-4 py-0">
+            <a href="#" class="sidebar-toggler flex-shrink-0">
+                <i class="fa fa-bars"></i>
+            </a>
+
+            <div class="navbar-nav align-items-center ms-auto">
+                <span class="nav-link d-flex align-items-center">
+                    <img class="rounded-circle me-lg-2"
+                         src="{{ url_for('static', filename='img/user.jpg') }}"
+                         alt=""
+                         style="width: 40px; height: 40px;">
+                    <span class="d-none d-lg-inline-flex">{{ user.name }}</span>
+                </span>
+
+                <a href="{{ url_for('logout') }}" class="nav-link text-danger">
+                    <i class="fa fa-sign-out-alt fa-lg"></i>
+                </a>
+            </div>
+        </nav>
+
+        <div class="container-fluid pt-4 px-4">
+
+            <!-- Header -->
+            <div class="row g-4">
+                <div class="col-12">
+                    <div class="bg-secondary rounded p-4">
+                        <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center">
+                            <h3 class="mb-0">
+                                <i class="fa fa-folder-open text-primary me-2"></i>{{ category.title }}
+                            </h3>
+
+                            <a href="{{ url_for('panel') }}" class="btn btn-outline-light mt-3 mt-md-0">
+                                <i class="fa fa-arrow-left me-2"></i>Volver al panel
+                            </a>
+                        </div>
+
+                        <hr class="my-4">
+
+                        <!-- Progreso -->
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <div class="d-flex align-items-center justify-content-between">
+                                    <div class="d-flex align-items-center">
+                                        <i class="fa fa-play-circle fa-2x text-primary me-3"></i>
+                                        <div>
+                                            <p class="mb-1 text-white-50">Progreso PRE</p>
+                                            <h6 class="mb-0">{{ pre_done }} / {{ pre_total }}</h6>
+                                        </div>
+                                    </div>
+                                    <span class="badge bg-dark">{{ pre_pct }}%</span>
+                                </div>
+
+                                <div class="progress bg-dark mt-3">
+                                    <div class="progress-bar" role="progressbar"
+                                         style="width: {{ pre_pct }}%;"
+                                         aria-valuenow="{{ pre_pct }}" aria-valuemin="0" aria-valuemax="100"></div>
+                                </div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <div class="d-flex align-items-center justify-content-between">
+                                    <div class="d-flex align-items-center">
+                                        <i class="fa fa-award fa-2x text-primary me-3"></i>
+                                        <div>
+                                            <p class="mb-1 text-white-50">Progreso POST</p>
+                                            <h6 class="mb-0">{{ post_done }} / {{ post_total }}</h6>
+                                        </div>
+                                    </div>
+                                    <span class="badge bg-dark">{{ post_pct }}%</span>
+                                </div>
+
+                                <div class="progress bg-dark mt-3">
+                                    <div class="progress-bar" role="progressbar"
+                                         style="width: {{ post_pct }}%;"
+                                         aria-valuenow="{{ post_pct }}" aria-valuemin="0" aria-valuemax="100"></div>
+                                </div>
+
+                                {% if not all_pre_done and post_total > 0 %}
+                                    <div class="text-warning small mt-2">
+                                        <i class="fa fa-lock me-1"></i>Desbloquea completando todos los PRE.
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+            <!-- Listas PRE/POST -->
+            {% macro challenge_card(ch, idx, locked=False) %}
+                {% set done = completed_map.get(ch.id) %}
+                {% if locked %}
+                    <div class="bg-dark rounded p-3 h-100">
+                        <div class="text-white-50 small">Subcategoría {{ idx }}</div>
+                        <h6 class="mb-1 text-white">{{ ch.title }}</h6>
+                        <div class="small text-warning"><i class="fa fa-lock me-1"></i>Bloqueado</div>
+                    </div>
+                {% else %}
+                    {% if ch.is_practical %}
+                        {% set target = url_for('challenge_page', challenge_id=ch.id) %}
+                    {% else %}
+                        {% set target = url_for('quiz_page', challenge_id=ch.id, category_code=category.category_code) %}
+                    {% endif %}
+
+                    <a href="{{ target }}"
+                    class="bg-dark rounded p-3 d-block h-100 text-decoration-none">
+
+                        <div class="d-flex justify-content-between align-items-start">
+                            <div>
+                                <div class="text-white-50 small">Subcategoría {{ idx }}</div>
+                                <h6 class="mb-1 text-white">{{ ch.title }}</h6>
+                                <div class="small {% if done %}text-success{% else %}text-white-50{% endif %}">
+                                    {% if done %}
+                                        <i class="fa fa-check-circle me-1"></i>Completado
+                                    {% else %}
+                                        <i class="fa fa-hourglass-half me-1"></i>Pendiente
+                                    {% endif %}
+                                </div>
+                            </div>
+                            <span class="btn btn-sm {% if done %}btn-success{% else %}btn-outline-light{% endif %}">
+                                <i class="fa {% if done %}fa-check{% else %}fa-chevron-right{% endif %}"></i>
+                            </span>
+                        </div>
+                    </a>
+                {% endif %}
+            {% endmacro %}
+
+            <div class="row g-4 mt-1">
+
+                <!-- PRE -->
+                <div class="col-12 col-xl-6">
+                    <div class="bg-secondary rounded h-100 p-4">
+                        <div class="d-flex align-items-center justify-content-between mb-3">
+                            <h5 class="mb-0"><i class="fa fa-flag text-primary me-2"></i>Retos PRE</h5>
+                            <span class="badge bg-dark">{{ pre_done }} / {{ pre_total }}</span>
+                        </div>
+
+                        {% if pre_total == 0 %}
+                            <div class="alert alert-info mb-0">
+                                <i class="fa fa-info-circle me-2"></i>No hay retos PRE todavía.
+                            </div>
+                        {% else %}
+                            <div class="row g-3">
+                                {% for ch in pre_challenges %}
+                                    <div class="col-12 col-md-6">
+                                        {{ challenge_card(ch, loop.index) }}
+                                    </div>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <!-- POST -->
+                <div class="col-12 col-xl-6">
+                    <div class="bg-secondary rounded h-100 p-4">
+                        <div class="d-flex align-items-center justify-content-between mb-3">
+                            <h5 class="mb-0"><i class="fa fa-lock-open text-primary me-2"></i>Retos POST</h5>
+                            <span class="badge bg-dark">{{ post_done }} / {{ post_total }}</span>
+                        </div>
+
+                        {% if post_total == 0 %}
+                            <div class="alert alert-info mb-0">
+                                <i class="fa fa-info-circle me-2"></i>No hay retos POST todavía.
+                            </div>
+                        {% else %}
+                            {% if not all_pre_done %}
+                                <div class="alert alert-warning">
+                                    <i class="fa fa-lock me-2"></i>
+                                    Bloqueado: completa todos los retos PRE para desbloquear POST.
+                                </div>
+                            {% endif %}
+
+                            <div class="row g-3">
+                                {% for ch in post_challenges %}
+                                    <div class="col-12 col-md-6">
+                                        {{ challenge_card(ch, loop.index, locked=not all_pre_done) }}
+                                    </div>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="{{ url_for('static', filename='js/main.js') }}"></script>
+</body>
+</html>
