@@ -31,41 +31,47 @@
 <body>
 <div class="container-fluid position-relative d-flex p-0">
 
-    <!-- Sidebar Start -->
-    <div class="sidebar pe-4 pb-3">
-        <nav class="navbar bg-secondary navbar-dark">
-            <a href="{{ url_for('panel') }}" class="navbar-brand mx-4 mb-3">
-                <h3 class="text-primary"><i class="fa fa-user-edit me-2"></i>Curso</h3>
-            </a>
-
-            <div class="d-flex align-items-center ms-4 mb-4">
-                <div class="position-relative">
-                    <img class="rounded-circle"
-                         src="{{ url_for('static', filename='img/user.jpg') }}"
-                         alt=""
-                         style="width: 40px; height: 40px;">
-                    <div class="bg-success rounded-circle border border-2 border-white position-absolute end-0 bottom-0 p-1"></div>
-                </div>
-                <div class="ms-3">
-                    <h6 class="mb-0">{{ user.id }}</h6>
-                </div>
-            </div>
-
-            <div class="navbar-nav w-100">
-                <a href="{{ url_for('panel') }}" class="nav-item nav-link">
-                    <i class="fa fa-tachometer-alt me-2"></i>Panel de Usuario
+        <!-- Sidebar Start -->
+        <div class="sidebar pe-4 pb-3">
+            <nav class="navbar bg-secondary navbar-dark">
+                <a href="index.html" class="navbar-brand mx-4 mb-3">
+                    <h3 class="text-primary"><i class="fa fa-laptop-code me-2"></i>TFG</h3>
                 </a>
+                <div class="navbar-nav w-100">
+                    <a href="{{ url_for('panel') }}" class="nav-item nav-link active">
+                        <i class="fa fa-tachometer-alt me-2"></i>Panel de Usuario
+                    </a>
 
-                {% for c in categories %}
-                <a href="{{ url_for('category_page', category_code=c.category_code) }}"
-                   class="nav-item nav-link">
-                    <i class="fa fa-folder me-2"></i>{{ c.title }}
-                </a>
-                {% endfor %}
-            </div>
-        </nav>
-    </div>
-    <!-- Sidebar End -->
+                    {% for c in categories %}
+                    <a href="{{ url_for('category_page', category_code=c.category_code) }}" class="nav-item nav-link">
+                        <i class="
+                            {% if c.category_code == 'physical_attacks' %}
+                                fa fa-exclamation-triangle
+                            {% elif c.category_code == 'credential_management' %}
+                                fa fa-key
+                            {% elif c.category_code == 'social_engineering' %}
+                                fa fa-users
+                            {% elif c.category_code == 'phishing' %}
+                                fa fa-envelope
+                            {% elif c.category_code == 'devices' %}
+                                fa fa-mobile-alt
+                            {% elif c.category_code == 'data_protection' %}
+                                fa fa-shield-alt
+                            {% else %}
+                                fa fa-folder
+                            {% endif %}
+                            me-2"></i>
+                        {{ c.title }}
+                    </a>
+                    {% endfor %}
+
+
+                </div>
+
+            </nav>
+        </div>
+        <!-- Sidebar End -->
+
 
     <!-- Content Start -->
     <div class="content">
@@ -78,11 +84,7 @@
 
             <div class="navbar-nav align-items-center ms-auto">
                 <span class="nav-link d-flex align-items-center">
-                    <img class="rounded-circle me-lg-2"
-                         src="{{ url_for('static', filename='img/user.jpg') }}"
-                         alt=""
-                         style="width: 40px; height: 40px;">
-                    <span class="d-none d-lg-inline-flex">{{ user.name }}</span>
+                    <h6 class="mb-0">{{ user.name }}</h6>
                 </span>
 
                 <a href="{{ url_for('logout') }}" class="nav-link text-danger">
@@ -117,28 +119,30 @@
                         Este reto no tiene una pregunta asociada.
                     </div>
                 {% else %}
-                    <p class="text-white-50 mb-4">{{ challenge.question }}</p>
+                    <h5>{{ challenge.question }}</h5>
 
-                    <form method="post">
+                    <form method="post" action="{{ url_for('quiz_submit', challenge_id=challenge.id) }}">
+                        <input type="hidden" name="category_code" value="{{ category_code }}">
+
                         <div class="d-flex flex-column gap-3">
 
                             <label class="bg-dark rounded p-3 d-flex align-items-center" style="cursor:pointer;">
-                                <input class="form-check-input me-3" type="radio" name="answer" value="{{ challenge.option1 }}" required>
+                                <input type="radio" style="accent-color: white" name="answer" value="{{ challenge.option1 }}" required>
                                 <span class="text-white">{{ challenge.option1 }}</span>
                             </label>
 
                             <label class="bg-dark rounded p-3 d-flex align-items-center" style="cursor:pointer;">
-                                <input class="form-check-input me-3" type="radio" name="answer" value="{{ challenge.option2 }}" required>
+                                <input type="radio" style="accent-color: white" name="answer" value="{{ challenge.option2 }}" required>
                                 <span class="text-white">{{ challenge.option2 }}</span>
                             </label>
 
                             <label class="bg-dark rounded p-3 d-flex align-items-center" style="cursor:pointer;">
-                                <input class="form-check-input me-3" type="radio" name="answer" value="{{ challenge.option3 }}" required>
+                                <input type="radio" style="accent-color: white" name="answer" value="{{ challenge.option3 }}" required>
                                 <span class="text-white">{{ challenge.option3 }}</span>
                             </label>
 
                             <label class="bg-dark rounded p-3 d-flex align-items-center" style="cursor:pointer;">
-                                <input class="form-check-input me-3" type="radio" name="answer" value="{{ challenge.option4 }}" required>
+                                <input type="radio" style="accent-color: white" name="answer" value="{{ challenge.option4 }}" required>
                                 <span class="text-white">{{ challenge.option4 }}</span>
                             </label>
 
@@ -155,6 +159,17 @@
             </div>
         </div>
         <!-- Quiz Content End -->
+        <!-- Footer Start -->
+        <div class="container-fluid pt-4 px-4">
+            <div class="bg-secondary rounded-top p-4">
+                <div class="row">
+                    <div class="col-12 col-sm-6 text-center text-sm-start">
+                        Trabajo de Fin de Grado de <strong>Irene García López</strong>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Footer End -->
 
     </div>
     <!-- Content End -->
