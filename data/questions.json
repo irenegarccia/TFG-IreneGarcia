@@ -26,7 +26,23 @@
                 "is_practical": 0,
                 "content": null,
                 "order_index": 1
-              }
+              },
+              {
+              "title": "Dispositivos maliciosos",
+              "question": "¿Por qué los dispositivos USB pueden representar un riesgo de seguridad?",
+              "correct_answer": "Porque pueden ejecutar código malicioso al conectarse a un dispositivo",
+              "options": [
+                "Porque solo almacenan archivos visibles",
+                "Porque pueden ejecutar código malicioso al conectarse a un dispositivo",
+                "Porque ralentizan el sistema",
+                "Porque consumen más batería"
+              ],
+              "points": 10,
+              "is_training": 1,
+              "is_practical": 0,
+              "content": null,
+              "order_index": 2
+            }
             ],
             "post": [
               {
@@ -69,7 +85,39 @@
                 "is_practical": 0,
                 "content": null,
                 "order_index": 1
-              }
+              },
+              {
+              "title": "Robo o pérdida de dispositivos",
+              "question": "¿Por qué la pérdida de un dispositivo puede suponer un riesgo para la seguridad de la información?",
+              "correct_answer": "Porque puede permitir el acceso no autorizado a datos personales o corporativos",
+              "options": [
+                "Porque el dispositivo deja de funcionar",
+                "Porque puede permitir el acceso no autorizado a datos personales o corporativos",
+                "Porque se pierde la conexión a Internet",
+                "Porque obliga a comprar un dispositivo nuevo"
+              ],
+              "points": 10,
+              "is_training": 1,
+              "is_practical": 0,
+              "content": null,
+              "order_index": 2
+            },
+            {
+              "title": "Robo o pérdida de dispositivos",
+              "question": "¿Qué información suele estar en mayor riesgo cuando se pierde un dispositivo sin protección?",
+              "correct_answer": "Datos personales, credenciales y acceso a aplicaciones",
+              "options": [
+                "Únicamente las fotografías",
+                "Datos personales, credenciales y acceso a aplicaciones",
+                "Solo los contactos de la agenda",
+                "El sistema operativo del dispositivo"
+              ],
+              "points": 10,
+              "is_training": 1,
+              "is_practical": 0,
+              "content": null,
+              "order_index": 3
+            }
             ],
             "post": [
               {

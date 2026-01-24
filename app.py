@@ -87,7 +87,7 @@ def init_db():
             content TEXT,
 
             FOREIGN KEY (subcategory_code) REFERENCES subcategories(subcategory_code),
-            UNIQUE(subcategory_code, phase, title)
+            UNIQUE(subcategory_code, phase, order_index)
         );
         """)
 
@@ -289,6 +289,45 @@ def get_total_score(user_id: str) -> int:
         """, (user_id,)).fetchone()
         return int(row["total"]) if row else 0
 
+def get_random_pending_challenge(user_id: str, subcategory_code: str, phase: str):
+    with get_conn() as conn:
+        row = conn.execute("""
+            SELECT c.*
+            FROM challenges c
+            LEFT JOIN user_challenge_progress u
+              ON u.challenge_id = c.id AND u.user_id = ?
+            WHERE c.subcategory_code = ?
+              AND c.phase = ?
+              AND (u.completed IS NULL OR u.completed = 0)
+            ORDER BY RANDOM()
+            LIMIT 1
+        """, (user_id, subcategory_code, phase)).fetchone()
+        return dict(row) if row else None
+
+
+def count_phase_total(subcategory_code: str, phase: str) -> int:
+    with get_conn() as conn:
+        row = conn.execute("""
+            SELECT COUNT(*) AS c
+            FROM challenges
+            WHERE subcategory_code = ? AND phase = ?
+        """, (subcategory_code, phase)).fetchone()
+        return int(row["c"])
+
+
+def count_phase_done(user_id: str, subcategory_code: str, phase: str) -> int:
+    with get_conn() as conn:
+        row = conn.execute("""
+            SELECT COUNT(*) AS c
+            FROM user_challenge_progress u
+            JOIN challenges c ON c.id = u.challenge_id
+            WHERE u.user_id = ?
+              AND u.completed = 1
+              AND c.subcategory_code = ?
+              AND c.phase = ?
+        """, (user_id, subcategory_code, phase)).fetchone()
+        return int(row["c"])
+
 
 login_manager = LoginManager()
 login_manager.init_app(app)
@@ -406,6 +445,21 @@ def category_page(category_code):
         sub["pre_challenges"] = get_subcategory_challenges(sub["subcategory_code"], "pre")
         sub["post_challenges"] = get_subcategory_challenges(sub["subcategory_code"], "post")
 
+        sub_pre_total = count_phase_total_for_subcategory(sub["subcategory_code"], "pre")
+        sub_pre_done  = count_phase_done_for_subcategory(current_user.id, sub["subcategory_code"], "pre")
+
+        sub_post_total = count_phase_total_for_subcategory(sub["subcategory_code"], "post")
+        sub_post_done  = count_phase_done_for_subcategory(current_user.id, sub["subcategory_code"], "post")
+
+        sub["pre_total"] = sub_pre_total
+        sub["pre_done"]  = sub_pre_done
+        sub["post_total"] = sub_post_total
+        sub["post_done"]  = sub_post_done
+
+        sub["pre_pct"] = round((sub["pre_done"] / sub["pre_total"]) * 100) if sub["pre_total"] else 0
+        sub["post_pct"] = round((sub["post_done"] / sub["post_total"]) * 100) if sub["post_total"] else 0
+        
+
         for ch in sub["pre_challenges"] + sub["post_challenges"]:
             completed_map[ch["id"]] = is_challenge_completed(current_user.id, ch["id"])
 
@@ -437,7 +491,6 @@ def category_page(category_code):
     )
 
 
-
 @app.route("/challenge/<int:challenge_id>")
 @login_required
 def challenge_page(challenge_id):
@@ -445,16 +498,18 @@ def challenge_page(challenge_id):
     if not challenge:
         abort(404)
 
-    completed = is_challenge_completed(current_user.id, challenge_id)
+    if is_challenge_completed(current_user.id, challenge_id):
+        category_code = get_category_code_by_subcategory(challenge["subcategory_code"])
+        return redirect(url_for("category_page", category_code=category_code, msg="Ese reto ya está completado"))
 
     category_code = request.args.get("category_code")
 
     return render_template(
         "challenge.html",
         challenge=challenge,
-        completed=completed,
+        completed=False,
         category_code=category_code,
-        subcategory_code=challenge.get("subcategory_code")
+        subcategory_code=challenge["subcategory_code"]
     )
 
 
@@ -466,16 +521,9 @@ def challenge_submit(challenge_id):
     if not challenge or challenge["is_practical"]:
         abort(404)
 
-    subcategory_code = request.form.get("subcategory_code")
-    if not subcategory_code:
-        abort(400)
-
-    category_code = get_category_code_by_subcategory(subcategory_code)
-    if not category_code:
-        abort(400)
-
     if is_challenge_completed(current_user.id, challenge_id):
-        return redirect(url_for("category_page", category_code=category_code))
+        category_code = get_category_code_by_subcategory(challenge["subcategory_code"])
+        return redirect(url_for("category_page", category_code=category_code, msg="Ese reto ya está completado"))
 
     selected = request.form.get("answer")
     if not selected:
@@ -484,7 +532,66 @@ def challenge_submit(challenge_id):
     score = 10 if selected == challenge["correct_answer"] else 0
     mark_challenge_completed(current_user.id, challenge_id, score=score, user_answer=selected)
 
-    return redirect(url_for("category_page", category_code=category_code))
+    category_code = get_category_code_by_subcategory(challenge["subcategory_code"])
+    return redirect(url_for("category_page", category_code=category_code, msg="Reto guardado"))
+
+
+
+@app.route("/subcategory/<subcategory_code>/<phase>/next")
+@login_required
+def next_challenge(subcategory_code, phase):
+    if phase not in ("pre", "post"):
+        abort(400)
+
+    category_code = get_category_code_by_subcategory(subcategory_code)
+    if not category_code:
+        abort(400)
+
+    if phase == "post":
+        pre_total = count_phase_total(subcategory_code, "pre")
+        pre_done = count_phase_done(current_user.id, subcategory_code, "pre")
+        if pre_total > 0 and pre_done < pre_total:
+            return redirect(url_for(
+                "category_page",
+                category_code=category_code,
+                msg="Completa todos los retos PRE para desbloquear los POST"
+            ))
+
+
+    ch = get_random_pending_challenge(current_user.id, subcategory_code, phase)
+
+    if not ch:
+        return redirect(url_for(
+            "category_page",
+            category_code=category_code,
+            msg="Ya has completado todos los retos de esta subcategoría"
+        ))
+
+    return redirect(url_for("challenge_page", challenge_id=ch["id"], category_code=category_code))
+
+
+def count_phase_total_for_subcategory(subcategory_code: str, phase: str) -> int:
+    with get_conn() as conn:
+        row = conn.execute("""
+            SELECT COUNT(*) AS c
+            FROM challenges
+            WHERE subcategory_code = ? AND phase = ?
+        """, (subcategory_code, phase)).fetchone()
+        return int(row["c"]) if row else 0
+
+
+def count_phase_done_for_subcategory(user_id: str, subcategory_code: str, phase: str) -> int:
+    with get_conn() as conn:
+        row = conn.execute("""
+            SELECT COUNT(*) AS c
+            FROM user_challenge_progress u
+            JOIN challenges c ON c.id = u.challenge_id
+            WHERE u.user_id = ?
+              AND u.completed = 1
+              AND c.subcategory_code = ?
+              AND c.phase = ?
+        """, (user_id, subcategory_code, phase)).fetchone()
+        return int(row["c"]) if row else 0
 
 
 def default_admin():

@@ -30,12 +30,15 @@
                     <h3 class="text-primary"><i class="fa fa-laptop-code me-2"></i>TFG</h3>
                 </a>
                 <div class="navbar-nav w-100">
-                    <a href="{{ url_for('panel') }}" class="nav-item nav-link active">
+                    <a href="{{ url_for('panel') }}" 
+                    class="nav-item nav-link {% if request.endpoint == 'panel' %}active{% endif %}">
                         <i class="fa fa-tachometer-alt me-2"></i>Panel de Usuario
                     </a>
 
                     {% for c in categories %}
-                    <a href="{{ url_for('category_page', category_code=c.category_code) }}" class="nav-item nav-link">
+                    <a href="{{ url_for('category_page', category_code=c.category_code) }}"
+                    class="nav-item nav-link {% if request.endpoint == 'category_page' and c.category_code == category.category_code %}active{% endif %}">
+
                         <i class="
                             {% if c.category_code == 'physical_attacks' %}
                                 fa fa-exclamation-triangle
@@ -118,6 +121,12 @@
                         </div>
 
                         <hr class="my-4">
+                        {% if request.args.get('msg') %}
+                        <div class="alert alert-info mt-3 mb-0">
+                            <i class="fa fa-info-circle me-2"></i>{{ request.args.get('msg') }}
+                        </div>
+                        {% endif %}
+
 
                         <!-- Progreso -->
                         <div class="row g-3">
@@ -171,38 +180,66 @@
             </div>
 
             <!-- Listas PRE/POST -->
-            {% macro challenge_card(ch, idx, locked=False) %}
-                {% set done = completed_map.get(ch.id) %}
+            {% macro subcategory_card(sub, idx, phase, locked=False) %}
+                {% if phase == 'pre' %}
+                    {% set done = (sub.pre_total > 0 and sub.pre_done == sub.pre_total) %}
+                {% else %}
+                    {% set done = (sub.post_total > 0 and sub.post_done == sub.post_total) %}
+                {% endif %}
+
                 {% if locked %}
                     <div class="bg-dark rounded p-3 h-100">
-                        <div class="text-white-50 small">Subcategoría {{ idx }}</div>
-                        <h6 class="mb-1 text-white">{{ ch.title }}</h6>
+                        <h6 class="mb-1 text-white">{{ sub.title }}</h6>
                         <div class="small text-warning"><i class="fa fa-lock me-1"></i>Bloqueado</div>
                     </div>
                 {% else %}
-                        {% set target = url_for('challenge_page', challenge_id=ch.id, category_code=category.category_code) %}
+                    {% set target = url_for('next_challenge', subcategory_code=sub.subcategory_code, phase=phase) %}
+                    
+                    <a href="{{ target }}" class="bg-dark rounded p-3 d-block h-100 text-decoration-none">
+                    <div class="d-flex justify-content-between align-items-start">
+                        <div>
+                            <h6 class="mb-1 text-white">{{ sub.title }}</h6>
 
-
-                    <a href="{{ target }}"
-                    class="bg-dark rounded p-3 d-block h-100 text-decoration-none">
-
-                        <div class="d-flex justify-content-between align-items-start">
-                            <div>
-                                <div class="text-white-50 small">Subcategoría {{ idx }}</div>
-                                <h6 class="mb-1 text-white">{{ ch.title }}</h6>
-                                <div class="small {% if done %}text-success{% else %}text-white-50{% endif %}">
-                                    {% if done %}
-                                        <i class="fa fa-check-circle me-1"></i>Completado
-                                    {% else %}
-                                        <i class="fa fa-hourglass-half me-1"></i>Pendiente
-                                    {% endif %}
-                                </div>
+                            <div class="small {% if done %}text-success{% else %}text-white-50{% endif %}">
+                                {% if done %}
+                                    <i class="fa fa-check-circle me-1"></i>Completado
+                                {% else %}
+                                    <i class="fa fa-hourglass-half me-1"></i>Pendiente
+                                {% endif %}
                             </div>
-                            <span class="btn btn-sm {% if done %}btn-success{% else %}btn-outline-light{% endif %}">
-                                <i class="fa {% if done %}fa-check{% else %}fa-chevron-right{% endif %}"></i>
-                            </span>
                         </div>
-                    </a>
+
+                        <span class="btn btn-sm {% if done %}btn-success{% else %}btn-outline-light{% endif %}">
+                            <i class="fa {% if done %}fa-check{% else %}fa-chevron-right{% endif %}"></i>
+                        </span>
+                    </div>
+
+                    {% if phase == 'pre' %}
+                        {% set total = sub.pre_total %}
+                        {% set done_n = sub.pre_done %}
+                        {% set pct = sub.pre_pct %}
+                    {% else %}
+                        {% set total = sub.post_total %}
+                        {% set done_n = sub.post_done %}
+                        {% set pct = sub.post_pct %}
+                    {% endif %}
+                    {% set left = total - done_n %}
+
+                    <div class="d-flex justify-content-between mt-2">
+                        <span class="small text-white-50">{{ done_n }} / {{ total }}</span>
+                        <span class="small text-white-50">Faltan {{ left }}</span>
+                    </div>
+
+                    <div class="progress bg-secondary mt-1" style="height: 6px; width: 100%;">
+                        <div class="progress-bar {% if done %}bg-success{% else %}bg-primary{% endif %}"
+                            role="progressbar"
+                            style="width: {{ pct }}%;"
+                            aria-valuenow="{{ pct }}" aria-valuemin="0" aria-valuemax="100">
+                        </div>
+                    </div>
+
+                </a>
+
                 {% endif %}
             {% endmacro %}
 
@@ -224,13 +261,13 @@
                         <div class="row g-3">
                         {% for sub in subcategories %}
                             {% if sub.pre_challenges|length > 0 %}
-                            {% set ch = sub.pre_challenges[0] %}
                             <div class="col-12">
-                                {{ challenge_card(ch, loop.index) }}
+                                {{ subcategory_card(sub, loop.index, 'pre') }}
                             </div>
                             {% endif %}
                         {% endfor %}
                         </div>
+
                     {% endif %}
                     </div>
                 </div>
@@ -258,17 +295,16 @@
                         <div class="row g-3">
                         {% for sub in subcategories %}
                             {% if sub.post_challenges|length > 0 %}
-                            {% set ch = sub.post_challenges[0] %}
                             <div class="col-12">
-                                {{ challenge_card(ch, loop.index, locked=not all_pre_done) }}
+                                {{ subcategory_card(sub, loop.index, 'post', locked=not all_pre_done) }}
                             </div>
                             {% endif %}
                         {% endfor %}
                         </div>
+
                     {% endif %}
                     </div>
                 </div>
-
             </div>
         </div>
 
