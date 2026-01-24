@@ -3,12 +3,18 @@ from flask_login import LoginManager, UserMixin, login_user, logout_user, login_
 from flask_session import Session
 from werkzeug.security import generate_password_hash, check_password_hash
 import sqlite3, os, string
+from flask_wtf.csrf import CSRFProtect
+
 
 app = Flask(__name__, static_folder='static', static_url_path='/')
-app.secret_key = "secretkey"
+app.secret_key = os.environ.get("SECRET_KEY") or os.urandom(32)
+csrf = CSRFProtect(app)
 app.config["SESSION_PERMANENT"] = False
 app.config["SESSION_TYPE"] = "filesystem"
 Session(app)
+app.config["SESSION_COOKIE_HTTPONLY"] = True
+app.config["SESSION_COOKIE_SAMESITE"] = "Lax"
+app.config["SESSION_COOKIE_SECURE"] = os.environ.get("FLASK_ENV") == "production"
 
 
 BASE_DIR = os.path.abspath(os.path.dirname(__file__))
@@ -721,35 +727,19 @@ def challenge_page(challenge_id):
 
     completed = is_challenge_completed(current_user.id, challenge_id)
 
+    category_code = request.args.get("category_code")
+
     return render_template(
         "challenge.html",
         challenge=challenge,
-        completed=completed
+        completed=completed,
+        category_code=category_code
     )
 
-@app.route("/quiz/<int:challenge_id>")
+
+@app.route("/challenge/<int:challenge_id>/submit", methods=["POST"])
 @login_required
-def quiz_page(challenge_id):
-    challenge = get_challenge_by_id(challenge_id)
-    if not challenge or challenge["is_practical"]:
-        abort(404)
-
-    if is_challenge_completed(current_user.id, challenge_id):
-        category_code = request.args.get("category_code")
-        if not category_code:
-            abort(400)
-        return redirect(url_for("category_page", category_code=category_code))
-
-
-    category_code = request.args.get("category_code")
-    if not category_code:
-        abort(400)
-    return render_template("quiz.html", challenge=challenge, category_code=category_code)
-
-
-@app.route("/quiz/<int:challenge_id>/submit", methods=["POST"])
-@login_required
-def quiz_submit(challenge_id):
+def challenge_submit(challenge_id):
     challenge = get_challenge_by_id(challenge_id)
     if not challenge or challenge["is_practical"]:
         abort(404)

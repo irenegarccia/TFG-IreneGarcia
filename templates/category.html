@@ -180,7 +180,8 @@
                         <div class="small text-warning"><i class="fa fa-lock me-1"></i>Bloqueado</div>
                     </div>
                 {% else %}
-                        {% set target = url_for('challenge_page', challenge_id=ch.id) %}
+                        {% set target = url_for('challenge_page', challenge_id=ch.id, category_code=category.category_code) %}
+
 
                     <a href="{{ target }}"
                     class="bg-dark rounded p-3 d-block h-100 text-decoration-none">

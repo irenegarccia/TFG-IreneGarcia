@@ -94,7 +94,7 @@
         </nav>
         <!-- Navbar End -->
 
-        <!-- Quiz Content -->
+        <!-- Challenge Content -->
         <div class="container-fluid pt-4 px-4">
             <div class="bg-secondary rounded p-4">
 
@@ -121,28 +121,30 @@
                 {% else %}
                     <h5>{{ challenge.question }}</h5>
 
-                    <form method="post" action="{{ url_for('quiz_submit', challenge_id=challenge.id) }}">
+                    <form method="post" action="{{ url_for('challenge_submit', challenge_id=challenge.id) }}">
                         <input type="hidden" name="category_code" value="{{ category_code }}">
+                        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+
 
                         <div class="d-flex flex-column gap-3">
 
                             <label class="bg-dark rounded p-3 d-flex align-items-center" style="cursor:pointer;">
-                                <input type="radio" style="accent-color: white" name="answer" value="{{ challenge.option1 }}" required>
+                                <input type="radio" style="accent-color: white; transform:scale(1.4); margin-right:12px;" name="answer" value="{{ challenge.option1 }}" required>
                                 <span class="text-white">{{ challenge.option1 }}</span>
                             </label>
 
                             <label class="bg-dark rounded p-3 d-flex align-items-center" style="cursor:pointer;">
-                                <input type="radio" style="accent-color: white" name="answer" value="{{ challenge.option2 }}" required>
+                                <input type="radio" style="accent-color: white; transform:scale(1.4); margin-right:12px;" name="answer" value="{{ challenge.option2 }}" required>
                                 <span class="text-white">{{ challenge.option2 }}</span>
                             </label>
 
                             <label class="bg-dark rounded p-3 d-flex align-items-center" style="cursor:pointer;">
-                                <input type="radio" style="accent-color: white" name="answer" value="{{ challenge.option3 }}" required>
+                                <input type="radio" style="accent-color: white; transform:scale(1.4); margin-right:12px;" name="answer" value="{{ challenge.option3 }}" required>
                                 <span class="text-white">{{ challenge.option3 }}</span>
                             </label>
 
                             <label class="bg-dark rounded p-3 d-flex align-items-center" style="cursor:pointer;">
-                                <input type="radio" style="accent-color: white" name="answer" value="{{ challenge.option4 }}" required>
+                                <input type="radio" style="accent-color: white; transform:scale(1.4); margin-right:12px;" name="answer" value="{{ challenge.option4 }}" required>
                                 <span class="text-white">{{ challenge.option4 }}</span>
                             </label>
 
@@ -158,7 +160,7 @@
 
             </div>
         </div>
-        <!-- Quiz Content End -->
+        <!-- Challenge Content End -->
         <!-- Footer Start -->
         <div class="container-fluid pt-4 px-4">
             <div class="bg-secondary rounded-top p-4">
