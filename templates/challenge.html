@@ -121,41 +121,44 @@
                 {% else %}
                     <h5>{{ challenge.question }}</h5>
 
-                    <form method="post" action="{{ url_for('challenge_submit', challenge_id=challenge.id) }}">
-                        <input type="hidden" name="category_code" value="{{ category_code }}">
-                        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                <form method="post" action="{{ url_for('challenge_submit', challenge_id=challenge.id) }}">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                    <input type="hidden" name="subcategory_code" value="{{ subcategory_code }}">
 
+                    <div class="d-flex flex-column gap-3">
 
-                        <div class="d-flex flex-column gap-3">
+                        <label class="bg-dark rounded p-3 d-flex align-items-center" style="cursor:pointer;">
+                            <input type="radio" style="accent-color: white; transform:scale(1.4); margin-right:12px;"
+                                name="answer" value="{{ challenge.option1 }}" required>
+                            <span class="text-white">{{ challenge.option1 }}</span>
+                        </label>
 
-                            <label class="bg-dark rounded p-3 d-flex align-items-center" style="cursor:pointer;">
-                                <input type="radio" style="accent-color: white; transform:scale(1.4); margin-right:12px;" name="answer" value="{{ challenge.option1 }}" required>
-                                <span class="text-white">{{ challenge.option1 }}</span>
-                            </label>
+                        <label class="bg-dark rounded p-3 d-flex align-items-center" style="cursor:pointer;">
+                            <input type="radio" style="accent-color: white; transform:scale(1.4); margin-right:12px;"
+                                name="answer" value="{{ challenge.option2 }}">
+                            <span class="text-white">{{ challenge.option2 }}</span>
+                        </label>
 
-                            <label class="bg-dark rounded p-3 d-flex align-items-center" style="cursor:pointer;">
-                                <input type="radio" style="accent-color: white; transform:scale(1.4); margin-right:12px;" name="answer" value="{{ challenge.option2 }}" required>
-                                <span class="text-white">{{ challenge.option2 }}</span>
-                            </label>
+                        <label class="bg-dark rounded p-3 d-flex align-items-center" style="cursor:pointer;">
+                            <input type="radio" style="accent-color: white; transform:scale(1.4); margin-right:12px;"
+                                name="answer" value="{{ challenge.option3 }}">
+                            <span class="text-white">{{ challenge.option3 }}</span>
+                        </label>
 
-                            <label class="bg-dark rounded p-3 d-flex align-items-center" style="cursor:pointer;">
-                                <input type="radio" style="accent-color: white; transform:scale(1.4); margin-right:12px;" name="answer" value="{{ challenge.option3 }}" required>
-                                <span class="text-white">{{ challenge.option3 }}</span>
-                            </label>
+                        <label class="bg-dark rounded p-3 d-flex align-items-center" style="cursor:pointer;">
+                            <input type="radio" style="accent-color: white; transform:scale(1.4); margin-right:12px;"
+                                name="answer" value="{{ challenge.option4 }}">
+                            <span class="text-white">{{ challenge.option4 }}</span>
+                        </label>
 
-                            <label class="bg-dark rounded p-3 d-flex align-items-center" style="cursor:pointer;">
-                                <input type="radio" style="accent-color: white; transform:scale(1.4); margin-right:12px;" name="answer" value="{{ challenge.option4 }}" required>
-                                <span class="text-white">{{ challenge.option4 }}</span>
-                            </label>
+                    </div>
 
-                        </div>
-
-                        <div class="mt-4 d-flex justify-content-end">
-                            <button type="submit" class="btn btn-primary">
-                                <i class="fa fa-paper-plane me-2"></i>Enviar respuesta
-                            </button>
-                        </div>
-                    </form>
+                    <div class="mt-4 d-flex justify-content-end">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fa fa-paper-plane me-2"></i>Enviar respuesta
+                        </button>
+                    </div>
+                </form>
                 {% endif %}
 
             </div>

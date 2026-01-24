@@ -1,0 +1,696 @@
+{
+  "categories": [
+    {
+      "category_code": "physical_attacks",
+      "title": "Ataques Físicos",
+      "order_index": 1,
+      "subcategories": [
+        {
+          "subcategory_code": "physical_usb",
+          "title": "Dispositivos maliciosos",
+          "order_index": 1,
+          "challenges": {
+            "pre": [
+              {
+                "title": "Dispositivos maliciosos",
+                "question": "¿Qué es un USB malicioso?",
+                "correct_answer": "Un USB que puede ejecutar ataques o acciones no deseadas",
+                "options": [
+                  "Un USB normal solo para almacenar archivos",
+                  "Un USB que puede ejecutar ataques o acciones no deseadas",
+                  "Un ratón",
+                  "Un cargador"
+                ],
+                "points": 10,
+                "is_training": 1,
+                "is_practical": 0,
+                "content": null,
+                "order_index": 1
+              }
+            ],
+            "post": [
+              {
+                "title": "Dispositivos maliciosos",
+                "question": "Ante la aparición de un USB de origen desconocido, ¿cuál es la actuación más adecuada desde el punto de vista de la seguridad?",
+                "correct_answer": "No conectarlo y comunicarlo siguiendo los procedimientos establecidos",
+                "options": [
+                  "Conectarlo para identificar su contenido",
+                  "Formatearlo antes de utilizarlo",
+                  "No conectarlo y comunicarlo siguiendo los procedimientos establecidos",
+                  "Probarlo únicamente en un equipo personal"
+                ],
+                "points": 10,
+                "is_training": 0,
+                "is_practical": 0,
+                "content": null,
+                "order_index": 1
+              }
+            ]
+          }
+        },
+        {
+          "subcategory_code": "physical_loss",
+          "title": "Robo o pérdida de dispositivos",
+          "order_index": 2,
+          "challenges": {
+            "pre": [
+              {
+                "title": "Robo o pérdida de dispositivos",
+                "question": "¿Qué deberías hacer primero si pierdes el móvil?",
+                "correct_answer": "Bloquearlo/localizarlo y cambiar contraseñas importantes",
+                "options": [
+                  "No hacer nada",
+                  "Bloquearlo/localizarlo y cambiar contraseñas importantes",
+                  "Comprar otro móvil y ya está",
+                  "Apagar el Wi-Fi y esperar"
+                ],
+                "points": 10,
+                "is_training": 1,
+                "is_practical": 0,
+                "content": null,
+                "order_index": 1
+              }
+            ],
+            "post": [
+              {
+                "title": "Robo o pérdida de dispositivos",
+                "question": "Tras la pérdida de un dispositivo móvil, ¿qué medida contribuye de forma más efectiva a la protección de las cuentas asociadas?",
+                "correct_answer": "Cambiar las contraseñas y cerrar las sesiones activas",
+                "options": [
+                  "Esperar a recuperar el dispositivo",
+                  "Cambiar las contraseñas y cerrar las sesiones activas",
+                  "Publicar el incidente en redes sociales",
+                  "No realizar ninguna acción inmediata"
+                ],
+                "points": 10,
+                "is_training": 0,
+                "is_practical": 0,
+                "content": null,
+                "order_index": 1
+              }
+            ]
+          }
+        },
+        {
+          "subcategory_code": "physical_nfc",
+          "title": "Pagos contactless y riesgos NFC",
+          "order_index": 3,
+          "challenges": {
+            "pre": [
+              {
+                "title": "Pagos contactless y riesgos NFC",
+                "question": "¿Qué medida ayuda a reducir el riesgo de NFC/contactless?",
+                "correct_answer": "Desactivar NFC cuando no se use",
+                "options": [
+                  "Dejar NFC siempre activado",
+                  "Desactivar NFC cuando no se use",
+                  "Usar un PIN débil",
+                  "Compartir la tarjeta con otras personas"
+                ],
+                "points": 10,
+                "is_training": 1,
+                "is_practical": 0,
+                "content": null,
+                "order_index": 1
+              }
+            ],
+            "post": [
+              {
+                "title": "Pagos contactless y riesgos NFC",
+                "question": "¿Cuál es una buena práctica de seguridad en el uso de sistemas de pago contactless?",
+                "correct_answer": "Desactivar la función NFC cuando no se utilice y revisar periódicamente los movimientos",
+                "options": [
+                  "Mantener el NFC activado permanentemente",
+                  "Desactivar la función NFC cuando no se utilice y revisar periódicamente los movimientos",
+                  "Compartir el PIN con personas de confianza",
+                  "Realizar pagos únicamente en redes Wi-Fi públicas"
+                ],
+                "points": 10,
+                "is_training": 0,
+                "is_practical": 0,
+                "content": null,
+                "order_index": 1
+              }
+            ]
+          }
+        }
+      ]
+    },
+
+    {
+      "category_code": "credential_management",
+      "title": "Gestión de Credenciales",
+      "order_index": 2,
+      "subcategories": [
+        {
+          "subcategory_code": "cred_passwords",
+          "title": "Contraseñas seguras",
+          "order_index": 1,
+          "challenges": {
+            "pre": [
+              {
+                "title": "Contraseñas seguras",
+                "question": "¿Cuál es una contraseña segura?",
+                "correct_answer": "Larga, única y con mezcla de caracteres",
+                "options": [
+                  "123456",
+                  "Larga, única y con mezcla de caracteres",
+                  "Tu nombre",
+                  "Solo números"
+                ],
+                "points": 10,
+                "is_training": 1,
+                "is_practical": 0,
+                "content": null,
+                "order_index": 1
+              }
+            ],
+            "post": [
+              {
+                "title": "Contraseñas seguras",
+                "question": "¿Qué práctica contribuye de forma más efectiva a mejorar la seguridad de las contraseñas?",
+                "correct_answer": "Utilizar contraseñas únicas y apoyarse en un gestor de contraseñas",
+                "options": [
+                  "Reutilizar la misma contraseña en varios servicios",
+                  "Utilizar contraseñas únicas y apoyarse en un gestor de contraseñas",
+                  "Anotarlas en un documento sin protección",
+                  "Usar únicamente datos personales"
+                ],
+                "points": 10,
+                "is_training": 0,
+                "is_practical": 0,
+                "content": null,
+                "order_index": 1
+              }
+            ]
+          }
+        },
+        {
+          "subcategory_code": "cred_managers",
+          "title": "Gestores de contraseñas",
+          "order_index": 2,
+          "challenges": {
+            "pre": [
+              {
+                "title": "Gestores de contraseñas",
+                "question": "¿Qué es un gestor de contraseñas?",
+                "correct_answer": "Una herramienta para guardar contraseñas de forma segura",
+                "options": [
+                  "Un antivirus",
+                  "Una VPN",
+                  "Una herramienta para guardar contraseñas de forma segura",
+                  "Un firewall"
+                ],
+                "points": 10,
+                "is_training": 1,
+                "is_practical": 0,
+                "content": null,
+                "order_index": 1
+              }
+            ],
+            "post": [
+              {
+                "title": "Gestores de contraseñas",
+                "question": "¿Cuál es el principal beneficio del uso de un gestor de contraseñas?",
+                "correct_answer": "Permitir el uso de contraseñas robustas y únicas sin necesidad de memorizarlas",
+                "options": [
+                  "Mejorar la velocidad del dispositivo",
+                  "Permitir el uso de contraseñas robustas y únicas sin necesidad de memorizarlas",
+                  "Eliminar automáticamente el malware",
+                  "Evitar la pérdida del dispositivo"
+                ],
+                "points": 10,
+                "is_training": 0,
+                "is_practical": 0,
+                "content": null,
+                "order_index": 1
+              }
+            ]
+          }
+        },
+        {
+          "subcategory_code": "cred_leaks",
+          "title": "Filtración de credenciales",
+          "order_index": 3,
+          "challenges": {
+            "pre": [
+              {
+                "title": "Filtración de credenciales",
+                "question": "¿Qué deberías hacer tras una filtración de datos?",
+                "correct_answer": "Cambiar contraseñas y revisar información sensible",
+                "options": [
+                  "No hacer nada",
+                  "Cambiar contraseñas y revisar información sensible",
+                  "Publicarlo en redes sociales",
+                  "Reutilizar la misma contraseña"
+                ],
+                "points": 10,
+                "is_training": 1,
+                "is_practical": 0,
+                "content": null,
+                "order_index": 1
+              }
+            ],
+            "post": [
+              {
+                "title": "Filtración de credenciales",
+                "question": "Tras una filtración de contraseñas, ¿cuál es la actuación más recomendable?",
+                "correct_answer": "Cambiar la contraseña afectada y evitar su reutilización",
+                "options": [
+                  "Ignorar el incidente",
+                  "Reutilizar la misma contraseña",
+                  "Cambiar la contraseña afectada y evitar su reutilización",
+                  "Compartir la nueva contraseña con terceros"
+                ],
+                "points": 10,
+                "is_training": 0,
+                "is_practical": 0,
+                "content": null,
+                "order_index": 1
+              }
+            ]
+          }
+        }
+      ]
+    },
+
+    {
+      "category_code": "social_engineering",
+      "title": "Ingeniería Social",
+      "order_index": 3,
+      "subcategories": [
+        {
+          "subcategory_code": "social_qr",
+          "title": "Códigos QR",
+          "order_index": 1,
+          "challenges": {
+            "pre": [
+              {
+                "title": "Códigos QR",
+                "question": "¿Cuál es un riesgo típico de los códigos QR?",
+                "correct_answer": "Redirigir a webs falsas o maliciosas",
+                "options": [
+                  "Mejorar la batería del móvil",
+                  "Redirigir a webs falsas o maliciosas",
+                  "Aumentar la velocidad de Internet",
+                  "Aumentar el almacenamiento"
+                ],
+                "points": 10,
+                "is_training": 1,
+                "is_practical": 0,
+                "content": null,
+                "order_index": 1
+              }
+            ],
+            "post": [
+              {
+                "title": "Códigos QR",
+                "question": "Antes de escanear un código QR, ¿qué verificación es recomendable realizar?",
+                "correct_answer": "Comprobar el contexto, el origen y la dirección de destino",
+                "options": [
+                  "Escanearlo sin revisar su procedencia",
+                  "Comprobar el contexto, el origen y la dirección de destino",
+                  "Compartirlo con otros usuarios",
+                  "Desactivar el dispositivo"
+                ],
+                "points": 10,
+                "is_training": 0,
+                "is_practical": 0,
+                "content": null,
+                "order_index": 1
+              }
+            ]
+          }
+        },
+        {
+          "subcategory_code": "social_calls",
+          "title": "Llamadas fraudulentas",
+          "order_index": 2,
+          "challenges": {
+            "pre": [
+              {
+                "title": "Llamadas fraudulentas",
+                "question": "Una táctica común en llamadas fraudulentas es…",
+                "correct_answer": "Crear urgencia y pedir datos personales",
+                "options": [
+                  "Ofrecer regalos sin más",
+                  "Crear urgencia y pedir datos personales",
+                  "Decirte que te relajes",
+                  "No decir nada"
+                ],
+                "points": 10,
+                "is_training": 1,
+                "is_practical": 0,
+                "content": null,
+                "order_index": 1
+              }
+            ],
+            "post": [
+              {
+                "title": "Llamadas fraudulentas",
+                "question": "Si se recibe una llamada solicitando información personal de forma urgente, ¿cuál es la respuesta más adecuada?",
+                "correct_answer": "Finalizar la llamada y verificar la información por canales oficiales",
+                "options": [
+                  "Facilitar los datos solicitados",
+                  "Finalizar la llamada y verificar la información por canales oficiales",
+                  "Enviar documentación personal por mensajería",
+                  "Continuar la conversación para obtener más información"
+                ],
+                "points": 10,
+                "is_training": 0,
+                "is_practical": 0,
+                "content": null,
+                "order_index": 1
+              }
+            ]
+          }
+        },
+        {
+          "subcategory_code": "social_wifi",
+          "title": "Conexiones WI-FI",
+          "order_index": 3,
+          "challenges": {
+            "pre": [
+              {
+                "title": "Conexiones WI-FI",
+                "question": "El principal riesgo del Wi-Fi público suele ser…",
+                "correct_answer": "Intercepción del tráfico (robo de información)",
+                "options": [
+                  "Que consuma más RAM",
+                  "Intercepción del tráfico (robo de información)",
+                  "Mejorar la cámara",
+                  "Mejorar el GPS"
+                ],
+                "points": 10,
+                "is_training": 1,
+                "is_practical": 0,
+                "content": null,
+                "order_index": 1
+              }
+            ],
+            "post": [
+              {
+                "title": "Conexiones WI-FI",
+                "question": "En el uso de redes Wi-Fi públicas, ¿qué medida reduce de forma más eficaz el riesgo de seguridad?",
+                "correct_answer": "Evitar operaciones sensibles o utilizar una red privada virtual (VPN)",
+                "options": [
+                  "Acceder a servicios bancarios sin restricciones",
+                  "Evitar operaciones sensibles o utilizar una red privada virtual (VPN)",
+                  "Compartir la red con otros usuarios",
+                  "Desactivar las medidas de seguridad"
+                ],
+                "points": 10,
+                "is_training": 0,
+                "is_practical": 0,
+                "content": null,
+                "order_index": 1
+              }
+            ]
+          }
+        },
+        {
+          "subcategory_code": "social_sensitive_info",
+          "title": "Gestión de información sensible",
+          "order_index": 4,
+          "challenges": {
+            "pre": [
+              {
+                "title": "Gestión de información sensible",
+                "question": "¿Qué es información sensible?",
+                "correct_answer": "Datos que pueden identificarte o afectar tu privacidad",
+                "options": [
+                  "El tiempo",
+                  "Un meme",
+                  "Datos que pueden identificarte o afectar tu privacidad",
+                  "Una canción"
+                ],
+                "points": 10,
+                "is_training": 1,
+                "is_practical": 0,
+                "content": null,
+                "order_index": 1
+              }
+            ],
+            "post": [
+              {
+                "title": "Gestión de información sensible",
+                "question": "¿Cuál es una buena práctica en la gestión de información sensible?",
+                "correct_answer": "Compartir únicamente la información necesaria y con los destinatarios adecuados",
+                "options": [
+                  "Publicarla en redes sociales",
+                  "Compartir únicamente la información necesaria y con los destinatarios adecuados",
+                  "Enviar datos sin verificar",
+                  "Utilizar siempre redes públicas"
+                ],
+                "points": 10,
+                "is_training": 0,
+                "is_practical": 0,
+                "content": null,
+                "order_index": 1
+              }
+            ]
+          }
+        }
+      ]
+    },
+
+    {
+      "category_code": "phishing",
+      "title": "Phishing",
+      "order_index": 4,
+      "subcategories": [
+        {
+          "subcategory_code": "phish_recognition",
+          "title": "Reconocimiento de webs y correos fraudulentos",
+          "order_index": 1,
+          "challenges": {
+            "pre": [
+              {
+                "title": "Reconocimiento de webs y correos fraudulentos",
+                "question": "Una señal típica de phishing es…",
+                "correct_answer": "Enlaces o dominios sospechosos",
+                "options": [
+                  "Un dominio oficial y correcto",
+                  "Enlaces o dominios sospechosos",
+                  "Que no haya enlaces",
+                  "Que siempre tenga ortografía perfecta"
+                ],
+                "points": 10,
+                "is_training": 1,
+                "is_practical": 0,
+                "content": null,
+                "order_index": 1
+              }
+            ],
+            "post": [
+              {
+                "title": "Reconocimiento de webs y correos fraudulentos",
+                "question": "Si un correo solicita el acceso a través de un enlace sospechoso, ¿cuál es la actuación correcta?",
+                "correct_answer": "No acceder al enlace y comprobar la información desde la web o aplicación oficial",
+                "options": [
+                  "Acceder al enlace para comprobarlo",
+                  "No acceder al enlace y comprobar la información desde la web o aplicación oficial",
+                  "Reenviarlo a otros usuarios",
+                  "Responder facilitando los datos solicitados"
+                ],
+                "points": 10,
+                "is_training": 0,
+                "is_practical": 0,
+                "content": null,
+                "order_index": 1
+              }
+            ]
+          }
+        }
+      ]
+    },
+
+    {
+      "category_code": "devices",
+      "title": "Dispositivos",
+      "order_index": 5,
+      "subcategories": [
+        {
+          "subcategory_code": "dev_security",
+          "title": "Seguridad en dispositivos",
+          "order_index": 1,
+          "challenges": {
+            "pre": [
+              {
+                "title": "Seguridad en dispositivos",
+                "question": "Una medida básica de protección del dispositivo es…",
+                "correct_answer": "Bloqueo de pantalla y actualizaciones",
+                "options": [
+                  "No usar contraseña",
+                  "Bloqueo de pantalla y actualizaciones",
+                  "Compartir el PIN",
+                  "No actualizar nunca"
+                ],
+                "points": 10,
+                "is_training": 1,
+                "is_practical": 0,
+                "content": null,
+                "order_index": 1
+              }
+            ],
+            "post": [
+              {
+                "title": "Seguridad en dispositivos",
+                "question": "¿Qué combinación de medidas proporciona una mayor protección a un dispositivo?",
+                "correct_answer": "Bloqueo robusto, actualizaciones periódicas y copias de seguridad",
+                "options": [
+                  "No usar bloqueo ni actualizaciones",
+                  "Bloqueo robusto, actualizaciones periódicas y copias de seguridad",
+                  "Cambiar únicamente el fondo de pantalla",
+                  "Compartir el código de acceso"
+                ],
+                "points": 10,
+                "is_training": 0,
+                "is_practical": 0,
+                "content": null,
+                "order_index": 1
+              }
+            ]
+          }
+        },
+        {
+          "subcategory_code": "dev_updates",
+          "title": "Gestión de actualizaciones y parches de seguridad",
+          "order_index": 2,
+          "challenges": {
+            "pre": [
+              {
+                "title": "Gestión de actualizaciones y parches de seguridad",
+                "question": "¿Por qué es importante actualizar el software?",
+                "correct_answer": "Porque corrige vulnerabilidades",
+                "options": [
+                  "Porque lo hace más lento",
+                  "Porque corrige vulnerabilidades",
+                  "Porque cambia el fondo de pantalla",
+                  "Porque borra aplicaciones"
+                ],
+                "points": 10,
+                "is_training": 1,
+                "is_practical": 0,
+                "content": null,
+                "order_index": 1
+              }
+            ],
+            "post": [
+              {
+                "title": "Gestión de actualizaciones y parches de seguridad",
+                "question": "¿Qué riesgo se incrementa al no aplicar actualizaciones de seguridad?",
+                "correct_answer": "La explotación de vulnerabilidades ya conocidas",
+                "options": [
+                  "La mejora del rendimiento",
+                  "La explotación de vulnerabilidades ya conocidas",
+                  "El aumento del almacenamiento",
+                  "La mejora de la calidad de imagen"
+                ],
+                "points": 10,
+                "is_training": 0,
+                "is_practical": 0,
+                "content": null,
+                "order_index": 1
+              }
+            ]
+          }
+        },
+        {
+          "subcategory_code": "dev_byod",
+          "title": "BYOD - Políticas y riesgos",
+          "order_index": 3,
+          "challenges": {
+            "pre": [
+              {
+                "title": "BYOD - Políticas y riesgos",
+                "question": "BYOD significa…",
+                "correct_answer": "Bring Your Own Device (trae tu propio dispositivo)",
+                "options": [
+                  "Buy Your Own Data (compra tus datos)",
+                  "Bring Your Own Device (trae tu propio dispositivo)",
+                  "Backup Your OS Daily (copia el SO a diario)",
+                  "Block Your Old Device (bloquea tu dispositivo antiguo)"
+                ],
+                "points": 10,
+                "is_training": 1,
+                "is_practical": 0,
+                "content": null,
+                "order_index": 1
+              }
+            ],
+            "post": [
+              {
+                "title": "BYOD - Políticas y riesgos",
+                "question": "¿Cuál es un riesgo habitual asociado a políticas BYOD mal gestionadas?",
+                "correct_answer": "La mezcla de datos personales y corporativos sin controles adecuados",
+                "options": [
+                  "Mejorar la autonomía del dispositivo",
+                  "La mezcla de datos personales y corporativos sin controles adecuados",
+                  "Incrementar la calidad de la conexión",
+                  "Reducir los costes de mantenimiento"
+                ],
+                "points": 10,
+                "is_training": 0,
+                "is_practical": 0,
+                "content": null,
+                "order_index": 1
+              }
+            ]
+          }
+        }
+      ]
+    },
+
+    {
+      "category_code": "data_protection",
+      "title": "Protección de Datos",
+      "order_index": 6,
+      "subcategories": [
+        {
+          "subcategory_code": "dp_principles",
+          "title": "Principios básicos",
+          "order_index": 1,
+          "challenges": {
+            "pre": [
+              {
+                "title": "Principios básicos",
+                "question": "Un principio básico de protección de datos es…",
+                "correct_answer": "Minimización de datos (recoger solo lo necesario)",
+                "options": [
+                  "Compartirlo todo",
+                  "Minimización de datos (recoger solo lo necesario)",
+                  "No hace falta consentimiento",
+                  "No cifrar nunca"
+                ],
+                "points": 10,
+                "is_training": 1,
+                "is_practical": 0,
+                "content": null,
+                "order_index": 1
+              }
+            ],
+            "post": [
+              {
+                "title": "Principios básicos",
+                "question": "¿Qué implica el principio de minimización de datos?",
+                "correct_answer": "Recoger únicamente los datos necesarios para el fin previsto",
+                "options": [
+                  "Recoger todos los datos posibles",
+                  "Recoger únicamente los datos necesarios para el fin previsto",
+                  "Compartir datos sin restricciones",
+                  "Conservar los datos de forma indefinida"
+                ],
+                "points": 10,
+                "is_training": 0,
+                "is_practical": 0,
+                "content": null,
+                "order_index": 1
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

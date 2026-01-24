@@ -2,7 +2,7 @@ from flask import Flask, render_template, redirect, url_for, request, abort, ses
 from flask_login import LoginManager, UserMixin, login_user, logout_user, login_required, current_user
 from flask_session import Session
 from werkzeug.security import generate_password_hash, check_password_hash
-import sqlite3, os, string
+import sqlite3, os, string, json
 from flask_wtf.csrf import CSRFProtect
 
 
@@ -22,6 +22,7 @@ INSTANCE_DIR = os.path.join(BASE_DIR, "instance")
 os.makedirs(INSTANCE_DIR, exist_ok=True)
 DB_PATH = os.path.join(INSTANCE_DIR, "tfg.db")
 app.config["DATABASE"] = DB_PATH
+QUESTIONS_JSON_PATH = os.path.join(BASE_DIR, "data", "questions.json")
 
 def get_conn():
     conn = sqlite3.connect(app.config["DATABASE"])
@@ -62,47 +63,35 @@ def init_db():
         );
         """)
 
-        conn.execute("""
-        CREATE TABLE IF NOT EXISTS subcategory_challenges (
-            subcategory_code TEXT NOT NULL,
-            challenge_id INTEGER NOT NULL,
-            phase TEXT NOT NULL CHECK(phase IN ('pre','post')),
-            order_index INTEGER NOT NULL DEFAULT 0,
-            PRIMARY KEY (subcategory_code, challenge_id),
-            FOREIGN KEY (subcategory_code) REFERENCES subcategories(subcategory_code),
-            FOREIGN KEY (challenge_id) REFERENCES challenges(id)
-        );
-        """)
-
 
         conn.execute("""
         CREATE TABLE IF NOT EXISTS challenges (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
-            title TEXT NOT NULL UNIQUE,
+            title TEXT NOT NULL,
+
+            subcategory_code TEXT NOT NULL,
+            phase TEXT NOT NULL CHECK(phase IN ('pre','post')),
+            order_index INTEGER NOT NULL DEFAULT 0,
+
             is_training INTEGER NOT NULL DEFAULT 1,
             points INTEGER NOT NULL DEFAULT 0,
+
             question TEXT,
             correct_answer TEXT,
             option1 TEXT,
             option2 TEXT,
             option3 TEXT,
             option4 TEXT,
+
             is_practical INTEGER NOT NULL DEFAULT 0,
-            content TEXT
+            content TEXT,
+
+            FOREIGN KEY (subcategory_code) REFERENCES subcategories(subcategory_code),
+            UNIQUE(subcategory_code, phase, title)
         );
         """)
 
-        conn.execute("""
-        CREATE TABLE IF NOT EXISTS category_challenges (
-            category_code TEXT NOT NULL,
-            challenge_id INTEGER NOT NULL,
-            phase TEXT NOT NULL CHECK(phase IN ('pre','post')),
-            order_index INTEGER NOT NULL DEFAULT 0,
-            PRIMARY KEY (category_code, challenge_id),
-            FOREIGN KEY (category_code) REFERENCES categories(category_code),
-            FOREIGN KEY (challenge_id) REFERENCES challenges(id)
-        );
-        """)
+
 
         conn.execute("""
         CREATE TABLE IF NOT EXISTS user_challenge_progress (
@@ -111,6 +100,7 @@ def init_db():
             completed INTEGER NOT NULL DEFAULT 0,
             completed_date TEXT,
             score INTEGER NOT NULL DEFAULT 0,
+            user_answer TEXT,
             PRIMARY KEY (user_id, challenge_id),
             FOREIGN KEY (user_id) REFERENCES users(id),
             FOREIGN KEY (challenge_id) REFERENCES challenges(id)
@@ -121,355 +111,61 @@ def init_db():
 
         
 def add_data():
+    if not os.path.exists(QUESTIONS_JSON_PATH):
+        return
+
+    with open(QUESTIONS_JSON_PATH, "r", encoding="utf-8") as f:
+        data = json.load(f)
+
     with get_conn() as conn:
-
-        categories = [
-            ("physical_attacks", "Ataques Físicos"),
-            ("credential_management", "Gestión de Credenciales"),
-            ("social_engineering", "Ingeniería Social"),
-            ("phishing", "Phishing"),
-            ("devices", "Dispositivos"),
-            ("data_protection", "Protección de Datos"),
-        ]
-
-        for code, title in categories:
+        for cat in data.get("categories", []):
             conn.execute(
                 "INSERT OR IGNORE INTO categories (category_code, title) VALUES (?, ?)",
-                (code, title)
+                (cat["category_code"], cat["title"])
             )
 
-        physical_challenges = [
-            (
-                "Dispositivos maliciosos",
-                "¿Qué es un USB malicioso?",
-                "Un USB que puede ejecutar ataques o acciones no deseadas",
-                "Un USB normal solo para almacenar archivos",
-                "Un USB que puede ejecutar ataques o acciones no deseadas",
-                "Un ratón",
-                "Un cargador"
-            ),
-            (
-                "Robo o pérdida de dispositivos",
-                "¿Qué deberías hacer primero si pierdes el móvil?",
-                "Bloquearlo/localizarlo y cambiar contraseñas importantes",
-                "No hacer nada",
-                "Bloquearlo/localizarlo y cambiar contraseñas importantes",
-                "Comprar otro móvil y ya está",
-                "Apagar el Wi-Fi y esperar"
-            ),
-            (
-                "Pagos contactless y riesgos NFC",
-                "¿Qué medida ayuda a reducir el riesgo de NFC/contactless?",
-                "Desactivar NFC cuando no se use",
-                "Dejar NFC siempre activado",
-                "Desactivar NFC cuando no se use",
-                "Usar un PIN débil",
-                "Compartir la tarjeta con otras personas"
-            ),
-        ]
+            for sub in cat.get("subcategories", []):
+                conn.execute("""
+                    INSERT OR IGNORE INTO subcategories
+                    (subcategory_code, category_code, title, order_index)
+                    VALUES (?, ?, ?, ?)
+                """, (
+                    sub["subcategory_code"],
+                    cat["category_code"],
+                    sub["title"],
+                    int(sub.get("order_index", 0))
+                ))
 
-        credential_challenges = [
-            (
-                "Contraseñas seguras",
-                "¿Cuál es una contraseña segura?",
-                "Larga, única y con mezcla de caracteres",
-                "123456",
-                "Larga, única y con mezcla de caracteres",
-                "Tu nombre",
-                "Solo números"
-            ),
-            (
-                "Gestores de contraseñas",
-                "¿Qué es un gestor de contraseñas?",
-                "Una herramienta para guardar contraseñas de forma segura",
-                "Un antivirus",
-                "Una VPN",
-                "Una herramienta para guardar contraseñas de forma segura",
-                "Un firewall"
-            ),
-            (
-                "Filtración de credenciales",
-                "¿Qué deberías hacer tras una filtración de datos?",
-                "Cambiar contraseñas y revisar información sensible",
-                "No hacer nada",
-                "Cambiar contraseñas y revisar información sensible",
-                "Publicarlo en redes sociales",
-                "Reutilizar la misma contraseña"
-            ),
-        ]
+                challenges_block = sub.get("challenges", {})
 
-        social_challenges = [
-            (
-                "Códigos QR",
-                "¿Cuál es un riesgo típico de los códigos QR?",
-                "Redirigir a webs falsas o maliciosas",
-                "Mejorar la batería del móvil",
-                "Redirigir a webs falsas o maliciosas",
-                "Aumentar la velocidad de Internet",
-                "Aumentar el almacenamiento"
-            ),
-            (
-                "Llamadas fraudulentas",
-                "Una táctica común en llamadas fraudulentas es…",
-                "Crear urgencia y pedir datos personales",
-                "Ofrecer regalos sin más",
-                "Crear urgencia y pedir datos personales",
-                "Decirte que te relajes",
-                "No decir nada"
-            ),
-            (
-                "Conexiones WI-FI",
-                "El principal riesgo del Wi-Fi público suele ser…",
-                "Intercepción del tráfico (robo de información)",
-                "Que consuma más RAM",
-                "Intercepción del tráfico (robo de información)",
-                "Mejorar la cámara",
-                "Mejorar el GPS"
-            ),
-            (
-                "Gestión de información sensible",
-                "¿Qué es información sensible?",
-                "Datos que pueden identificarte o afectar tu privacidad",
-                "El tiempo",
-                "Un meme",
-                "Datos que pueden identificarte o afectar tu privacidad",
-                "Una canción"
-            ),
-        ]
+                for phase in ("pre", "post"):
+                    for idx, ch in enumerate(challenges_block.get(phase, []), start=1):
+                        options = ch.get("options", [])
+                        o1 = options[0] if len(options) > 0 else None
+                        o2 = options[1] if len(options) > 1 else None
+                        o3 = options[2] if len(options) > 2 else None
+                        o4 = options[3] if len(options) > 3 else None
 
-        phishing_challenges = [
-            (
-                "Reconocimiento de Webs y correos fraudulentos",
-                "Una señal típica de phishing es…",
-                "Enlaces o dominios sospechosos",
-                "Un dominio oficial y correcto",
-                "Enlaces o dominios sospechosos",
-                "Que no haya enlaces",
-                "Que siempre tenga ortografía perfecta"
-            ),
-        ]
-
-        devices_challenges = [
-            (
-                "Seguridad en dispositivos",
-                "Una medida básica de protección del dispositivo es…",
-                "Bloqueo de pantalla y actualizaciones",
-                "No usar contraseña",
-                "Bloqueo de pantalla y actualizaciones",
-                "Compartir el PIN",
-                "No actualizar nunca"
-            ),
-            (
-                "Gestión de actualizaciones y parches de seguridad",
-                "¿Por qué es importante actualizar el software?",
-                "Porque corrige vulnerabilidades",
-                "Porque lo hace más lento",
-                "Porque corrige vulnerabilidades",
-                "Porque cambia el fondo de pantalla",
-                "Porque borra aplicaciones"
-            ),
-            (
-                "BYOD - Políticas y riesgos",
-                "BYOD significa…",
-                "Bring Your Own Device (trae tu propio dispositivo)",
-                "Buy Your Own Data (compra tus datos)",
-                "Bring Your Own Device (trae tu propio dispositivo)",
-                "Backup Your OS Daily (copia el SO a diario)",
-                "Block Your Old Device (bloquea tu dispositivo antiguo)"
-            ),
-        ]
-
-        data_protection_challenges = [
-            (
-                "Principios básicos",
-                "Un principio básico de protección de datos es…",
-                "Minimización de datos (recoger solo lo necesario)",
-                "Compartirlo todo",
-                "Minimización de datos (recoger solo lo necesario)",
-                "No hace falta consentimiento",
-                "No cifrar nunca"
-            ),
-        ]
-
-        def create_challenge(title, question, correct, o1, o2, o3, o4, is_training=1, is_practical=0, content=None):
-            conn.execute("""
-                INSERT OR IGNORE INTO challenges
-                (title, is_training, points, question, correct_answer, option1, option2, option3, option4, is_practical, content)
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-            """, (title, is_training, 10, question, correct, o1, o2, o3, o4, is_practical, content))
-            row = conn.execute("SELECT id FROM challenges WHERE title = ?", (title,)).fetchone()
-            return row["id"]
-
-        def insert_challenge(category_code, challenge_id, phase, order_index):
-            conn.execute("""
-                INSERT OR IGNORE INTO category_challenges (category_code, challenge_id, phase, order_index)
-                VALUES (?, ?, ?, ?)
-            """, (category_code, challenge_id, phase, order_index))
-
-
-        # Ataques Físicos: PRE
-        for i, (
-            title,
-            question,
-            correct_answer,
-            option1,
-            option2,
-            option3,
-            option4
-        ) in enumerate(physical_challenges, start=1):
-
-            challenge_id = create_challenge(
-                title=title,
-                question=question,
-                correct=correct_answer,
-                o1=option1,
-                o2=option2,
-                o3=option3,
-                o4=option4,
-                is_training=1
-            )
-
-            insert_challenge("physical_attacks", challenge_id, "pre", i)
-
-
-        # Ingeniería Social: PRE
-        for i, (
-            title,
-            question,
-            correct_answer,
-            option1,
-            option2,
-            option3,
-            option4
-        ) in enumerate(social_challenges, start=1):
-
-            challenge_id = create_challenge(
-                title=title,
-                question=question,
-                correct=correct_answer,
-                o1=option1,
-                o2=option2,
-                o3=option3,
-                o4=option4,
-                is_training=1
-            )
-
-            insert_challenge("social_engineering", challenge_id, "pre", i)
-
-
-        # Phishing: PRE
-        for i, (
-            title,
-            question,
-            correct_answer,
-            option1,
-            option2,
-            option3,
-            option4
-        ) in enumerate(phishing_challenges, start=1):
-
-            challenge_id = create_challenge(
-                title=title,
-                question=question,
-                correct=correct_answer,
-                o1=option1,
-                o2=option2,
-                o3=option3,
-                o4=option4,
-                is_training=1
-            )
-
-            insert_challenge("phishing", challenge_id, "pre", i)
-
-
-        # Dispositivos: PRE
-        for i, (
-            title,
-            question,
-            correct_answer,
-            option1,
-            option2,
-            option3,
-            option4
-        ) in enumerate(devices_challenges, start=1):
-
-            challenge_id = create_challenge(
-                title=title,
-                question=question,
-                correct=correct_answer,
-                o1=option1,
-                o2=option2,
-                o3=option3,
-                o4=option4,
-                is_training=1
-            )
-
-            insert_challenge("devices", challenge_id, "pre", i)
-
-
-        # Protección de Datos: PRE
-        for i, (
-            title,
-            question,
-            correct_answer,
-            option1,
-            option2,
-            option3,
-            option4
-        ) in enumerate(data_protection_challenges, start=1):
-
-            challenge_id = create_challenge(
-                title=title,
-                question=question,
-                correct=correct_answer,
-                o1=option1,
-                o2=option2,
-                o3=option3,
-                o4=option4,
-                is_training=1
-            )
-
-            insert_challenge("data_protection", challenge_id, "pre", i)
-
-
-        # Gestión de Credenciales: PRE
-        for i, (
-            title,
-            question,
-            correct_answer,
-            option1,
-            option2,
-            option3,
-            option4
-        ) in enumerate(credential_challenges, start=1):
-
-            challenge_id = create_challenge(
-                title=title,
-                question=question,
-                correct=correct_answer,
-                o1=option1,
-                o2=option2,
-                o3=option3,
-                o4=option4,
-                is_training=1
-            )
-
-            insert_challenge("credential_management", challenge_id, "pre", i)
-
-
-        # Gestión de Credenciales: POST (reto de evaluación)
-        post_challenge_id = create_challenge(
-            title="Evaluación final (POST)",
-            question="POST: Tras una filtración de contraseñas, ¿cuál es la mejor práctica?",
-            correct="Cambiar la contraseña y no reutilizarla",
-            o1="Ignorarlo",
-            o2="Reutilizar la misma contraseña",
-            o3="Cambiar la contraseña y no reutilizarla",
-            o4="Compartir la contraseña con amistades",
-            is_training=0
-        )
-
-        insert_challenge("credential_management", post_challenge_id, "post", 1)
+                        conn.execute("""
+                            INSERT OR IGNORE INTO challenges
+                            (title, subcategory_code, phase, order_index,
+                             is_training, points, question, correct_answer,
+                             option1, option2, option3, option4,
+                             is_practical, content)
+                            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                        """, (
+                            ch["title"],
+                            sub["subcategory_code"],
+                            phase,
+                            int(ch.get("order_index", idx)),
+                            int(ch.get("is_training", 1)),
+                            int(ch.get("points", 10)),
+                            ch.get("question"),
+                            ch.get("correct_answer"),
+                            o1, o2, o3, o4,
+                            int(ch.get("is_practical", 0)),
+                            ch.get("content")
+                        ))
 
         conn.commit()
 
@@ -494,21 +190,39 @@ def get_category_by_code(category_code: str):
         return dict(row) if row else None
 
 
-def get_category_challenges(category_code: str, phase: str):
+def get_subcategories_by_category(category_code: str):
     with get_conn() as conn:
         rows = conn.execute("""
-            SELECT challenge.id, challenge.title, challenge.points, challenge.question, 
-                    challenge.correct_answer,challenge.option1, challenge.option2, 
-                    challenge.option3, challenge.option4, challenge.is_training,
-                    challenge.is_practical, challenge.content,category_map.order_index
-            FROM category_challenges category_map
-            JOIN challenges challenge
-              ON challenge.id = category_map.challenge_id
-            WHERE category_map.category_code = ?
-              AND category_map.phase = ?
-            ORDER BY category_map.order_index ASC
-        """, (category_code, phase)).fetchall()
+            SELECT subcategory_code, title, order_index
+            FROM subcategories
+            WHERE category_code = ?
+            ORDER BY order_index ASC, id ASC
+        """, (category_code,)).fetchall()
         return [dict(r) for r in rows]
+
+
+def get_subcategory_challenges(subcategory_code: str, phase: str):
+    with get_conn() as conn:
+        rows = conn.execute("""
+            SELECT id, title, points, question, correct_answer,
+                   option1, option2, option3, option4,
+                   is_training, is_practical, content, order_index
+            FROM challenges
+            WHERE subcategory_code = ?
+              AND phase = ?
+            ORDER BY order_index ASC, id ASC
+        """, (subcategory_code, phase)).fetchall()
+        return [dict(r) for r in rows]
+
+
+def get_category_code_by_subcategory(subcategory_code: str):
+    with get_conn() as conn:
+        row = conn.execute("""
+            SELECT category_code
+            FROM subcategories
+            WHERE subcategory_code = ?
+        """, (subcategory_code,)).fetchone()
+        return row["category_code"] if row else None
 
 
 def is_challenge_completed(user_id: str, challenge_id: int) -> bool:
@@ -521,13 +235,13 @@ def is_challenge_completed(user_id: str, challenge_id: int) -> bool:
         return bool(row["completed"]) if row else False
 
 
-def mark_challenge_completed(user_id: str, challenge_id: int, score: int = 0):
+def mark_challenge_completed(user_id: str, challenge_id: int, score: int = 0, user_answer: str = None):
     with get_conn() as conn:
         conn.execute("""
-            INSERT OR IGNORE INTO user_challenge_progress
-            (user_id, challenge_id, completed, completed_date, score)
-            VALUES (?, ?, 1, datetime('now'), ?)
-        """, (user_id, challenge_id, score))
+            INSERT OR REPLACE INTO user_challenge_progress
+            (user_id, challenge_id, completed, completed_date, score, user_answer)
+            VALUES (?, ?, 1, datetime('now'), ?, ?)
+        """, (user_id, challenge_id, score, user_answer))
         conn.commit()
 
 def get_challenge_by_id(challenge_id: int):
@@ -682,31 +396,36 @@ def category_page(category_code):
     if not category:
         abort(404)
 
-    pre_challenges = get_category_challenges(category_code, "pre")
-    post_challenges = get_category_challenges(category_code, "post")
+    subcategories = get_subcategories_by_category(category_code)
 
     completed_map = {}
-    for ch in pre_challenges + post_challenges:
-        completed_map[ch["id"]] = is_challenge_completed(current_user.id, ch["id"])
+    all_pre_done = True
+    pre_total = post_total = pre_done = post_done = 0
 
-    pre_total = len(pre_challenges)
-    post_total = len(post_challenges)
+    for sub in subcategories:
+        sub["pre_challenges"] = get_subcategory_challenges(sub["subcategory_code"], "pre")
+        sub["post_challenges"] = get_subcategory_challenges(sub["subcategory_code"], "post")
 
-    pre_done = sum(1 for ch in pre_challenges if completed_map.get(ch["id"]))
-    post_done = sum(1 for ch in post_challenges if completed_map.get(ch["id"]))
+        for ch in sub["pre_challenges"] + sub["post_challenges"]:
+            completed_map[ch["id"]] = is_challenge_completed(current_user.id, ch["id"])
+
+        pre_total += len(sub["pre_challenges"])
+        post_total += len(sub["post_challenges"])
+
+        pre_done += sum(1 for ch in sub["pre_challenges"] if completed_map.get(ch["id"]))
+        post_done += sum(1 for ch in sub["post_challenges"] if completed_map.get(ch["id"]))
+
+        if sub["pre_challenges"]:
+            if not all(completed_map.get(ch["id"], False) for ch in sub["pre_challenges"]):
+                all_pre_done = False
 
     pre_pct = round((pre_done / pre_total) * 100) if pre_total else 0
     post_pct = round((post_done / post_total) * 100) if post_total else 0
 
-    all_pre_done = True
-    if pre_challenges:
-        all_pre_done = all(completed_map.get(ch["id"], False) for ch in pre_challenges)
-
     return render_template(
         "category.html",
         category=category,
-        pre_challenges=pre_challenges,
-        post_challenges=post_challenges,
+        subcategories=subcategories,
         completed_map=completed_map,
         all_pre_done=all_pre_done,
         pre_total=pre_total,
@@ -716,6 +435,7 @@ def category_page(category_code):
         pre_pct=pre_pct,
         post_pct=post_pct
     )
+
 
 
 @app.route("/challenge/<int:challenge_id>")
@@ -733,8 +453,10 @@ def challenge_page(challenge_id):
         "challenge.html",
         challenge=challenge,
         completed=completed,
-        category_code=category_code
+        category_code=category_code,
+        subcategory_code=challenge.get("subcategory_code")
     )
+
 
 
 @app.route("/challenge/<int:challenge_id>/submit", methods=["POST"])
@@ -744,7 +466,11 @@ def challenge_submit(challenge_id):
     if not challenge or challenge["is_practical"]:
         abort(404)
 
-    category_code = request.form.get("category_code")
+    subcategory_code = request.form.get("subcategory_code")
+    if not subcategory_code:
+        abort(400)
+
+    category_code = get_category_code_by_subcategory(subcategory_code)
     if not category_code:
         abort(400)
 
@@ -755,19 +481,18 @@ def challenge_submit(challenge_id):
     if not selected:
         abort(400)
 
-    if selected == challenge["correct_answer"]:
-        score = 10
-    else:
-        score = 0
+    score = 10 if selected == challenge["correct_answer"] else 0
+    mark_challenge_completed(current_user.id, challenge_id, score=score, user_answer=selected)
 
-    mark_challenge_completed(current_user.id, challenge_id, score=score)
     return redirect(url_for("category_page", category_code=category_code))
 
 
 def default_admin():
     init_db()
+
     if not get_user_by_username("admin"):
         create_user("admin", "admin", "admin@tfg.es", "Admin_22", 22, "Mujer", "Grado Universitario")
+
     add_data()
 
 ALLOWED_PAGES = {

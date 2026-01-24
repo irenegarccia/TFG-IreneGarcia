@@ -211,61 +211,67 @@
                 <!-- PRE -->
                 <div class="col-12 col-xl-6">
                     <div class="bg-secondary rounded h-100 p-4">
-                        <div class="d-flex align-items-center justify-content-between mb-3">
-                            <h5 class="mb-0"><i class="fa fa-flag text-primary me-2"></i>Retos PRE</h5>
-                            <span class="badge bg-dark">{{ pre_done }} / {{ pre_total }}</span>
-                        </div>
+                    <div class="d-flex align-items-center justify-content-between mb-3">
+                        <h6 class="mb-0"><i class="fa fa-flag text-primary me-2"></i>Retos PRE</h6>
+                        <span class="badge bg-dark">{{ pre_done }} / {{ pre_total }}</span>
+                    </div>
 
-                        {% if pre_total == 0 %}
-                            <div class="alert alert-info mb-0">
-                                <i class="fa fa-info-circle me-2"></i>No hay retos PRE todavía.
+                    {% if pre_total == 0 %}
+                        <div class="alert alert-info mb-0">
+                        <i class="fa fa-info-circle me-2"></i>No hay retos PRE todavía.
+                        </div>
+                    {% else %}
+                        <div class="row g-3">
+                        {% for sub in subcategories %}
+                            {% if sub.pre_challenges|length > 0 %}
+                            {% set ch = sub.pre_challenges[0] %}
+                            <div class="col-12">
+                                {{ challenge_card(ch, loop.index) }}
                             </div>
-                        {% else %}
-                            <div class="row g-3">
-                                {% for ch in pre_challenges %}
-                                    <div class="col-12 col-md-6">
-                                        {{ challenge_card(ch, loop.index) }}
-                                    </div>
-                                {% endfor %}
-                            </div>
-                        {% endif %}
+                            {% endif %}
+                        {% endfor %}
+                        </div>
+                    {% endif %}
                     </div>
                 </div>
 
                 <!-- POST -->
                 <div class="col-12 col-xl-6">
                     <div class="bg-secondary rounded h-100 p-4">
-                        <div class="d-flex align-items-center justify-content-between mb-3">
-                            <h5 class="mb-0"><i class="fa fa-lock-open text-primary me-2"></i>Retos POST</h5>
-                            <span class="badge bg-dark">{{ post_done }} / {{ post_total }}</span>
+                    <div class="d-flex align-items-center justify-content-between mb-3">
+                        <h6 class="mb-0"><i class="fa fa-lock text-primary me-2"></i>Retos POST</h6>
+                        <span class="badge bg-dark">{{ post_done }} / {{ post_total }}</span>
+                    </div>
+
+                    {% if post_total == 0 %}
+                        <div class="alert alert-info mb-0">
+                        <i class="fa fa-info-circle me-2"></i>No hay retos POST todavía.
                         </div>
-
-                        {% if post_total == 0 %}
-                            <div class="alert alert-info mb-0">
-                                <i class="fa fa-info-circle me-2"></i>No hay retos POST todavía.
-                            </div>
-                        {% else %}
-                            {% if not all_pre_done %}
-                                <div class="alert alert-warning">
-                                    <i class="fa fa-lock me-2"></i>
-                                    Bloqueado: completa todos los retos PRE para desbloquear POST.
-                                </div>
-                            {% endif %}
-
-                            <div class="row g-3">
-                                {% for ch in post_challenges %}
-                                    <div class="col-12 col-md-6">
-                                        {{ challenge_card(ch, loop.index, locked=not all_pre_done) }}
-                                    </div>
-                                {% endfor %}
-                            </div>
+                    {% else %}
+                        {% if not all_pre_done %}
+                        <div class="alert alert-warning mb-3">
+                            <i class="fa fa-lock me-2"></i>
+                            Bloqueado: completa todos los retos PRE para desbloquear POST.
+                        </div>
                         {% endif %}
+
+                        <div class="row g-3">
+                        {% for sub in subcategories %}
+                            {% if sub.post_challenges|length > 0 %}
+                            {% set ch = sub.post_challenges[0] %}
+                            <div class="col-12">
+                                {{ challenge_card(ch, loop.index, locked=not all_pre_done) }}
+                            </div>
+                            {% endif %}
+                        {% endfor %}
+                        </div>
+                    {% endif %}
                     </div>
                 </div>
 
             </div>
-
         </div>
+
         <!-- Footer Start -->
         <div class="container-fluid pt-4 px-4">
             <div class="bg-secondary rounded-top p-4">
