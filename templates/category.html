@@ -26,7 +26,7 @@
         <!-- Sidebar Start -->
         <div class="sidebar pe-4 pb-3">
             <nav class="navbar bg-secondary navbar-dark">
-                <a href="index.html" class="navbar-brand mx-4 mb-3">
+                <a href="{{ url_for('panel') }}" class="navbar-brand mx-4 mb-3 d-lg-none">
                     <h3 class="text-primary"><i class="fa fa-laptop-code me-2"></i>TFG</h3>
                 </a>
                 <div class="navbar-nav w-100">
@@ -72,9 +72,16 @@
 
         <!-- Navbar -->
         <nav class="navbar navbar-expand bg-secondary navbar-dark sticky-top px-4 py-0">
-            <a href="#" class="sidebar-toggler flex-shrink-0">
-                <i class="fa fa-bars"></i>
-            </a>
+
+        <a href="{{ url_for('panel') }}" class="d-flex align-items-center me-4 flex-shrink-0" style="text-decoration:none;">
+            <span class="text-primary fw-bold d-flex align-items-center" style="font-size: 1.8rem;">
+                <i class="fa fa-laptop-code me-2"></i>TFG
+            </span>
+        </a>
+
+        <a href="#" class="sidebar-toggler flex-shrink-0">
+            <i class="fa fa-bars"></i>
+        </a>
 
             <div class="navbar-nav align-items-center ms-auto">
                 <span class="nav-link d-flex align-items-center">

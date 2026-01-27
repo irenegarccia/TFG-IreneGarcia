@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>{{ challenge.title }}</title>
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
 
@@ -34,16 +35,17 @@
         <!-- Sidebar Start -->
         <div class="sidebar pe-4 pb-3">
             <nav class="navbar bg-secondary navbar-dark">
-                <a href="index.html" class="navbar-brand mx-4 mb-3">
+                <a href="{{ url_for('panel') }}" class="navbar-brand mx-4 mb-3 d-lg-none">
                     <h3 class="text-primary"><i class="fa fa-laptop-code me-2"></i>TFG</h3>
                 </a>
                 <div class="navbar-nav w-100">
-                    <a href="{{ url_for('panel') }}" class="nav-item nav-link active">
+                    <a href="{{ url_for('panel') }}" class="nav-item nav-link">
                         <i class="fa fa-tachometer-alt me-2"></i>Panel de Usuario
                     </a>
 
                     {% for c in categories %}
-                    <a href="{{ url_for('category_page', category_code=c.category_code) }}" class="nav-item nav-link">
+                    <a href="{{ url_for('category_page', category_code=c.category_code) }}"
+                    class="nav-item nav-link {% if c.category_code == category_code %}active{% endif %}">
                         <i class="
                             {% if c.category_code == 'physical_attacks' %}
                                 fa fa-exclamation-triangle
@@ -78,9 +80,16 @@
 
         <!-- Navbar Start -->
         <nav class="navbar navbar-expand bg-secondary navbar-dark sticky-top px-4 py-0">
-            <a href="#" class="sidebar-toggler flex-shrink-0">
-                <i class="fa fa-bars"></i>
-            </a>
+
+        <a href="{{ url_for('panel') }}" class="d-flex align-items-center me-4 flex-shrink-0" style="text-decoration:none;">
+            <span class="text-primary fw-bold d-flex align-items-center" style="font-size: 1.8rem;">
+                <i class="fa fa-laptop-code me-2"></i>TFG
+            </span>
+        </a>
+        
+        <a href="#" class="sidebar-toggler flex-shrink-0">
+            <i class="fa fa-bars"></i>
+        </a>
 
             <div class="navbar-nav align-items-center ms-auto">
                 <span class="nav-link d-flex align-items-center">
@@ -114,53 +123,55 @@
                     {% endif %}
                 </div>
 
-                {% if not challenge.question %}
-                    <div class="alert alert-warning mb-0">
-                        Este reto no tiene una pregunta asociada.
-                    </div>
+                {% if challenge.is_practical %}
+                    {% if challenge.content %}
+                        <div id="practical-wrapper"
+                            class="mt-2"
+                            data-challenge-id="{{ challenge.id }}"
+                            data-redirect-url="{{ redirect_url }}">
+                            {{ challenge.content | safe }}
+                        </div>
+
+
+                    {% else %}
+                        <div class="alert alert-warning mb-0">
+                            Este reto práctico no tiene contenido (HTML) asociado.
+                        </div>
+                    {% endif %}
+
                 {% else %}
-                    <h5>{{ challenge.question }}</h5>
+                    {% if not challenge.question %}
+                        <div class="alert alert-warning mb-0">
+                            Este reto no tiene una pregunta asociada.
+                        </div>
+                    {% else %}
+                        <h5>{{ challenge.question }}</h5>
 
-                <form method="post" action="{{ url_for('challenge_submit', challenge_id=challenge.id) }}">
-                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
-                    <input type="hidden" name="subcategory_code" value="{{ subcategory_code }}">
+                        <form method="post" action="{{ url_for('challenge_submit', challenge_id=challenge.id) }}">
+                            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                            <input type="hidden" name="subcategory_code" value="{{ subcategory_code }}">
 
-                    <div class="d-flex flex-column gap-3">
+                            <div class="d-flex flex-column gap-3">
+                                {% for opt in options %}
+                                    <label class="bg-dark rounded p-3 d-flex align-items-center" style="cursor:pointer;">
+                                        <input type="radio"
+                                            style="accent-color: white; transform:scale(1.4); margin-right:12px;"
+                                            name="answer"
+                                            value="{{ opt }}"
+                                            {% if loop.first %}required{% endif %}>
+                                        <span class="text-white">{{ opt }}</span>
+                                    </label>
+                                {% endfor %}
+                            </div>
 
-                        <label class="bg-dark rounded p-3 d-flex align-items-center" style="cursor:pointer;">
-                            <input type="radio" style="accent-color: white; transform:scale(1.4); margin-right:12px;"
-                                name="answer" value="{{ challenge.option1 }}" required>
-                            <span class="text-white">{{ challenge.option1 }}</span>
-                        </label>
-
-                        <label class="bg-dark rounded p-3 d-flex align-items-center" style="cursor:pointer;">
-                            <input type="radio" style="accent-color: white; transform:scale(1.4); margin-right:12px;"
-                                name="answer" value="{{ challenge.option2 }}">
-                            <span class="text-white">{{ challenge.option2 }}</span>
-                        </label>
-
-                        <label class="bg-dark rounded p-3 d-flex align-items-center" style="cursor:pointer;">
-                            <input type="radio" style="accent-color: white; transform:scale(1.4); margin-right:12px;"
-                                name="answer" value="{{ challenge.option3 }}">
-                            <span class="text-white">{{ challenge.option3 }}</span>
-                        </label>
-
-                        <label class="bg-dark rounded p-3 d-flex align-items-center" style="cursor:pointer;">
-                            <input type="radio" style="accent-color: white; transform:scale(1.4); margin-right:12px;"
-                                name="answer" value="{{ challenge.option4 }}">
-                            <span class="text-white">{{ challenge.option4 }}</span>
-                        </label>
-
-                    </div>
-
-                    <div class="mt-4 d-flex justify-content-end">
-                        <button type="submit" class="btn btn-primary">
-                            <i class="fa fa-paper-plane me-2"></i>Enviar respuesta
-                        </button>
-                    </div>
-                </form>
+                            <div class="mt-4 d-flex justify-content-end">
+                                <button type="submit" class="btn btn-primary">
+                                    <i class="fa fa-paper-plane me-2"></i>Enviar respuesta
+                                </button>
+                            </div>
+                        </form>
+                    {% endif %}
                 {% endif %}
-
             </div>
         </div>
         <!-- Challenge Content End -->

@@ -2,7 +2,8 @@ from flask import Flask, render_template, redirect, url_for, request, abort, ses
 from flask_login import LoginManager, UserMixin, login_user, logout_user, login_required, current_user
 from flask_session import Session
 from werkzeug.security import generate_password_hash, check_password_hash
-import sqlite3, os, string, json
+import sqlite3, os, string, json, hashlib, requests
+
 from flask_wtf.csrf import CSRFProtect
 
 
@@ -90,7 +91,6 @@ def init_db():
             UNIQUE(subcategory_code, phase, order_index)
         );
         """)
-
 
 
         conn.execute("""
@@ -424,8 +424,18 @@ def index_redirect():
 @app.route("/panel")
 @login_required
 def panel():
-    total_score = get_total_score(current_user.id)
-    return render_template("index.html", user=current_user, total_score=total_score)
+    radar_pre = get_category_scores(current_user.id, "pre")
+    radar_post = get_category_scores(current_user.id, "post")
+
+    total_score = sum(radar_pre.values()) + sum(radar_post.values())
+
+    return render_template(
+        "index.html",
+        user=current_user,
+        total_score=total_score,
+        radar_pre=radar_pre,
+        radar_post=radar_post
+    )
 
 
 @app.route("/category/<category_code>")
@@ -504,12 +514,29 @@ def challenge_page(challenge_id):
 
     category_code = request.args.get("category_code")
 
+    if not category_code:
+        category_code = get_category_code_by_subcategory(challenge["subcategory_code"])
+
+    redirect_url = url_for("category_page", category_code=category_code)
+
+    options = []
+    if not int(challenge.get("is_practical", 0)):
+        raw_options = [
+            challenge.get("option1"),
+            challenge.get("option2"),
+            challenge.get("option3"),
+            challenge.get("option4"),
+        ]
+        options = [o.strip() for o in raw_options if o and str(o).strip()]
+
     return render_template(
         "challenge.html",
         challenge=challenge,
+        options=options,
         completed=False,
         category_code=category_code,
-        subcategory_code=challenge["subcategory_code"]
+        subcategory_code=challenge["subcategory_code"],
+        redirect_url=redirect_url
     )
 
 
@@ -535,6 +562,95 @@ def challenge_submit(challenge_id):
     category_code = get_category_code_by_subcategory(challenge["subcategory_code"])
     return redirect(url_for("category_page", category_code=category_code, msg="Reto guardado"))
 
+
+@app.route("/api/pwned-check", methods=["POST"])
+@login_required
+def api_pwned_check():
+    data = request.get_json(silent=True) or {}
+    password = (data.get("password") or "").strip()
+
+    if not password:
+        return {"ok": False, "error": "Contraseña vacía"}, 400
+
+    length = len(password)
+    has_upper = any(c.isupper() for c in password)
+    has_lower = any(c.islower() for c in password)
+    has_digit = any(c.isdigit() for c in password)
+    has_symbol = any(c in string.punctuation for c in password)
+
+    try:
+        pwned_count = hibp_pwned_count(password)
+    except Exception:
+        return {"ok": False, "error": "No se pudo consultar HIBP"}, 502
+
+    return {
+        "ok": True,
+        "pwned_count": pwned_count,
+        "length": length,
+        "has_upper": has_upper,
+        "has_lower": has_lower,
+        "has_digit": has_digit,
+        "has_symbol": has_symbol
+    }
+
+
+@app.route("/challenge/<int:challenge_id>/complete", methods=["POST"])
+@login_required
+def challenge_complete(challenge_id):
+    challenge = get_challenge_by_id(challenge_id)
+    if not challenge:
+        return {"ok": False, "error": "Reto no encontrado"}, 404
+
+
+    if not int(challenge.get("is_practical", 0)):
+        return {"ok": False, "error": "Este reto no es práctico"}, 400
+
+
+    if is_challenge_completed(current_user.id, challenge_id):
+        return {"ok": False, "error": "Ese reto ya está completado"}, 400
+
+
+    data = request.get_json(silent=True) or {}
+
+    pwned_count = int(data.get("pwned_count", 0))
+    length_ok   = bool(data.get("length_ok", False))
+    has_upper   = bool(data.get("has_upper", False))
+    has_lower   = bool(data.get("has_lower", False))
+    has_digit   = bool(data.get("has_digit", False))
+    has_symbol  = bool(data.get("has_symbol", False))
+
+    missing = []
+    if not length_ok:  missing.append("length>=12")
+    if not has_upper:  missing.append("has_upper")
+    if not has_lower:  missing.append("has_lower")
+    if not has_digit:  missing.append("has_digit")
+    if not has_symbol: missing.append("has_symbol")
+
+    no_breaches = (pwned_count == 0)
+    all_reqs = (len(missing) == 0)
+
+    if no_breaches and all_reqs:
+        score = 10
+    elif no_breaches and not all_reqs:
+        score = 5
+    else:
+        score = 0
+
+    feedback = {
+        "pwned_count": pwned_count,
+        "missing_requirements": missing,
+        "no_breaches": no_breaches,
+        "all_requirements": all_reqs
+    }
+
+    mark_challenge_completed(
+        current_user.id,
+        challenge_id,
+        score=score,
+        user_answer=json.dumps(feedback, ensure_ascii=False)
+    )
+
+    return {"ok": True, "score": score, "feedback": feedback}
 
 
 @app.route("/subcategory/<subcategory_code>/<phase>/next")
@@ -592,6 +708,47 @@ def count_phase_done_for_subcategory(user_id: str, subcategory_code: str, phase:
               AND c.phase = ?
         """, (user_id, subcategory_code, phase)).fetchone()
         return int(row["c"]) if row else 0
+
+
+def hibp_pwned_count(password: str) -> int:
+    sha1 = hashlib.sha1(password.encode("utf-8")).hexdigest().upper()
+    prefix, suffix = sha1[:5], sha1[5:]
+
+    url = f"https://api.pwnedpasswords.com/range/{prefix}"
+    headers = {
+        "User-Agent": "TFG-IreneGarcia/1.0 (Flask)",
+        "Add-Padding": "true"
+    }
+
+    r = requests.get(url, headers=headers, timeout=10)
+    r.raise_for_status()
+
+    for line in r.text.splitlines():
+        h, count = line.split(":")
+        if h.strip().upper() == suffix:
+            return int(count.strip())
+    return 0
+
+def get_category_scores(user_id: str, phase: str):
+    with get_conn() as conn:
+        rows = conn.execute("""
+            SELECT cat.title AS category,
+                   COALESCE(SUM(u.score), 0) AS total_score
+            FROM categories cat
+            JOIN subcategories sub ON sub.category_code = cat.category_code
+            JOIN challenges ch ON ch.subcategory_code = sub.subcategory_code
+            LEFT JOIN user_challenge_progress u
+                ON u.challenge_id = ch.id AND u.user_id = ?
+            WHERE ch.phase = ?
+              AND u.completed = 1
+            GROUP BY cat.category_code
+            ORDER BY cat.id
+        """, (user_id, phase)).fetchall()
+
+        return {
+            row["category"]: row["total_score"]
+            for row in rows
+        }
 
 
 def default_admin():

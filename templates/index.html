@@ -43,7 +43,7 @@
         <!-- Sidebar Start -->
         <div class="sidebar pe-4 pb-3">
             <nav class="navbar bg-secondary navbar-dark">
-                <a href="index.html" class="navbar-brand mx-4 mb-3">
+                <a href="{{ url_for('panel') }}" class="navbar-brand mx-4 mb-3 d-lg-none">
                     <h3 class="text-primary"><i class="fa fa-laptop-code me-2"></i>TFG</h3>
                 </a>
 
@@ -87,8 +87,10 @@
         <div class="content">
             <!-- Navbar Start -->
             <nav class="navbar navbar-expand bg-secondary navbar-dark sticky-top px-4 py-0">
-                <a href="index.html" class="navbar-brand d-flex d-lg-none me-4">
-                    <h2 class="text-primary mb-0"><i class="fa fa-user-edit"></i></h2>
+                <a href="{{ url_for('panel') }}" class="d-flex align-items-center me-4 flex-shrink-0" style="text-decoration:none;">
+                    <span class="text-primary fw-bold d-flex align-items-center" style="font-size: 1.8rem;">
+                        <i class="fa fa-laptop-code me-2"></i>TFG
+                    </span>
                 </a>
                 <a href="#" class="sidebar-toggler flex-shrink-0">
                     <i class="fa fa-bars"></i>
@@ -106,70 +108,77 @@
             </nav>
             <!-- Navbar End -->
 
-
-            <!-- Sale & Revenue Start -->
             <div class="container-fluid pt-4 px-4">
                 <div class="row g-4">
-                    <div class="col-sm-6 col-xl-3">
-                        <div class="bg-secondary rounded d-flex align-items-center justify-content-between p-4">
-                            <i class="fa fa-chart-line fa-3x text-primary"></i>
-                            <div class="ms-3">
-                                <p class="mb-2">Today Sale</p>
-                                <h6 class="mb-0">$1234</h6>
+                    <div class="col-12 col-xl-3">
+                        <div class="bg-secondary rounded d-flex flex-column justify-content-center align-items-center p-4 h-100">
+                            <i class="fa fa-trophy fa-3x text-primary"></i>
+                            <div class="text-center">
+                                <p class="mb-1">Puntuación total</p>
+                                <h5 class="mb-0 fw-bold">{{ total_score }}</h5>
                             </div>
                         </div>
                     </div>
-                    <div class="col-sm-6 col-xl-3">
-                        <div class="bg-secondary rounded d-flex align-items-center justify-content-between p-4">
-                            <i class="fa fa-chart-bar fa-3x text-primary"></i>
-                            <div class="ms-3">
-                                <p class="mb-2">Puntuación total</p>
-                                <h6 class="mb-0">{{ total_score }}</h6>
+                    
+                    <div class="col-12 col-xl-9 d-flex">
+                        <div class="row g-2 flex-fill">
+                        {% for c in categories %}
+                        <div class="col-6 col-xl-4">
+                            <div class="bg-secondary rounded d-flex flex-column justify-content-center align-items-center p-3 w-100" style="min-height: 100%;">
+                                <i class="
+                                {% if c.category_code == 'physical_attacks' %}
+                                    fa fa-exclamation-triangle
+                                {% elif c.category_code == 'credential_management' %}
+                                    fa fa-key
+                                {% elif c.category_code == 'social_engineering' %}
+                                    fa fa-users
+                                {% elif c.category_code == 'phishing' %}
+                                    fa fa-envelope
+                                {% elif c.category_code == 'devices' %}
+                                    fa fa-mobile-alt
+                                {% elif c.category_code == 'data_protection' %}
+                                    fa fa-shield-alt
+                                {% else %}
+                                    fa fa-folder
+                                {% endif %}
+                                fa-2x text-primary"></i>
+                                <div class="text-center">
+                                    <p class="mb-1">{{ c.title }}</p>
+                                    <h6 class="mb-0">{{ radar_pre.get(c.title, 0) + radar_post.get(c.title, 0) }}</h6>
+                                </div>
                             </div>
-                        </div>
-                    </div>
-                    <div class="col-sm-6 col-xl-3">
-                        <div class="bg-secondary rounded d-flex align-items-center justify-content-between p-4">
-                            <i class="fa fa-chart-area fa-3x text-primary"></i>
-                            <div class="ms-3">
-                                <p class="mb-2">Today Revenue</p>
-                                <h6 class="mb-0">$1234</h6>
                             </div>
-                        </div>
-                    </div>
-                    <div class="col-sm-6 col-xl-3">
-                        <div class="bg-secondary rounded d-flex align-items-center justify-content-between p-4">
-                            <i class="fa fa-chart-pie fa-3x text-primary"></i>
-                            <div class="ms-3">
-                                <p class="mb-2">Total Revenue</p>
-                                <h6 class="mb-0">$1234</h6>
-                            </div>
+                            {% endfor %}
                         </div>
                     </div>
                 </div>
             </div>
-            <!-- Sale & Revenue End -->
 
 
-            <!-- Sales Chart Start -->
             <div class="container-fluid pt-4 px-4">
                 <div class="row g-4">
                     <div class="col-sm-12 col-xl-6">
-                        <div class="bg-secondary text-center rounded p-4">
-                            <div class="d-flex align-items-center justify-content-between mb-4">
-                                <h6 class="mb-0">Worldwide Sales</h6>
-                                <a href="">Show All</a>
+                        <div class="bg-secondary rounded p-4 text-center">
+                            
+                            <h5 class="mb-3 text-white fw-bold">Fortalezas por categoría (PRE)</h5>
+
+                            <div style="width:100%; height:420px; display:flex; justify-content:center; align-items:center;">
+                                <div id="radar-pre" style="width:90%; height:90%;"></div>
                             </div>
-                            <canvas id="worldwide-sales" width="1019" height="508" style="display: block; box-sizing: border-box; height: 406.4px; width: 815.2px;"></canvas>
+
                         </div>
                     </div>
+
+
                     <div class="col-sm-12 col-xl-6">
-                        <div class="bg-secondary text-center rounded p-4">
-                            <div class="d-flex align-items-center justify-content-between mb-4">
-                                <h6 class="mb-0">Salse &amp; Revenue</h6>
-                                <a href="">Show All</a>
+                        <div class="bg-secondary rounded p-4 text-center">
+                            
+                            <h5 class="mb-3 text-white fw-bold">Fortalezas por categoría (POST)</h5>
+
+                            <div style="width:100%; height:420px; display:flex; justify-content:center; align-items:center;">
+                                <div id="radar-post" style="width:100%; height:90%;"></div>
                             </div>
-                            <canvas id="salse-revenue" width="1019" height="508" style="display: block; box-sizing: border-box; height: 406.4px; width: 815.2px;"></canvas>
+
                         </div>
                     </div>
                 </div>
@@ -230,6 +239,111 @@
         </div>
     </div>
     </div>
+
+<script src="https://cdn.plot.ly/plotly-2.27.0.min.js"></script>
+<script>
+const radarPre = {{ radar_pre | tojson }};
+const radarPost = {{ radar_post | tojson }};
+
+function renderRadar(divId, dataObj) {
+  const categories = Object.keys(dataObj).map(c =>
+    c.replace(" ", "<br>")
+    );
+    const values = Object.values(dataObj);
+
+
+  const theta = [...categories, categories[0]];
+  const r = [...values, values[0]];
+
+  Plotly.newPlot(divId, [{
+    type: 'scatterpolar',
+    r,
+    theta,
+    fill: 'toself',
+    fillcolor: 'rgba(255, 46, 46, 0.45)',
+    line: {
+        color: '#ff2e2e',
+        width: 4
+    },
+    marker: {
+    color: '#ffffff',
+    size: 9,
+    line: {
+        color: '#ff2e2e',
+        width: 2.5
+    }
+    },
+    hovertemplate: '<b>%{theta}</b><br>Puntuación: %{r}<extra></extra>'
+  }], {
+    paper_bgcolor: 'rgba(0,0,0,0)',
+    plot_bgcolor: 'rgba(0,0,0,0)',
+    showlegend: false,
+
+    font: {
+      color: '#ffffff',
+      size: 14,
+      family: 'Roboto, Open Sans, sans-serif'
+    },
+
+    polar: {
+      bgcolor: 'rgba(0,0,0,0)',
+
+      radialaxis: {
+        range: [0, 100],
+        showticklabels: false,     
+        ticks: '',
+        gridcolor: 'rgba(220, 53, 69, 0.35)',  
+        gridwidth: 2.5,
+        linecolor: 'rgba(255,255,255,0.15)',
+        linewidth: 2
+      },
+
+      angularaxis: {
+        tickfont: {
+            color: '#ffffff',
+            size: 14,
+            family: 'Roboto',
+            weight: 'bold'
+        },
+        ticklabelstep: 1,
+        tickangle: 0,
+        gridcolor: 'rgba(255,255,255,0.15)',
+        gridwidth: 2,
+        linecolor: 'rgba(255,255,255,0.25)',
+        linewidth: 2
+        }
+    },
+
+    margin: { t: 30, b: 30, l: 40, r: 40 }
+  }, {
+    displayModeBar: false,
+    responsive: true
+  });
+}
+
+renderRadar("radar-pre", radarPre);
+renderRadar("radar-post", radarPost);
+
+function resizeRadars() {
+  const pre = document.getElementById("radar-pre");
+  const post = document.getElementById("radar-post");
+  if (pre) Plotly.Plots.resize(pre);
+  if (post) Plotly.Plots.resize(post);
+}
+
+window.addEventListener("resize", () => {
+  setTimeout(resizeRadars, 120);
+});
+
+document.addEventListener("DOMContentLoaded", () => {
+  const toggler = document.querySelector(".sidebar-toggler");
+  if (toggler) {
+    toggler.addEventListener("click", () => {
+      setTimeout(resizeRadars, 250);
+    });
+  }
+});
+</script>
 
 </body>
 </html>
