@@ -3,7 +3,6 @@ from flask_login import LoginManager, UserMixin, login_user, logout_user, login_
 from flask_session import Session
 from werkzeug.security import generate_password_hash, check_password_hash
 import sqlite3, os, string, json, hashlib, requests
-
 from flask_wtf.csrf import CSRFProtect
 
 
@@ -280,14 +279,6 @@ def passwordValidation(password: str) -> bool:
         any(char in string.punctuation for char in password)
     )
 
-def get_total_score(user_id: str) -> int:
-    with get_conn() as conn:
-        row = conn.execute("""
-            SELECT COALESCE(SUM(score), 0) AS total
-            FROM user_challenge_progress
-            WHERE user_id = ? AND completed = 1
-        """, (user_id,)).fetchone()
-        return int(row["total"]) if row else 0
 
 def get_random_pending_challenge(user_id: str, subcategory_code: str, phase: str):
     with get_conn() as conn:
@@ -303,30 +294,6 @@ def get_random_pending_challenge(user_id: str, subcategory_code: str, phase: str
             LIMIT 1
         """, (user_id, subcategory_code, phase)).fetchone()
         return dict(row) if row else None
-
-
-def count_phase_total(subcategory_code: str, phase: str) -> int:
-    with get_conn() as conn:
-        row = conn.execute("""
-            SELECT COUNT(*) AS c
-            FROM challenges
-            WHERE subcategory_code = ? AND phase = ?
-        """, (subcategory_code, phase)).fetchone()
-        return int(row["c"])
-
-
-def count_phase_done(user_id: str, subcategory_code: str, phase: str) -> int:
-    with get_conn() as conn:
-        row = conn.execute("""
-            SELECT COUNT(*) AS c
-            FROM user_challenge_progress u
-            JOIN challenges c ON c.id = u.challenge_id
-            WHERE u.user_id = ?
-              AND u.completed = 1
-              AND c.subcategory_code = ?
-              AND c.phase = ?
-        """, (user_id, subcategory_code, phase)).fetchone()
-        return int(row["c"])
 
 
 login_manager = LoginManager()
@@ -486,9 +453,20 @@ def category_page(category_code):
     pre_pct = round((pre_done / pre_total) * 100) if pre_total else 0
     post_pct = round((post_done / post_total) * 100) if post_total else 0
 
+    category_score = sum_scores_for_category(current_user.id, category_code)
+    category_max_score = (pre_total + post_total) * 10
+
+    for sub in subcategories:
+        sub["pre_score"] = sum_scores_for_subcategory_phase(current_user.id, sub["subcategory_code"], "pre")
+        sub["post_score"] = sum_scores_for_subcategory_phase(current_user.id, sub["subcategory_code"], "post")
+        sub["pre_max_score"] = int(sub.get("pre_total", 0)) * 10
+        sub["post_max_score"] = int(sub.get("post_total", 0)) * 10
+
     return render_template(
         "category.html",
         category=category,
+        category_score=category_score,
+        category_max_score=category_max_score,
         subcategories=subcategories,
         completed_map=completed_map,
         all_pre_done=all_pre_done,
@@ -534,6 +512,7 @@ def challenge_page(challenge_id):
         challenge=challenge,
         options=options,
         completed=False,
+        review_mode=False, 
         category_code=category_code,
         subcategory_code=challenge["subcategory_code"],
         redirect_url=redirect_url
@@ -613,6 +592,7 @@ def challenge_complete(challenge_id):
     data = request.get_json(silent=True) or {}
 
     pwned_count = int(data.get("pwned_count", 0))
+    password_length = int(data.get("password_length", 0))
     length_ok   = bool(data.get("length_ok", False))
     has_upper   = bool(data.get("has_upper", False))
     has_lower   = bool(data.get("has_lower", False))
@@ -638,10 +618,12 @@ def challenge_complete(challenge_id):
 
     feedback = {
         "pwned_count": pwned_count,
+        "password_length": password_length,
         "missing_requirements": missing,
         "no_breaches": no_breaches,
         "all_requirements": all_reqs
     }
+
 
     mark_challenge_completed(
         current_user.id,
@@ -686,6 +668,96 @@ def next_challenge(subcategory_code, phase):
     return redirect(url_for("challenge_page", challenge_id=ch["id"], category_code=category_code))
 
 
+@app.route("/subcategory/<subcategory_code>/<phase>/review")
+@login_required
+def subcategory_review_start(subcategory_code, phase):
+    if phase not in ("pre", "post"):
+        abort(400)
+
+    category_code = get_category_code_by_subcategory(subcategory_code)
+    if not category_code:
+        abort(400)
+
+    total = count_phase_total_for_subcategory(subcategory_code, phase)
+    done = count_phase_done_for_subcategory(current_user.id, subcategory_code, phase)
+
+    if total == 0:
+        return redirect(url_for("category_page", category_code=category_code, msg="No hay retos para revisar en esta fase"))
+
+    if done < total:
+        return redirect(url_for("category_page", category_code=category_code, msg="Completa todos los retos para poder revisarlos"))
+
+    completed = get_completed_challenges_for_review(current_user.id, subcategory_code, phase)
+    if not completed:
+        return redirect(url_for("category_page", category_code=category_code, msg="No hay progreso para revisar"))
+
+    first_id = completed[0]["id"]
+    return redirect(url_for("subcategory_review_challenge", subcategory_code=subcategory_code, phase=phase, challenge_id=first_id))
+
+
+@app.route("/subcategory/<subcategory_code>/<phase>/review/<int:challenge_id>")
+@login_required
+def subcategory_review_challenge(subcategory_code, phase, challenge_id):
+    if phase not in ("pre", "post"):
+        abort(400)
+
+    challenge = get_challenge_by_id(challenge_id)
+    if not challenge or challenge.get("subcategory_code") != subcategory_code or challenge.get("phase") != phase:
+        abort(404)
+
+    category_code = get_category_code_by_subcategory(subcategory_code)
+    if not category_code:
+        abort(400)
+
+    progress = get_user_progress_for_challenge(current_user.id, challenge_id)
+    if not progress or not progress.get("completed"):
+        return redirect(url_for("category_page", category_code=category_code, msg="Ese reto no está completado, no se puede revisar"))
+
+    next_id = get_next_review_challenge_id(current_user.id, subcategory_code, phase, challenge_id)
+    if next_id:
+        next_url = url_for("subcategory_review_challenge", subcategory_code=subcategory_code, phase=phase, challenge_id=next_id)
+        end_url = None
+    else:
+        next_url = None
+        end_url = url_for("category_page", category_code=category_code, msg="Revisión terminada")
+
+    options = []
+    if not int(challenge.get("is_practical", 0)):
+        raw_options = [
+            challenge.get("option1"),
+            challenge.get("option2"),
+            challenge.get("option3"),
+            challenge.get("option4"),
+        ]
+        options = [o.strip() for o in raw_options if o and str(o).strip()]
+
+    user_answer = progress.get("user_answer")
+    practical_feedback = None
+    if int(challenge.get("is_practical", 0)) and user_answer:
+        try:
+            practical_feedback = json.loads(user_answer)
+        except Exception:
+            practical_feedback = {"raw": user_answer}
+
+    redirect_url = url_for("category_page", category_code=category_code)
+
+    return render_template(
+        "challenge.html",
+        challenge=challenge,
+        options=options,
+        completed=True,
+        review_mode=True,
+        user_answer=user_answer,
+        practical_feedback=practical_feedback,
+        user_score=int(progress.get("score") or 0),
+        next_url=next_url,
+        end_url=end_url,
+        category_code=category_code,
+        subcategory_code=subcategory_code,
+        redirect_url=redirect_url
+    )
+
+
 def count_phase_total_for_subcategory(subcategory_code: str, phase: str) -> int:
     with get_conn() as conn:
         row = conn.execute("""
@@ -708,6 +780,68 @@ def count_phase_done_for_subcategory(user_id: str, subcategory_code: str, phase:
               AND c.phase = ?
         """, (user_id, subcategory_code, phase)).fetchone()
         return int(row["c"]) if row else 0
+
+def sum_scores_for_category(user_id: str, category_code: str) -> int:
+    with get_conn() as conn:
+        row = conn.execute("""
+            SELECT COALESCE(SUM(u.score), 0) AS s
+            FROM user_challenge_progress u
+            JOIN challenges ch ON ch.id = u.challenge_id
+            JOIN subcategories sc ON sc.subcategory_code = ch.subcategory_code
+            WHERE u.user_id = ?
+              AND u.completed = 1
+              AND sc.category_code = ?
+        """, (user_id, category_code)).fetchone()
+        return int(row["s"]) if row else 0
+
+
+def sum_scores_for_subcategory_phase(user_id: str, subcategory_code: str, phase: str) -> int:
+    with get_conn() as conn:
+        row = conn.execute("""
+            SELECT COALESCE(SUM(u.score), 0) AS s
+            FROM user_challenge_progress u
+            JOIN challenges ch ON ch.id = u.challenge_id
+            WHERE u.user_id = ?
+              AND u.completed = 1
+              AND ch.subcategory_code = ?
+              AND ch.phase = ?
+        """, (user_id, subcategory_code, phase)).fetchone()
+        return int(row["s"]) if row else 0
+
+
+def get_completed_challenges_for_review(user_id: str, subcategory_code: str, phase: str):
+    with get_conn() as conn:
+        rows = conn.execute("""
+            SELECT ch.*, u.score AS user_score, u.user_answer AS user_answer, u.completed_date AS completed_date
+            FROM user_challenge_progress u
+            JOIN challenges ch ON ch.id = u.challenge_id
+            WHERE u.user_id = ?
+              AND u.completed = 1
+              AND ch.subcategory_code = ?
+              AND ch.phase = ?
+            ORDER BY datetime(u.completed_date) ASC, ch.order_index ASC, ch.id ASC
+        """, (user_id, subcategory_code, phase)).fetchall()
+        return [dict(r) for r in rows]
+
+
+def get_user_progress_for_challenge(user_id: str, challenge_id: int):
+    with get_conn() as conn:
+        row = conn.execute("""
+            SELECT completed, completed_date, score, user_answer
+            FROM user_challenge_progress
+            WHERE user_id = ? AND challenge_id = ?
+        """, (user_id, challenge_id)).fetchone()
+        return dict(row) if row else None
+
+
+def get_next_review_challenge_id(user_id: str, subcategory_code: str, phase: str, current_id: int):
+    items = get_completed_challenges_for_review(user_id, subcategory_code, phase)
+    ids = [c["id"] for c in items]
+    try:
+        idx = ids.index(current_id)
+    except ValueError:
+        return None
+    return ids[idx + 1] if idx + 1 < len(ids) else None
 
 
 def hibp_pwned_count(password: str) -> int:
@@ -735,20 +869,20 @@ def get_category_scores(user_id: str, phase: str):
             SELECT cat.title AS category,
                    COALESCE(SUM(u.score), 0) AS total_score
             FROM categories cat
-            JOIN subcategories sub ON sub.category_code = cat.category_code
-            JOIN challenges ch ON ch.subcategory_code = sub.subcategory_code
+            JOIN subcategories sub
+              ON sub.category_code = cat.category_code
+            JOIN challenges ch
+              ON ch.subcategory_code = sub.subcategory_code
+             AND ch.phase = ?
             LEFT JOIN user_challenge_progress u
-                ON u.challenge_id = ch.id AND u.user_id = ?
-            WHERE ch.phase = ?
-              AND u.completed = 1
-            GROUP BY cat.category_code
+              ON u.challenge_id = ch.id
+             AND u.user_id = ?
+             AND u.completed = 1
+            GROUP BY cat.category_code, cat.title
             ORDER BY cat.id
-        """, (user_id, phase)).fetchall()
+        """, (phase, user_id)).fetchall()
 
-        return {
-            row["category"]: row["total_score"]
-            for row in rows
-        }
+        return {row["category"]: row["total_score"] for row in rows}
 
 
 def default_admin():

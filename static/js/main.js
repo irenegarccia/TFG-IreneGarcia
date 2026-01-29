@@ -6,6 +6,11 @@ document.addEventListener('DOMContentLoaded', function () {
     let hasDetectedAutofill = false;
     let lastPasswordValue = passwordInput ? passwordInput.value : "";
 
+    function getCsrfToken() {
+        const el = document.querySelector('meta[name="csrf-token"]');
+        return el ? el.getAttribute('content') : '';
+    }
+
     function updateRule(id, ok) {
         const li = document.getElementById(id);
         if (!li) return;
@@ -122,6 +127,33 @@ document.addEventListener("DOMContentLoaded", function() {
         logoutModal.show();
     });
 });
+
+document.addEventListener('DOMContentLoaded', function () {
+  const optionBoxes = document.querySelectorAll('.quiz-option');
+  if (!optionBoxes.length) return;
+
+  function setSelected(box) {
+    optionBoxes.forEach(b => b.classList.remove('selected'));
+    box.classList.add('selected');
+  }
+
+  optionBoxes.forEach(box => {
+    const radio = box.querySelector('input[type="radio"][name="answer"]');
+    if (!radio) return;
+
+    box.addEventListener('click', () => {
+      if (radio.disabled) return;
+      radio.checked = true;
+      radio.dispatchEvent(new Event('change', { bubbles: true }));
+    });
+
+    radio.addEventListener('change', () => setSelected(box));
+  });
+
+  const checked = document.querySelector('.quiz-option input[type="radio"][name="answer"]:checked');
+  if (checked) setSelected(checked.closest('.quiz-option'));
+});
+
 
 
 (function ($) {

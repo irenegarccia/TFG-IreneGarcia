@@ -110,8 +110,10 @@
                 <div class="d-flex align-items-center justify-content-between mb-3">
                     <h4 class="mb-0">
                         <i class="fa fa-question-circle text-primary me-2"></i>{{ challenge.title }}
+                        {% if review_mode %}
+                            <span class="badge bg-info ms-2"><i class="fa fa-eye me-1"></i>Modo revisión</span>
+                        {% endif %}
                     </h4>
-
                     {% if category_code %}
                     <a href="{{ url_for('category_page', category_code=category_code) }}" class="btn btn-outline-light btn-sm">
                         <i class="fa fa-arrow-left me-2"></i>Volver
@@ -123,53 +125,130 @@
                     {% endif %}
                 </div>
 
-                {% if challenge.is_practical %}
-                    {% if challenge.content %}
-                        <div id="practical-wrapper"
-                            class="mt-2"
-                            data-challenge-id="{{ challenge.id }}"
-                            data-redirect-url="{{ redirect_url }}">
-                            {{ challenge.content | safe }}
+                {% if challenge.is_practical|int == 1 %}
+                    {% if review_mode %}
+                        <div class="bg-dark rounded p-3">
+                            <h6 class="text-white mb-2"><i class="fa fa-eye me-2"></i>Revisión del reto práctico</h6>
+
+                            {% if practical_feedback %}
+                                {% if practical_feedback.password_length is defined %}
+                                    <div class="text-white-50 small">
+                                        Contraseña introducida: <strong class="text-white">{{ practical_feedback.password_length }}</strong> caracteres
+                                    </div>
+                                {% endif %}
+
+                                {% if practical_feedback.pwned_count is defined %}
+                                    <div class="text-white-50 small mt-1">
+                                        Apariciones en brechas: <strong class="text-white">{{ practical_feedback.pwned_count }}</strong>
+                                    </div>
+                                {% endif %}
+
+                                {% if practical_feedback.missing_requirements is defined and practical_feedback.missing_requirements %}
+                                    <div class="text-white-50 small mt-1">
+                                        Requisitos faltantes: <strong class="text-white">{{ practical_feedback.missing_requirements | join(', ') }}</strong>
+                                    </div>
+                                {% endif %}
+
+                            {% else %}
+                                <div class="text-white-50 small">No hay feedback guardado para este reto.</div>
+                            {% endif %}
                         </div>
 
+                        <div class="mt-3 d-flex justify-content-between align-items-center">
+                            <span class="badge bg-primary">Puntuación: {{ user_score }}</span>
+
+                            {% if next_url %}
+                                <a class="btn btn-primary" href="{{ next_url }}">
+                                    <i class="fa fa-arrow-right me-2"></i>Siguiente pregunta
+                                </a>
+                            {% elif end_url %}
+                                <a class="btn btn-success" href="{{ end_url }}">
+                                    <i class="fa fa-check me-2"></i>Terminar revisión
+                                </a>
+                            {% endif %}
+                        </div>
 
                     {% else %}
-                        <div class="alert alert-warning mb-0">
-                            Este reto práctico no tiene contenido (HTML) asociado.
-                        </div>
+                        {% if challenge.content %}
+                            <div id="practical-wrapper"
+                                class="mt-2"
+                                data-challenge-id="{{ challenge.id }}"
+                                data-redirect-url="{{ redirect_url }}">
+                                {{ challenge.content | safe }}
+                            </div>
+                        {% else %}
+                            <div class="alert alert-warning mb-0">
+                                Este reto práctico no tiene contenido (HTML) asociado.
+                            </div>
+                        {% endif %}
                     {% endif %}
 
                 {% else %}
                     {% if not challenge.question %}
                         <div class="alert alert-warning mb-0">
-                            Este reto no tiene una pregunta asociada.
+                        Este reto no tiene una pregunta asociada.
                         </div>
                     {% else %}
                         <h5>{{ challenge.question }}</h5>
 
+                        {% if review_mode %}
+                        {% set ua = (user_answer or '')|trim %}
+                        <div class="d-flex flex-column gap-3 mt-3 {% if review_mode %}review-mode{% endif %}">
+                            {% for opt in options %}
+                            {% set is_selected = (ua == opt|trim) %}
+                            {% set is_correct = (opt|trim == challenge.correct_answer|trim) %}
+
+                            <div class="quiz-option
+                                {% if is_selected %}selected{% endif %}
+                                {% if review_mode and is_correct %}correct{% endif %}
+                                {% if review_mode and is_selected and not is_correct %}wrong{% endif %}
+                            ">
+
+                                <input type="radio" name="answer" disabled {% if ua == opt|trim %}checked{% endif %}>
+                                <label class="mb-0 flex-grow-1">{{ opt }}</label>
+                            </div>
+                            {% endfor %}
+                        </div>
+
+                        <div class="mt-3 d-flex justify-content-between align-items-center">
+                            <span class="badge bg-primary score-badge">
+                                Puntuación: {{ user_score }}
+                            </span>
+
+                            {% if next_url %}
+                            <a class="btn btn-primary" href="{{ next_url }}">
+                                <i class="fa fa-arrow-right me-2"></i>Siguiente pregunta
+                            </a>
+                            {% elif end_url %}
+                            <a class="btn btn-success" href="{{ end_url }}">
+                                <i class="fa fa-check me-2"></i>Terminar revisión
+                            </a>
+                            {% endif %}
+                        </div>
+
+                        {% else %}
                         <form method="post" action="{{ url_for('challenge_submit', challenge_id=challenge.id) }}">
                             <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
                             <input type="hidden" name="subcategory_code" value="{{ subcategory_code }}">
 
-                            <div class="d-flex flex-column gap-3">
-                                {% for opt in options %}
-                                    <label class="bg-dark rounded p-3 d-flex align-items-center" style="cursor:pointer;">
-                                        <input type="radio"
-                                            style="accent-color: white; transform:scale(1.4); margin-right:12px;"
-                                            name="answer"
-                                            value="{{ opt }}"
-                                            {% if loop.first %}required{% endif %}>
-                                        <span class="text-white">{{ opt }}</span>
-                                    </label>
-                                {% endfor %}
+                            <div class="d-flex flex-column gap-3 mt-3">
+                            {% for opt in options %}
+                                <div class="quiz-option">
+                                <input type="radio" id="opt{{ loop.index }}" name="answer" value="{{ opt }}" required>
+                                <label for="opt{{ loop.index }}" class="mb-0 flex-grow-1">
+                                    {{ opt }}
+                                </label>
+                                </div>
+                            {% endfor %}
                             </div>
 
                             <div class="mt-4 d-flex justify-content-end">
-                                <button type="submit" class="btn btn-primary">
-                                    <i class="fa fa-paper-plane me-2"></i>Enviar respuesta
-                                </button>
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fa fa-paper-plane me-2"></i>Enviar respuesta
+                            </button>
                             </div>
                         </form>
+                        {% endif %}
                     {% endif %}
                 {% endif %}
             </div>
