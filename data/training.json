@@ -1,0 +1,218 @@
+{
+  "subcategories": [
+    {
+      "subcategory_code": "physical_usb",
+      "intro": "Los dispositivos USB forman parte del día a día, pero también pueden usarse como una vía de ataque sencilla. Conocer este riesgo ayuda a evitar problemas que no siempre son evidentes a primera vista.",
+      "rule_text": "Si no es tuyo o no sabes de dónde sale: NO lo conectes. Repórtalo y, si hay que analizarlo, que sea en un entorno aislado.",
+      "sections": [
+        {
+          "title": "Qué es un USB malicioso",
+          "text": "Un USB malicioso es un dispositivo que no solo guarda archivos. Puede estar preparado para ejecutar acciones automáticas al conectarlo, aprovechando que el sistema confía en los dispositivos físicos.",
+          "bullets": [
+            "Puede ejecutar acciones sin que te des cuenta.",
+            "Algunos se hacen pasar por un teclado y escriben comandos solos.",
+            "No hace falta abrir ningún archivo para que sea peligroso.",
+            "El riesgo es mayor si el ordenador está desbloqueado."
+          ]
+        },
+        {
+          "title": "Por qué un USB puede ser peligroso",
+          "text": "El problema no es el USB en sí, sino la confianza que los sistemas tienen en él. Esa confianza puede ser explotada para modificar el equipo o acceder a información.",
+          "bullets": [
+            "Puede instalar programas maliciosos en el equipo.",
+            "Puede cambiar configuraciones del sistema sin avisar.",
+            "Puede copiar información si el equipo está abierto.",
+            "Puede dejar accesos ocultos para usar el equipo más tarde."
+          ]
+        },
+        {
+          "title": "Buenas prácticas si encuentras un USB desconocido",
+          "text": "Aunque parezca inofensivo, conectar un USB desconocido es un riesgo innecesario. Existen formas más seguras de gestionarlo.",
+          "bullets": [
+            "No lo conectes a tu ordenador personal ni del trabajo.",
+            "Avísalo a la persona responsable (profesor, IT, administración).",
+            "Si se analiza, que sea en un equipo de pruebas o aislado."
+          ]
+        },
+        {
+          "title": "Qué hacer si ya lo conectaste por error",
+          "text": "Si el USB ya se ha conectado, es importante reducir posibles daños aunque no se note nada extraño.",
+          "bullets": [
+            "Desconéctalo inmediatamente.",
+            "No escribas contraseñas ni aceptes mensajes extraños.",
+            "Si puedes, desconecta internet.",
+            "Pasa un escaneo de seguridad.",
+            "Informa del incidente cuanto antes."
+          ]
+        }
+      ]
+    },
+    {
+      "subcategory_code": "physical_loss",
+      "intro": "Hoy en día los dispositivos no solo almacenan información: dan acceso directo a muchas cuentas. Por eso, perder uno puede tener consecuencias mayores de lo que parece.",
+      "rule_text": "Primero protege tu correo principal. Luego bloquea o borra el dispositivo y revisa accesos.",
+      "sections": [
+        {
+          "title": "Por qué perder un dispositivo es un riesgo",
+          "text": "Los dispositivos suelen tener sesiones abiertas y contraseñas guardadas. Esto convierte la pérdida física en un problema de seguridad digital.",
+          "bullets": [
+            "Sesiones abiertas = acceso directo.",
+            "Contraseñas guardadas = más cuentas en riesgo.",
+            "Apps bancarias = posible impacto económico.",
+            "Sin bloqueo, el acceso es muy fácil."
+          ]
+        },
+        {
+          "title": "Qué datos suelen quedar más expuestos",
+          "text": "El mayor riesgo no son solo los archivos, sino el acceso a servicios conectados.",
+          "bullets": [
+            "Correo electrónico y redes sociales.",
+            "Contactos, fotos y documentos.",
+            "Aplicaciones de pago o banca.",
+            "Archivos sincronizados con la nube."
+          ]
+        },
+        {
+          "title": "Qué hacer lo antes posible",
+          "text": "Actuar rápido ayuda a cortar accesos antes de que alguien los aproveche.",
+          "bullets": [
+            "Intentar localizar o bloquear el dispositivo.",
+            "Cambiar contraseñas importantes (empezando por el correo).",
+            "Cerrar sesiones desde otros dispositivos.",
+            "Borrar el dispositivo en remoto si es necesario."
+          ]
+        },
+        {
+          "title": "Cómo reducir el impacto en el futuro",
+          "text": "Algunas medidas sencillas reducen mucho el daño si vuelve a ocurrir.",
+          "bullets": [
+            "Usar bloqueo con PIN largo o biometría.",
+            "Tener copias de seguridad.",
+            "Activar localización y borrado remoto.",
+            "No guardar contraseñas en notas sin protección."
+          ]
+        }
+      ]
+    },
+    {
+      "subcategory_code": "physical_nfc",
+      "intro": "NFC hace más fáciles tareas cotidianas como pagar o validar transportes, pero su comodidad exige un uso consciente.",
+      "rule_text": "Usa NFC solo cuando lo necesites y con el móvil bloqueado.",
+      "sections": [
+        {
+          "title": "Qué es NFC",
+          "text": "NFC permite la comunicación entre dispositivos cuando están muy cerca. Está pensada para acciones rápidas y concretas.",
+          "bullets": [
+            "Funciona solo a pocos centímetros.",
+            "Se usa en pagos y tarjetas de transporte.",
+            "El bloqueo del móvil es clave."
+          ]
+        },
+        {
+          "title": "Riesgos más comunes",
+          "text": "El riesgo aparece cuando se usa sin control o en entornos poco fiables.",
+          "bullets": [
+            "Pagos no deseados si el móvil no está bien protegido.",
+            "Intentos de lectura en lugares concurridos.",
+            "Engaños con terminales manipulados."
+          ]
+        },
+        {
+          "title": "Buenas prácticas",
+          "text": "Un uso responsable reduce prácticamente todos los riesgos.",
+          "bullets": [
+            "Desactivar NFC cuando no lo uses.",
+            "Revisar movimientos bancarios.",
+            "Evitar terminales sospechosos."
+          ]
+        }
+      ]
+    },
+    {
+      "subcategory_code": "cred_passwords",
+      "intro": "Las contraseñas siguen siendo la base de la seguridad digital. Una mala gestión puede afectar a muchas cuentas a la vez.",
+      "rule_text": "Contraseñas largas, únicas y con 2FA siempre que se pueda.",
+      "sections": [
+        {
+          "title": "Qué hace que una contraseña sea segura",
+          "text": "La seguridad de una contraseña depende más de su longitud y de no reutilizarla que de trucos complicados.",
+          "bullets": [
+            "La longitud es más importante que los símbolos.",
+            "No reutilices la misma contraseña.",
+            "Evita datos personales.",
+            "Un gestor puede ayudarte."
+          ]
+        },
+        {
+          "title": "Qué es el 2FA (doble factor de autenticación)",
+          "text": "El doble factor añade una comprobación extra para asegurarse de que eres tú quien accede, incluso si alguien conoce la contraseña.",
+          "bullets": [
+            "Primero escribes tu contraseña.",
+            "Después confirmas con tu móvil o biometría.",
+            "Aunque roben tu contraseña, no pueden entrar.",
+            "Es especialmente importante en el correo."
+          ]
+        },
+        {
+          "title": "Por qué no reutilizar contraseñas",
+          "text": "Reutilizar contraseñas convierte un problema pequeño en uno mucho mayor.",
+          "bullets": [
+            "Si una web se filtra, prueban esa contraseña en otras.",
+            "Una sola contraseña puede abrir muchas cuentas.",
+            "Reutilizar multiplica el riesgo."
+          ]
+        }
+      ]
+    },
+    {
+      "subcategory_code": "cred_managers",
+      "intro": "Recordar muchas contraseñas seguras es difícil. Los gestores existen para facilitarlo sin perder seguridad.",
+      "rule_text": "Contraseña maestra fuerte + 2FA y no compartir credenciales.",
+      "sections": [
+        {
+          "title": "Qué es un gestor de contraseñas",
+          "text": "Es una herramienta que guarda contraseñas de forma cifrada y las rellena automáticamente cuando se necesitan.",
+          "bullets": [
+            "Solo recuerdas una contraseña principal.",
+            "El resto se guardan de forma segura.",
+            "Puede generar contraseñas fuertes."
+          ]
+        },
+        {
+          "title": "Por qué usar uno",
+          "text": "Facilita mantener buenas prácticas sin esfuerzo constante.",
+          "bullets": [
+            "Evita reutilizar contraseñas.",
+            "Reduce errores al escribir.",
+            "Mejora la seguridad general."
+          ]
+        }
+      ]
+    },
+    {
+      "subcategory_code": "cred_leaks",
+      "intro": "Las filtraciones de datos pueden ocurrir incluso en servicios conocidos. Saber reaccionar marca la diferencia.",
+      "rule_text": "Cambia la contraseña, cierra sesiones y activa 2FA.",
+      "sections": [
+        {
+          "title": "Qué es una filtración de credenciales",
+          "text": "Se produce cuando un servicio sufre un fallo y se exponen datos de acceso de los usuarios.",
+          "bullets": [
+            "Los atacantes prueban esas contraseñas en otros sitios.",
+            "El correo suele ser el objetivo principal."
+          ]
+        },
+        {
+          "title": "Qué hacer si ocurre",
+          "text": "La rapidez reduce el impacto y evita problemas mayores.",
+          "bullets": [
+            "Cambiar la contraseña inmediatamente.",
+            "Cerrar sesiones activas.",
+            "Activar 2FA.",
+            "Revisar actividad sospechosa."
+          ]
+        }
+      ]
+    }
+  ]
+}

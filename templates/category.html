@@ -177,14 +177,14 @@
                                          aria-valuenow="{{ post_pct }}" aria-valuemin="0" aria-valuemax="100"></div>
                                 </div>
 
-                                {% if not all_pre_done and post_total > 0 %}
+                                {% if post_total > 0 %}
                                     <div class="text-warning small mt-2">
-                                        <i class="fa fa-lock me-1"></i>Desbloquea completando todos los PRE.
+                                        <i class="fa fa-lock me-1"></i>
+                                        Los POST se desbloquean por subcategoría al completar PRE y recibir la formación.
                                     </div>
                                 {% endif %}
                             </div>
                         </div>
-
                     </div>
                 </div>
             </div>
@@ -227,18 +227,18 @@
                             <div class="d-flex align-items-center">
 
                                 {% if done %}
-                                <a href="{{ url_for('subcategory_review_start', subcategory_code=sub.subcategory_code, phase=phase) }}"
-                                class="btn btn-sm btn-outline-info me-2"
-                                title="Revisar respuestas"
-                                onclick="event.stopPropagation();">
+                                <a href="{{ url_for('subcategory_review_start', subcategory_code=sub.subcategory_code, phase='pre') }}" class="btn btn-outline-light btn btn-review">
                                     <i class="fa fa-eye"></i>
+                                    <span>Revisar</span>
                                 </a>
+
                                 {% endif %}
-
-                                <span class="{% if done %}btn btn-sm btn-success{% else %}btn btn-sm btn-outline-light{% endif %}" style="pointer-events:none;">
-                                    <i class="fa {% if done %}fa-check{% else %}fa-chevron-right{% endif %}"></i>
-                                </span>
-
+                                {% if phase == 'pre' and sub.pre_completed %}
+                                    <a href="{{ url_for('training_page', subcategory_code=sub.subcategory_code) }}" class="btn btn-outline-info btn btn-training">
+                                        <i class="fa fa-book"></i>
+                                        <span>Formación</span>
+                                    </a>
+                                {% endif %}
                             </div>
                         </div>
 
@@ -319,18 +319,12 @@
                         <i class="fa fa-info-circle me-2"></i>No hay retos POST todavía.
                         </div>
                     {% else %}
-                        {% if not all_pre_done %}
-                        <div class="alert alert-warning mb-3">
-                            <i class="fa fa-lock me-2"></i>
-                            Bloqueado: completa todos los retos PRE para desbloquear POST.
-                        </div>
-                        {% endif %}
 
                         <div class="row g-3">
                         {% for sub in subcategories %}
                             {% if sub.post_challenges|length > 0 %}
                             <div class="col-12">
-                                {{ subcategory_card(sub, loop.index, 'post', locked=not all_pre_done) }}
+                                {{ subcategory_card(sub, loop.index, 'post', locked=not sub.post_unlocked) }}
                             </div>
                             {% endif %}
                         {% endfor %}

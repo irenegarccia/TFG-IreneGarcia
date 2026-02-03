@@ -23,6 +23,8 @@ os.makedirs(INSTANCE_DIR, exist_ok=True)
 DB_PATH = os.path.join(INSTANCE_DIR, "tfg.db")
 app.config["DATABASE"] = DB_PATH
 QUESTIONS_JSON_PATH = os.path.join(BASE_DIR, "data", "questions.json")
+TRAINING_JSON_PATH = os.path.join(BASE_DIR, "data", "training.json")
+_training_cache = {"mtime": None, "by_sub": {}}
 
 def get_conn():
     conn = sqlite3.connect(app.config["DATABASE"])
@@ -105,6 +107,19 @@ def init_db():
             FOREIGN KEY (challenge_id) REFERENCES challenges(id)
         );
         """)
+
+        conn.execute("""
+        CREATE TABLE IF NOT EXISTS user_training_progress (
+            user_id TEXT NOT NULL,
+            subcategory_code TEXT NOT NULL,
+            received INTEGER NOT NULL DEFAULT 0,
+            received_date TEXT,
+            PRIMARY KEY (user_id, subcategory_code),
+            FOREIGN KEY (user_id) REFERENCES users(id),
+            FOREIGN KEY (subcategory_code) REFERENCES subcategories(subcategory_code)
+        );
+        """)
+
 
         conn.commit()
 
@@ -222,6 +237,63 @@ def get_category_code_by_subcategory(subcategory_code: str):
             WHERE subcategory_code = ?
         """, (subcategory_code,)).fetchone()
         return row["category_code"] if row else None
+
+
+def get_subcategory_by_code(subcategory_code: str):
+    with get_conn() as conn:
+        row = conn.execute("""
+            SELECT subcategory_code, category_code, title, order_index
+            FROM subcategories
+            WHERE subcategory_code = ?
+        """, (subcategory_code,)).fetchone()
+        return dict(row) if row else None
+
+
+def _load_training_json():
+    global _training_cache
+
+    if not os.path.exists(TRAINING_JSON_PATH):
+        _training_cache = {"mtime": None, "by_sub": {}}
+        return {}
+
+    mtime = os.path.getmtime(TRAINING_JSON_PATH)
+    if _training_cache.get("mtime") == mtime and _training_cache.get("by_sub"):
+        return _training_cache["by_sub"]
+
+    with open(TRAINING_JSON_PATH, "r", encoding="utf-8") as f:
+        raw = json.load(f)
+
+    by_sub = {}
+    for item in raw.get("subcategories", []):
+        code = item.get("subcategory_code")
+        if code:
+            by_sub[code] = item
+
+    _training_cache = {"mtime": mtime, "by_sub": by_sub}
+    return by_sub
+
+
+def get_training_for_subcategory(subcategory_code: str):
+    return _load_training_json().get(subcategory_code)
+
+
+def is_training_received(user_id: str, subcategory_code: str) -> bool:
+    with get_conn() as conn:
+        row = conn.execute("""
+            SELECT received
+            FROM user_training_progress
+            WHERE user_id = ? AND subcategory_code = ?
+        """, (user_id, subcategory_code)).fetchone()
+        return bool(row["received"]) if row else False
+
+
+def mark_training_received(user_id: str, subcategory_code: str):
+    with get_conn() as conn:
+        conn.execute("""
+            INSERT OR REPLACE INTO user_training_progress (user_id, subcategory_code, received, received_date)
+            VALUES (?, ?, 1, datetime('now'))
+        """, (user_id, subcategory_code))
+        conn.commit()
 
 
 def is_challenge_completed(user_id: str, challenge_id: int) -> bool:
@@ -436,6 +508,9 @@ def category_page(category_code):
         sub["pre_pct"] = round((sub["pre_done"] / sub["pre_total"]) * 100) if sub["pre_total"] else 0
         sub["post_pct"] = round((sub["post_done"] / sub["post_total"]) * 100) if sub["post_total"] else 0
         
+        sub["pre_completed"] = (sub_pre_total > 0 and sub_pre_done == sub_pre_total)
+        sub["training_received"] = is_training_received(current_user.id, sub["subcategory_code"])
+        sub["post_unlocked"] = (sub["pre_completed"] and sub["training_received"])
 
         for ch in sub["pre_challenges"] + sub["post_challenges"]:
             completed_map[ch["id"]] = is_challenge_completed(current_user.id, ch["id"])
@@ -479,12 +554,78 @@ def category_page(category_code):
     )
 
 
+@app.route("/training/<subcategory_code>")
+@login_required
+def training_page(subcategory_code):
+    sub = get_subcategory_by_code(subcategory_code)
+    if not sub:
+        abort(404)
+
+    category_code = sub["category_code"]
+
+    pre_total = count_phase_total(subcategory_code, "pre")
+    pre_done = count_phase_done(current_user.id, subcategory_code, "pre")
+    if pre_total > 0 and pre_done < pre_total:
+        return redirect(url_for(
+            "category_page",
+            category_code=category_code,
+            msg="Completa todos los retos PRE para poder acceder a la formación"
+        ))
+
+    training = get_training_for_subcategory(subcategory_code)
+    if not training:
+        return render_template(
+            "training.html",
+            category_code=category_code,
+            subcategory=sub,
+            training=None,
+            received=is_training_received(current_user.id, subcategory_code),
+            post_unlocked=False
+        )
+
+    if not is_training_received(current_user.id, subcategory_code):
+        mark_training_received(current_user.id, subcategory_code)
+
+    received = is_training_received(current_user.id, subcategory_code)
+
+    return render_template(
+        "training.html",
+        category_code=category_code,
+        subcategory=sub,
+        training=training,
+        received=received,
+        post_unlocked=received,
+        msg=None
+    )
+
+
 @app.route("/challenge/<int:challenge_id>")
 @login_required
 def challenge_page(challenge_id):
     challenge = get_challenge_by_id(challenge_id)
     if not challenge:
         abort(404)
+
+    if challenge.get("phase") == "post":
+        sub_code = challenge.get("subcategory_code")
+        pre_total = count_phase_total(sub_code, "pre")
+        pre_done = count_phase_done(current_user.id, sub_code, "pre")
+
+        if pre_total > 0 and pre_done < pre_total:
+            category_code = get_category_code_by_subcategory(sub_code)
+            return redirect(url_for(
+                "category_page",
+                category_code=category_code,
+                msg="Completa todos los retos PRE para desbloquear los POST"
+            ))
+
+        if not is_training_received(current_user.id, sub_code):
+            category_code = get_category_code_by_subcategory(sub_code)
+            return redirect(url_for(
+                "category_page",
+                category_code=category_code,
+                msg="Antes de los POST, entra en 'Formación' y recíbela al menos una vez"
+            ))
 
     if is_challenge_completed(current_user.id, challenge_id):
         category_code = get_category_code_by_subcategory(challenge["subcategory_code"])
@@ -654,6 +795,14 @@ def next_challenge(subcategory_code, phase):
                 category_code=category_code,
                 msg="Completa todos los retos PRE para desbloquear los POST"
             ))
+        
+        if not is_training_received(current_user.id, subcategory_code):
+            return redirect(url_for(
+                "category_page",
+                category_code=category_code,
+                msg="Antes de los POST, entra en 'Formación' y recíbela al menos una vez"
+            ))
+
 
 
     ch = get_random_pending_challenge(current_user.id, subcategory_code, phase)
@@ -780,6 +929,15 @@ def count_phase_done_for_subcategory(user_id: str, subcategory_code: str, phase:
               AND c.phase = ?
         """, (user_id, subcategory_code, phase)).fetchone()
         return int(row["c"]) if row else 0
+
+
+def count_phase_total(subcategory_code: str, phase: str) -> int:
+    return count_phase_total_for_subcategory(subcategory_code, phase)
+
+
+def count_phase_done(user_id: str, subcategory_code: str, phase: str) -> int:
+    return count_phase_done_for_subcategory(user_id, subcategory_code, phase)
+
 
 def sum_scores_for_category(user_id: str, category_code: str) -> int:
     with get_conn() as conn:

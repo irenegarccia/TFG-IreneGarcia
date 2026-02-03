@@ -111,7 +111,7 @@
                     <h4 class="mb-0">
                         <i class="fa fa-question-circle text-primary me-2"></i>{{ challenge.title }}
                         {% if review_mode %}
-                            <span class="badge bg-info ms-2"><i class="fa fa-eye me-1"></i>Modo revisión</span>
+                            <span class="badge bg-info ms-2 revision-mode"><i class="fa fa-eye me-1"></i>Modo revisión</span>
                         {% endif %}
                     </h4>
                     {% if category_code %}
@@ -144,9 +144,26 @@
                                 {% endif %}
 
                                 {% if practical_feedback.missing_requirements is defined and practical_feedback.missing_requirements %}
-                                    <div class="text-white-50 small mt-1">
-                                        Requisitos faltantes: <strong class="text-white">{{ practical_feedback.missing_requirements | join(', ') }}</strong>
-                                    </div>
+                                <div class="text-white-50 small mt-2">
+                                    <div class="text-white"><strong>Te falta cumplir:</strong></div>
+                                    <ul class="mb-0 mt-1 ps-3">
+                                    {% for r in practical_feedback.missing_requirements %}
+                                        <li class="text-white-50">
+                                        {% if r == 'has_upper' %}
+                                            <span class="text-white">❌</span> Al menos una <strong class="text-white">mayúscula</strong> (A-Z)
+                                        {% elif r == 'has_digit' %}
+                                            <span class="text-white">❌</span> Al menos un <strong class="text-white">número</strong> (0-9)
+                                        {% elif r == 'has_symbol' %}
+                                            <span class="text-white">❌</span> Al menos un <strong class="text-white">símbolo</strong> (!@#$%)
+                                        {% elif r == 'min_length' %}
+                                            <span class="text-white">❌</span> Más <strong class="text-white">longitud</strong> (mínimo recomendado 12+)
+                                        {% else %}
+                                            <span class="text-white">❌</span> {{ r }}
+                                        {% endif %}
+                                        </li>
+                                    {% endfor %}
+                                    </ul>
+                                </div>
                                 {% endif %}
 
                             {% else %}
@@ -155,14 +172,14 @@
                         </div>
 
                         <div class="mt-3 d-flex justify-content-between align-items-center">
-                            <span class="badge bg-primary">Puntuación: {{ user_score }}</span>
+                            <span class="badge bg-primary score-badge">Puntuación: {{ user_score }}</span>
 
                             {% if next_url %}
                                 <a class="btn btn-primary" href="{{ next_url }}">
                                     <i class="fa fa-arrow-right me-2"></i>Siguiente pregunta
                                 </a>
                             {% elif end_url %}
-                                <a class="btn btn-success" href="{{ end_url }}">
+                                <a class="btn btn-success btn-finish-review" href="{{ end_url }}">
                                     <i class="fa fa-check me-2"></i>Terminar revisión
                                 </a>
                             {% endif %}
@@ -210,7 +227,7 @@
                             {% endfor %}
                         </div>
 
-                        <div class="mt-3 d-flex justify-content-between align-items-center">
+                        <div class="mt-3 challenge-actions">
                             <span class="badge bg-primary score-badge">
                                 Puntuación: {{ user_score }}
                             </span>
@@ -220,7 +237,7 @@
                                 <i class="fa fa-arrow-right me-2"></i>Siguiente pregunta
                             </a>
                             {% elif end_url %}
-                            <a class="btn btn-success" href="{{ end_url }}">
+                            <a class="btn btn-success btn-finish-review" href="{{ end_url }}">
                                 <i class="fa fa-check me-2"></i>Terminar revisión
                             </a>
                             {% endif %}
