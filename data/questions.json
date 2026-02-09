@@ -16,8 +16,9 @@
                 "question": "¿Qué es un USB malicioso?",
                 "correct_answer": "Un USB que puede ejecutar ataques o acciones no deseadas",
                 "options": [
+                  "Un USB que puede ejecutar ataques o acciones no deseadas",
                   "Un USB normal solo para almacenar archivos",
-                  "Un USB que puede ejecutar ataques o acciones no deseadas"
+                  "Un USB que está roto"
                 ],
                 "points": 10,
                 "is_training": 1,
@@ -26,20 +27,37 @@
                 "order_index": 1
               },
               {
-              "title": "Dispositivos maliciosos",
-              "question": "¿Por qué los dispositivos USB pueden representar un riesgo de seguridad?",
-              "correct_answer": "Porque pueden ejecutar código malicioso al conectarse a un dispositivo",
-              "options": [
-                "Porque solo almacenan archivos visibles",
-                "Porque pueden ejecutar código malicioso al conectarse a un dispositivo",
-                "Porque ralentizan el sistema"
-              ],
-              "points": 10,
-              "is_training": 1,
-              "is_practical": 0,
-              "content": null,
-              "order_index": 2
-            }
+                "title": "Dispositivos maliciosos",
+                "question": "¿A través de qué medio consideras que se puede propagar un malware?",
+                "correct_answer": "Todas las anteriores",
+                "options": [
+                  "Dispositivos usb u otros dispositivos externos",
+                  "Archivos adjuntos en correos electrónicos",
+                  "Enlaces, descargas o aplicaciones obtenidas desde páginas web o internet",
+                  "Todas las anteriores"
+                ],
+                "points": 10,
+                "is_training": 1,
+                "is_practical": 0,
+                "content": null,
+                "order_index": 2
+              },
+              {
+                "title": "Dispositivos maliciosos",
+                "question": "¿Por qué los dispositivos USB pueden representar un riesgo de seguridad?",
+                "correct_answer": "Porque pueden ejecutar código malicioso al conectarse a un dispositivo",
+                "options": [
+                  "Porque se pueden romper",
+                  "Porque almacenan muchos archivos",
+                  "Porque ralentizan el sistema",
+                  "Porque pueden ejecutar código malicioso al conectarse a un dispositivo"
+                ],
+                "points": 10,
+                "is_training": 1,
+                "is_practical": 0,
+                "content": null,
+                "order_index": 2
+              }
             ],
             "post": [
               {
@@ -72,9 +90,9 @@
                 "correct_answer": "Bloquearlo/localizarlo y cambiar contraseñas importantes",
                 "options": [
                   "No hacer nada",
-                  "Bloquearlo/localizarlo y cambiar contraseñas importantes",
-                  "Comprar otro móvil y ya está",
-                  "Apagar el Wi-Fi y esperar"
+                  "Comprar otro móvil",
+                  "Apagar el Wi-Fi y esperar",
+                  "Bloquearlo/localizarlo y cambiar contraseñas importantes"
                 ],
                 "points": 10,
                 "is_training": 1,
@@ -83,37 +101,37 @@
                 "order_index": 1
               },
               {
-              "title": "Robo o pérdida de dispositivos",
-              "question": "¿Por qué la pérdida de un dispositivo puede suponer un riesgo para la seguridad de la información?",
-              "correct_answer": "Porque puede permitir el acceso no autorizado a datos personales o corporativos",
-              "options": [
-                "Porque el dispositivo deja de funcionar",
-                "Porque puede permitir el acceso no autorizado a datos personales o corporativos",
-                "Porque se pierde la conexión a Internet",
-                "Porque obliga a comprar un dispositivo nuevo"
-              ],
-              "points": 10,
-              "is_training": 1,
-              "is_practical": 0,
-              "content": null,
-              "order_index": 2
-            },
-            {
-              "title": "Robo o pérdida de dispositivos",
-              "question": "¿Qué información suele estar en mayor riesgo cuando se pierde un dispositivo sin protección?",
-              "correct_answer": "Datos personales, credenciales y acceso a aplicaciones",
-              "options": [
-                "Únicamente las fotografías",
-                "Datos personales, credenciales y acceso a aplicaciones",
-                "Solo los contactos de la agenda",
-                "El sistema operativo del dispositivo"
-              ],
-              "points": 10,
-              "is_training": 1,
-              "is_practical": 0,
-              "content": null,
-              "order_index": 3
-            }
+                "title": "Robo o pérdida de dispositivos",
+                "question": "¿Por qué la pérdida de un dispositivo puede suponer un riesgo para la seguridad de la información?",
+                "correct_answer": "Porque puede permitir el acceso no autorizado a datos personales",
+                "options": [
+                  "Porque el dispositivo deja de funcionar",
+                  "Porque puede permitir el acceso no autorizado a datos personales",
+                  "Porque se pierde la conexión a Internet",
+                  "Porque obliga a comprar un dispositivo nuevo"
+                ],
+                "points": 10,
+                "is_training": 1,
+                "is_practical": 0,
+                "content": null,
+                "order_index": 2
+              },
+              {
+                "title": "Robo o pérdida de dispositivos",
+                "question": "¿Qué información suele estar en mayor riesgo cuando se pierde un dispositivo sin protección?",
+                "correct_answer": "Datos personales, credenciales y acceso a aplicaciones",
+                "options": [
+                  "Datos personales, credenciales y acceso a aplicaciones",
+                  "Únicamente las fotografías",
+                  "Solo los contactos de la agenda",
+                  "El sistema operativo del dispositivo"
+                ],
+                "points": 10,
+                "is_training": 1,
+                "is_practical": 0,
+                "content": null,
+                "order_index": 3
+              }
             ],
             "post": [
               {
@@ -146,8 +164,8 @@
                 "question": "¿Qué medida ayuda a reducir el riesgo de NFC/contactless?",
                 "correct_answer": "Desactivar NFC cuando no se use",
                 "options": [
-                  "Dejar NFC siempre activado",
                   "Desactivar NFC cuando no se use",
+                  "Dejar NFC siempre activado",
                   "Usar un PIN débil",
                   "Compartir la tarjeta con otras personas"
                 ],
@@ -193,31 +211,66 @@
           "challenges": {
             "pre": [
               {
-                "title": "Comprobar contraseña con Have I Been Pwned",
-                "question": null,
-                "correct_answer": null,
-                "options": [],
+                "title": "Contraseñas seguras",
+                "question": "¿Utilizas contraseñas complejas (mezcla de mayúsculas, minúsculas, números y símbolos)?",
+                "correct_answer": "Utilizo letras en mayúsculas y minúsculas, números y símbolos",
+                "options": [
+                  "Utilizo solo letras minúsculas",
+                  "Utilizo letras y números",
+                  "Utilizo letras en mayúsculas y minúsculas con números",
+                  "Utilizo letras en mayúsculas y minúsculas, números y símbolos"
+                ],
                 "points": 10,
                 "is_training": 1,
-                "is_practical": 1,
-                "content": "<div class='bg-dark rounded p-3'><p class='mb-2 text-white-50'>Escribe una contraseña de prueba y comprueba si aparece en brechas.</p><div class='mb-3'><label class='form-label text-white'>Contraseña</label><input id='pw_input' type='password' class='form-control bg-secondary text-white border-0' placeholder='Introduce una contraseña'></div><div class='d-flex gap-2 flex-wrap'><button id='pw_btn' class='btn btn-primary'>Comprobar</button><button id='pw_finish' class='btn btn-success' disabled>Finalizar reto</button></div><div id='pw_result' class='mt-3'></div><div id='pw_status' class='mt-2 text-white-50 small'></div></div><script>(function(){const btn=document.getElementById('pw_btn');const finish=document.getElementById('pw_finish');const input=document.getElementById('pw_input');const result=document.getElementById('pw_result');const status=document.getElementById('pw_status');let lastCheck=null;function csrf(){const m=document.querySelector('meta[name=\\\"csrf-token\\\"]');return m?m.getAttribute('content'):'';}function alertBox(ok,msg){return `<div class=\\\"alert ${ok?'alert-success':'alert-warning'} mb-2\\\">${msg}</div>`;}btn.addEventListener('click',async()=>{if(btn.disabled)return;const pw=(input.value||'').trim();result.innerHTML='';if(!pw){result.innerHTML=alertBox(false,'Escribe una contraseña primero.');return;}btn.disabled=true;input.disabled=true;try{const res=await fetch('/api/pwned-check',{method:'POST',credentials:'same-origin',headers:{'Content-Type':'application/json','X-CSRFToken':csrf()},body:JSON.stringify({password:pw})});const data=await res.json();if(!data.ok){result.innerHTML=alertBox(false,data.error||'Error');return;}lastCheck={pwned_count:data.pwned_count,password_length:data.length,length_ok:data.length>=12,has_upper:data.has_upper,has_lower:data.has_lower,has_digit:data.has_digit,has_symbol:data.has_symbol};finish.disabled=false;status.textContent='Puedes finalizar el reto.';if(data.pwned_count>0){result.innerHTML+=alertBox(false,`La contraseña aparece en brechas (${data.pwned_count} veces).`);}else{result.innerHTML+=alertBox(true,'La contraseña no aparece en brechas conocidas.');}const checks=[[data.length>=12,`Longitud: ${data.length} (recomendado ≥ 12)`],[data.has_upper,'Contiene mayúsculas'],[data.has_lower,'Contiene minúsculas'],[data.has_digit,'Contiene números'],[data.has_symbol,'Contiene símbolos']];const list=checks.map(([ok,t])=>`<li class='${ok?'text-success':'text-warning'}'>${t}</li>`).join('');result.innerHTML+=`<ul class='mb-0'>${list}</ul>`;}catch(e){result.innerHTML=alertBox(false,'Error de red o servidor.');}});finish.addEventListener('click',async()=>{if(!lastCheck){result.innerHTML=alertBox(false,'Primero debes comprobar una contraseña.');return;}const wrapper=document.getElementById('practical-wrapper');const challengeId=wrapper?wrapper.dataset.challengeId:null;if(!challengeId){result.innerHTML=alertBox(false,'No se pudo identificar el reto.');return;}finish.disabled=true;try{const res=await fetch(`/challenge/${challengeId}/complete`,{method:'POST',credentials:'same-origin',headers:{'Content-Type':'application/json','X-CSRFToken':csrf()},body:JSON.stringify(lastCheck)});const data=await res.json();if(!data.ok){finish.disabled=false;result.innerHTML=alertBox(false,data.error||'No se pudo finalizar el reto.');return;}window.location.href=wrapper.dataset.redirectUrl||'/panel';}catch(e){finish.disabled=false;result.innerHTML=alertBox(false,'Error al guardar el reto.');}});})();</script>",
+                "is_practical": 0,
+                "content": null,
                 "order_index": 1
               },
               {
                 "title": "Contraseñas seguras",
-                "question": "¿Cuál es una contraseña segura?",
-                "correct_answer": "Larga, única y con mezcla de caracteres",
+                "question": "¿Cuál es la longitud media de tus contraseñas?",
+                "correct_answer": "Más de 8 caracteres",
                 "options": [
-                  "123456",
-                  "Larga, única y con mezcla de caracteres",
-                  "Tu nombre",
-                  "Solo números"
+                  "Menos de 6 caracteres",
+                  "Entre 6 y 8 caracteres",
+                  "Más de 8 caracteres"
                 ],
                 "points": 10,
                 "is_training": 1,
                 "is_practical": 0,
                 "content": null,
                 "order_index": 2
+              },
+              {
+                "title": "Contraseñas seguras",
+                "question": "Si utilizas números en tu contraseña, ¿esos números tienen alguna relación contigo?",
+                "correct_answer": "Números elegidos al azar",
+                "options": [
+                  "Fechas personales (nacimiento, aniversario, etc.)",
+                  "Números relacionados con gustos o preferencias",
+                  "Números elegidos al azar",
+                  "No utilizo números en mis contraseñas"
+                ],
+                "points": 10,
+                "is_training": 1,
+                "is_practical": 0,
+                "content": null,
+                "order_index": 3
+              },
+              {
+                "title": "Contraseñas seguras",
+                "question": "Si sueles modificar tus contraseñas, ¿qué reglas utilizas al hacerlo?",
+                "correct_answer": "No utilizo reglas de transformación, creo una nueva contraseña completamente diferente",
+                "options": [
+                  "Añadir algunos números, mayúsculas o símbolos",
+                  "No modifico nunca mi contraseña, tengo una y es la que utilizo siempre",
+                  "No utilizo reglas de transformación, creo una nueva contraseña completamente diferente"
+                ],
+                "points": 10,
+                "is_training": 1,
+                "is_practical": 0,
+                "content": null,
+                "order_index": 5
               }
             ],
             "post": [
@@ -236,6 +289,21 @@
                 "is_practical": 0,
                 "content": null,
                 "order_index": 1
+              },
+              {
+                "title": "Contraseñas seguras",
+                "question": "¿Cuál de las siguientes es una buena práctica en la creación de contraseñas seguras?",
+                "correct_answer": "Generar una contraseña completamente nueva",
+                "options": [
+                  "Reutilizar una contraseña ya existente",
+                  "Modificar una contraseña anterior",
+                  "Generar una contraseña completamente nueva"
+                ],
+                "points": 10,
+                "is_training": 1,
+                "is_practical": 0,
+                "content": null,
+                "order_index": 2
               }
             ]
           }
@@ -253,14 +321,58 @@
                 "options": [
                   "Un antivirus",
                   "Una VPN",
-                  "Una herramienta para guardar contraseñas de forma segura",
-                  "Un firewall"
+                  "Una herramienta para guardar contraseñas de forma segura"
                 ],
                 "points": 10,
                 "is_training": 1,
                 "is_practical": 0,
                 "content": null,
                 "order_index": 1
+              },
+              {
+                "title": "Gestores de contraseñas",
+                "question": "¿Usas algún gestor de contraseñas?",
+                "correct_answer": "Sí, utilizo un gestor de contraseñas",
+                "options": [
+                  "Sí, utilizo un gestor de contraseñas",
+                  "No, pero sé lo que es y para qué sirve",
+                  "No, no sé exactamente qué es un gestor de contraseñas"
+                ],
+                "points": 10,
+                "is_training": 1,
+                "is_practical": 0,
+                "content": null,
+                "order_index": 3
+              },
+              {
+                "title": "Gestores de contraseñas",
+                "question": "¿Usas la misma contraseña para distintos portales, sistemas y aplicaciones?",
+                "correct_answer": "Contraseñas diferentes para cada servicio",
+                "options": [
+                  "Sí, la misma en todas",
+                  "La misma con pequeñas variaciones",
+                  "Contraseñas diferentes para cada servicio"
+                ],
+                "points": 10,
+                "is_training": 1,
+                "is_practical": 0,
+                "content": null,
+                "order_index": 4
+              },             
+              {
+                "title": "Número de contraseñas",
+                "question": "¿Cuántas contraseñas diferentes mantienes actualmente?",
+                "correct_answer": "Más de tres contraseñas",
+                "options": [
+                  "Una sola contraseña",
+                  "Dos o tres contraseñas",
+                  "Más de tres contraseñas"
+                ],
+                "points": 10,
+                "is_training": 1,
+                "is_practical": 0,
+                "content": null,
+                "order_index": 5
               }
             ],
             "post": [
@@ -269,7 +381,6 @@
                 "question": "¿Cuál es el principal beneficio del uso de un gestor de contraseñas?",
                 "correct_answer": "Permitir el uso de contraseñas robustas y únicas sin necesidad de memorizarlas",
                 "options": [
-                  "Mejorar la velocidad del dispositivo",
                   "Permitir el uso de contraseñas robustas y únicas sin necesidad de memorizarlas",
                   "Eliminar automáticamente el malware",
                   "Evitar la pérdida del dispositivo"
@@ -279,6 +390,22 @@
                 "is_practical": 0,
                 "content": null,
                 "order_index": 1
+              },             
+              {
+                "title": "Gestores de contraseñas",
+                "question": "¿Para qué sirven los gestores de contraseñas?",
+                "correct_answer": "Para guardar contraseñas de forma segura y no tener que recordarlas todas",
+                "options": [
+                  "Para guardar contraseñas de forma segura y no tener que recordarlas todas",
+                  "Para guardar contraseñas sin ningún tipo de protección",
+                  "Para usar la misma contraseña en varias cuentas",
+                  "Para acceder a las cuentas sin necesidad de contraseña"
+                ],
+                "points": 10,
+                "is_training": 1,
+                "is_practical": 0,
+                "content": null,
+                "order_index": 2
               }
             ]
           }
@@ -290,20 +417,45 @@
           "challenges": {
             "pre": [
               {
+                "title": "Comprobar contraseña con Have I Been Pwned",
+                "question": null,
+                "correct_answer": null,
+                "options": [],
+                "points": 10,
+                "is_training": 1,
+                "is_practical": 1,
+                "content": "<div class='bg-dark rounded p-3'><p class='mb-2 text-white-50'>Escribe una contraseña de prueba y comprueba si aparece en brechas.</p><div class='mb-3'><label class='form-label text-white'>Contraseña</label><input id='pw_input' type='password' class='form-control bg-secondary text-white border-0' placeholder='Introduce una contraseña'></div><div class='d-flex gap-2 flex-wrap'><button id='pw_btn' class='btn btn-primary'>Comprobar</button><button id='pw_finish' class='btn btn-success' disabled>Finalizar reto</button></div><div id='pw_result' class='mt-3'></div><div id='pw_status' class='mt-2 text-white-50 small'></div></div><script>(function(){const btn=document.getElementById('pw_btn');const finish=document.getElementById('pw_finish');const input=document.getElementById('pw_input');const result=document.getElementById('pw_result');const status=document.getElementById('pw_status');let lastCheck=null;function csrf(){const m=document.querySelector('meta[name=\\\"csrf-token\\\"]');return m?m.getAttribute('content'):'';}function alertBox(ok,msg){return `<div class=\\\"alert ${ok?'alert-success':'alert-warning'} mb-2\\\">${msg}</div>`;}btn.addEventListener('click',async()=>{if(btn.disabled)return;const pw=(input.value||'').trim();result.innerHTML='';if(!pw){result.innerHTML=alertBox(false,'Escribe una contraseña primero.');return;}btn.disabled=true;input.disabled=true;try{const res=await fetch('/api/pwned-check',{method:'POST',credentials:'same-origin',headers:{'Content-Type':'application/json','X-CSRFToken':csrf()},body:JSON.stringify({password:pw})});const data=await res.json();if(!data.ok){result.innerHTML=alertBox(false,data.error||'Error');return;}lastCheck={pwned_count:data.pwned_count,password_length:data.length,length_ok:data.length>=12,has_upper:data.has_upper,has_lower:data.has_lower,has_digit:data.has_digit,has_symbol:data.has_symbol};finish.disabled=false;status.textContent='Puedes finalizar el reto.';if(data.pwned_count>0){result.innerHTML+=alertBox(false,`La contraseña aparece en brechas (${data.pwned_count} veces).`);}else{result.innerHTML+=alertBox(true,'La contraseña no aparece en brechas conocidas.');}const checks=[[data.length>=12,`Longitud: ${data.length} (recomendado ≥ 12)`],[data.has_upper,'Contiene mayúsculas'],[data.has_lower,'Contiene minúsculas'],[data.has_digit,'Contiene números'],[data.has_symbol,'Contiene símbolos']];const list=checks.map(([ok,t])=>`<li class='${ok?'text-success':'text-warning'}'>${t}</li>`).join('');result.innerHTML+=`<ul class='mb-0'>${list}</ul>`;}catch(e){result.innerHTML=alertBox(false,'Error de red o servidor.');}});finish.addEventListener('click',async()=>{if(!lastCheck){result.innerHTML=alertBox(false,'Primero debes comprobar una contraseña.');return;}const wrapper=document.getElementById('practical-wrapper');const challengeId=wrapper?wrapper.dataset.challengeId:null;if(!challengeId){result.innerHTML=alertBox(false,'No se pudo identificar el reto.');return;}finish.disabled=true;try{const res=await fetch(`/challenge/${challengeId}/complete`,{method:'POST',credentials:'same-origin',headers:{'Content-Type':'application/json','X-CSRFToken':csrf()},body:JSON.stringify(lastCheck)});const data=await res.json();if(!data.ok){finish.disabled=false;result.innerHTML=alertBox(false,data.error||'No se pudo finalizar el reto.');return;}window.location.href=wrapper.dataset.redirectUrl||'/panel';}catch(e){finish.disabled=false;result.innerHTML=alertBox(false,'Error al guardar el reto.');}});})();</script>",
+                "order_index": 1
+              },
+              {
                 "title": "Filtración de credenciales",
-                "question": "¿Qué deberías hacer tras una filtración de datos?",
-                "correct_answer": "Cambiar contraseñas y revisar información sensible",
+                "question": "¿Se ha visto tu contraseña comprometida en alguna brecha de seguridad?",
+                "correct_answer": "No, mi contraseña no ha aparecido en ninguna brecha",
                 "options": [
-                  "No hacer nada",
-                  "Cambiar contraseñas y revisar información sensible",
-                  "Publicarlo en redes sociales",
-                  "Reutilizar la misma contraseña"
+                  "Sí, se ha visto comprometida",
+                  "No, mi contraseña no ha aparecido en ninguna brecha"
                 ],
                 "points": 10,
                 "is_training": 1,
                 "is_practical": 0,
                 "content": null,
-                "order_index": 1
+                "order_index": 2
+              },
+              {
+                "title": "Filtración de credenciales",
+                "question": "¿Qué deberías hacer tras una filtración de datos?",
+                "correct_answer": "Cambiar contraseñas y revisar información sensible",
+                "options": [
+                  "No hacer nada",
+                  "Publicarlo en redes sociales",
+                  "Reutilizar la misma contraseña",
+                  "Cambiar contraseñas y revisar información sensible"
+                ],
+                "points": 10,
+                "is_training": 1,
+                "is_practical": 0,
+                "content": null,
+                "order_index": 3
               }
             ],
             "post": [
@@ -484,6 +636,21 @@
                 "is_practical": 0,
                 "content": null,
                 "order_index": 1
+              },
+              {
+                "title": "Gestión de información sensible",
+                "question": "¿Bloqueas tu ordenador o dispositivo móvil cuando lo dejas sin supervisión?",
+                "correct_answer": "Siempre me aseguro de bloquearlo",
+                "options": [
+                  "Siempre me aseguro de bloquearlo",
+                  "Depende de la situación, a veces se me olvida",
+                  "Nunca utilizo métodos de bloqueo"
+                ],
+                "points": 10,
+                "is_training": 1,
+                "is_practical": 0,
+                "content": null,
+                "order_index": 2
               }
             ],
             "post": [
@@ -521,6 +688,22 @@
           "challenges": {
             "pre": [
               {
+                "title": "Propagación de malware",
+                "question": "¿A través de qué medio consideras que se puede propagar un malware?",
+                "correct_answer": "Todas las anteriores",
+                "options": [
+                  "Dispositivos usb u otros dispositivos externos",
+                  "Archivos adjuntos en correos electrónicos",
+                  "Enlaces, descargas o aplicaciones obtenidas desde páginas web o internet",
+                  "Todas las anteriores"
+                ],
+                "points": 10,
+                "is_training": 1,
+                "is_practical": 0,
+                "content": null,
+                "order_index": 1
+              },
+              {
                 "title": "Reconocimiento de webs y correos fraudulentos",
                 "question": "Una señal típica de phishing es…",
                 "correct_answer": "Enlaces o dominios sospechosos",
@@ -534,7 +717,7 @@
                 "is_training": 1,
                 "is_practical": 0,
                 "content": null,
-                "order_index": 1
+                "order_index": 2
               }
             ],
             "post": [
@@ -572,6 +755,21 @@
           "challenges": {
             "pre": [
               {
+                "title": "Bloqueo de dispositivos",
+                "question": "¿Bloqueas tu ordenador o dispositivo móvil cuando lo dejas sin supervisión?",
+                "correct_answer": "Siempre me aseguro de bloquearlo",
+                "options": [
+                  "Siempre me aseguro de bloquearlo",
+                  "Depende de la situación, a veces se me olvida",
+                  "Nunca utilizo métodos de bloqueo"
+                ],
+                "points": 10,
+                "is_training": 1,
+                "is_practical": 0,
+                "content": null,
+                "order_index": 1
+              },
+              {
                 "title": "Seguridad en dispositivos",
                 "question": "Una medida básica de protección del dispositivo es…",
                 "correct_answer": "Bloqueo de pantalla y actualizaciones",
@@ -585,7 +783,7 @@
                 "is_training": 1,
                 "is_practical": 0,
                 "content": null,
-                "order_index": 1
+                "order_index": 2
               }
             ],
             "post": [

@@ -431,14 +431,14 @@ def signin():
     if request.method == "POST":
         username = request.form.get("username", "").strip().lower()
         password = request.form.get("password", "")
-        app.logger.info(f"Intento de inicio de sesión: usuario={username}")
+        app.logger.info(f"Intento de inicio de sesión: usuario: {username}")
         u = get_user_by_username(username)
         if u and check_password_hash(u["password"], password):
             login_user(User(u["id"], u["name"], u["email"], u["password"],  u["age"],  u["gender"],  u["studies"]))
             session["username"] = u["id"]
-            app.logger.info(f"Inicio de sesión correcto: usuario={username}")
+            app.logger.info(f"Inicio de sesión correcto: usuario: {username}")
             return redirect(url_for("panel"))
-        app.logger.warning(f"Inicio de sesión fallido: usuario={username}")
+        app.logger.warning(f"Inicio de sesión fallido: usuario: {username}")
         return render_template("signin.html", error="Usuario o contraseña incorrectos.")
     return render_template("signin.html")
 
@@ -476,7 +476,7 @@ def signup():
         if get_user_by_username(username):
             return render_template("signup.html", error="Ese usuario ya existe.")
 
-        app.logger.info(f"Registro de nuevo usuario: usuario={username}, email={email}")
+        app.logger.info(f"Registro de nuevo usuario: usuario: {username}, email: {email}")
 
         create_user(username, name, email, password, age_int, gender, studies)
         u = get_user_by_username(username)
@@ -490,7 +490,7 @@ def signup():
 @app.route("/logout")
 @login_required
 def logout():
-    app.logger.info(f"Cierre de sesión: usuario={current_user.id}")
+    app.logger.info(f"Cierre de sesión: usuario: {current_user.id}")
     logout_user()
     session.pop("username", None)
     return redirect(url_for("signin"))

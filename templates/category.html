@@ -227,12 +227,12 @@
                             <div class="d-flex align-items-center">
 
                                 {% if done %}
-                                <a href="{{ url_for('subcategory_review_start', subcategory_code=sub.subcategory_code, phase='pre') }}" class="btn btn-outline-light btn btn-review">
-                                    <i class="fa fa-eye"></i>
-                                    <span>Revisar</span>
-                                </a>
-
+                                    <a href="{{ url_for('subcategory_review_start', subcategory_code=sub.subcategory_code, phase=phase) }}" class="btn btn-outline-light btn btn-review">
+                                        <i class="fa fa-eye"></i>
+                                        <span>Revisar</span>
+                                    </a>
                                 {% endif %}
+
                                 {% if phase == 'pre' and sub.pre_completed %}
                                     <a href="{{ url_for('training_page', subcategory_code=sub.subcategory_code) }}" class="btn btn-outline-info btn btn-training">
                                         <i class="fa fa-book"></i>
