@@ -1,3 +1,5 @@
+import re
+import unicodedata
 from flask import Flask, render_template, redirect, url_for, request, abort, session
 from flask_login import LoginManager, UserMixin, login_user, logout_user, login_required, current_user
 from flask_session import Session
@@ -388,6 +390,109 @@ def get_random_pending_challenge(user_id: str, subcategory_code: str, phase: str
             LIMIT 1
         """, (user_id, subcategory_code, phase)).fetchone()
         return dict(row) if row else None
+
+def normalize(text):
+    if not text:
+        return ""
+
+    text = unicodedata.normalize("NFKD", text)
+    text = "".join(c for c in text if not unicodedata.combining(c))
+    return re.sub(r"[^a-z0-9]", "", text.lower().strip())
+
+
+def split_values(text):
+    if not text:
+        return []
+
+    values = []
+    for part in re.split(r"[,\s]+", text):
+        v = normalize(part)
+        if v and v not in values:
+            values.append(v)
+    return values
+
+def generate_password_list(words, year, fav_number, singer, likes_football, teams):
+    base = [w for w in words if w]
+    year = normalize(year)
+    fav_number = normalize(fav_number)
+    singer = normalize(singer)
+
+    extras = []
+    if year: extras.append(year)
+    if fav_number: extras.append(fav_number)
+    if singer: extras.append(singer)
+    if likes_football == "si":
+        extras += [t for t in teams if t]
+
+    def variants(w):
+        v = []
+        if w: v.append(w)
+        if w and w.capitalize() not in v: v.append(w.capitalize())
+        if w and w.upper() not in v: v.append(w.upper())
+        return v
+
+    base_v = []
+    for w in base:
+        for x in variants(w):
+            if x not in base_v:
+                base_v.append(x)
+
+    extras_v = []
+    for e in extras:
+        for x in variants(e):
+            if x not in extras_v:
+                extras_v.append(x)
+
+    results = []
+    seps = ["", "_", ".", "-"]
+
+    def add(x):
+        if x and x not in results and len(results) < 30:
+            results.append(x)
+
+    for w in base_v:
+        add(w)
+
+    for w in base_v:
+        for e in extras_v:
+            for s in seps:
+                add(f"{w}{s}{e}")
+                add(f"{e}{s}{w}")
+
+    for i in range(len(base_v)):
+        for j in range(i + 1, len(base_v)):
+            for s in seps:
+                add(f"{base_v[i]}{s}{base_v[j]}")
+                add(f"{base_v[j]}{s}{base_v[i]}")
+
+    for i in range(len(base_v)):
+        for j in range(i + 1, len(base_v)):
+            for e in extras_v:
+                for s in seps:
+                    add(f"{base_v[i]}{s}{base_v[j]}{s}{e}")
+                    add(f"{e}{s}{base_v[i]}{s}{base_v[j]}")
+
+    return results
+
+
+@app.route("/challenge/<int:challenge_id>/complete-info", methods=["POST"])
+@login_required
+def challenge_complete_info(challenge_id):
+    challenge = get_challenge_by_id(challenge_id)
+    if not challenge:
+        return {"ok": False, "error": "Reto no encontrado"}, 404
+
+    if is_challenge_completed(current_user.id, challenge_id):
+        return {"ok": True}
+
+    mark_challenge_completed(
+        current_user.id,
+        challenge_id,
+        score=0,
+        user_answer=None
+    )
+
+    return {"ok": True}
 
 
 login_manager = LoginManager()
@@ -808,14 +913,59 @@ def challenge_complete(challenge_id):
     }
 
 
-    mark_challenge_completed(
-        current_user.id,
-        challenge_id,
-        score=score,
-        user_answer=json.dumps(feedback, ensure_ascii=False)
-    )
+    if challenge.get("content") and "pp_form" in challenge["content"]:
+        feedback_message = (
+            "Si alguna de tus contraseñas coincidía con alguna de la lista generada "
+            "o se parecía a ellas, deberías cambiarla por una contraseña larga, única "
+            "y difícil de adivinar. Este ejercicio es educativo y no se almacena "
+            "ninguna información sensible."
+        )
+
+        mark_challenge_completed(
+            current_user.id,
+            challenge_id,
+            score=0,
+            user_answer=json.dumps({"message": feedback_message}, ensure_ascii=False)
+        )
+    else:
+        mark_challenge_completed(
+            current_user.id,
+            challenge_id,
+            score=score,
+            user_answer=json.dumps(feedback, ensure_ascii=False)
+        )
 
     return {"ok": True, "score": score, "feedback": feedback}
+
+
+@app.route("/api/personal-pw", methods=["POST"])
+@login_required
+def api_personal_pw():
+    data = request.get_json(silent=True) or {}
+
+    pets = split_values(data.get("pets", ""))
+    kids = split_values(data.get("kids", ""))
+    city = normalize(data.get("city", ""))
+    year = data.get("birth_year", "")
+    fav_number = data.get("fav_number", "")
+    singer = data.get("singer", "")
+
+    likes_football = (data.get("likes_football") or "no").strip().lower()
+    teams = split_values(data.get("team", "")) if likes_football == "si" else []
+
+    name_parts = split_values(current_user.name)
+
+    words = []
+    for x in name_parts + pets + kids:
+        if x and x not in words:
+            words.append(x)
+
+    if city and city not in words:
+        words.append(city)
+
+    passwords = generate_password_list(words, year, fav_number, singer, likes_football, teams)
+
+    return {"ok": True, "passwords": passwords}
 
 
 @app.route("/subcategory/<subcategory_code>/<phase>/next")
@@ -924,11 +1074,18 @@ def subcategory_review_challenge(subcategory_code, phase, challenge_id):
 
     user_answer = progress.get("user_answer")
     practical_feedback = None
+
     if int(challenge.get("is_practical", 0)) and user_answer:
         try:
             practical_feedback = json.loads(user_answer)
         except Exception:
             practical_feedback = {"raw": user_answer}
+
+    if int(challenge.get("is_practical", 0)) and (challenge.get("content") and "pp_form" in challenge["content"]):
+        practical_feedback = {
+            "message": "En este reto se han generado contraseñas a partir de datos personales (mascotas, hijos, fechas o lugares habituales). Si alguna coincidía o se parecía a una contraseña real que uses, deberías cambiarla por una contraseña larga, única y difícil de adivinar. Este ejercicio es educativo y no se almacena ninguna información sensible ni contraseñas reales."
+        }
+
 
     redirect_url = url_for("category_page", category_code=category_code)
 

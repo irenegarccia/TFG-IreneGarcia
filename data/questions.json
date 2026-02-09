@@ -207,9 +207,20 @@
         {
           "subcategory_code": "cred_passwords",
           "title": "Contraseñas seguras",
-          "order_index": 1,
+          "order_index": 2,
           "challenges": {
             "pre": [
+              {
+                "title": "Contraseñas seguras",
+                "question": null,
+                "correct_answer": null,
+                "options": [],
+                "points": 10,
+                "is_training": 1,
+                "is_practical": 1,
+                "content":"<div class='bg-dark rounded p-3'><div class='alert alert-info mb-3'><b>Privacidad:</b> los datos que introduzcas a continuación <b>no se guardan en ningún sitio</b>. Se usan solo con fin <b>educativo</b>.</div><form id='pp_form'><div class='row g-2'><div class='col-12 col-md-6'><label class='form-label text-white'>¿Tienes mascotas?</label><select id='pp_has_pets' class='form-select bg-secondary text-white border-0'><option value='no' selected>No</option><option value='si'>Sí</option></select></div><div class='col-12 col-md-6' id='pp_pets_box' style='display:none;'><label class='form-label text-white'>Nombres de mascotas (separados por comas)</label><input id='pp_pets' class='form-control bg-secondary text-white border-0' placeholder='luna, coco'></div><div class='col-12 col-md-6'><label class='form-label text-white'>¿Tienes hijos?</label><select id='pp_has_kids' class='form-select bg-secondary text-white border-0'><option value='no' selected>No</option><option value='si'>Sí</option></select></div><div class='col-12 col-md-6' id='pp_kids_box' style='display:none;'><label class='form-label text-white'>Nombres de hijos (separados por comas)</label><input id='pp_kids' class='form-control bg-secondary text-white border-0' placeholder='maria, lucas'></div><div class='col-12 col-md-6'><label class='form-label text-white'>¿Cuál es tu ciudad o pueblo?</label><input id='pp_city' class='form-control bg-secondary text-white border-0' placeholder='madrid'></div><div class='col-12 col-md-6'><label class='form-label text-white'>¿En qué año naciste? (YYYY)</label><input id='pp_year' class='form-control bg-secondary text-white border-0' inputmode='numeric' placeholder='1999'></div><div class='col-12 col-md-6'><label class='form-label text-white'>¿Cuál es tu número favorito?</label><input id='pp_num' class='form-control bg-secondary text-white border-0' inputmode='numeric' placeholder='7'></div><div class='col-12 col-md-6'><label class='form-label text-white'>¿Quién es tu cantante favorito?</label><input id='pp_singer' class='form-control bg-secondary text-white border-0' placeholder='aitana'></div><div class='col-12 col-md-6'><label class='form-label text-white'>¿Te gusta el fútbol?</label><select id='pp_like_football' class='form-select bg-secondary text-white border-0'><option value='no' selected>No</option><option value='si'>Sí</option></select></div><div class='col-12 col-md-6' id='pp_team_box' style='display:none;'><label class='form-label text-white'>¿De qué equipo eres?</label><input id='pp_team' class='form-control bg-secondary text-white border-0' placeholder='real madrid'></div></div><div class='d-flex gap-2 flex-wrap mt-3'><button type='submit' class='btn btn-primary'>Generar lista</button></div></form><div id='pp_out' class='mt-3' style='display:none;'><div class='alert alert-warning mb-3'><b>Ojo:</b> si tu contraseña se parece a alguna de estas, es <b>muy fácil</b> de adivinar. Mejor: larga, única y con mezcla de caracteres.</div><div id='pp_grid' class='row g-2'></div><div class='d-flex gap-2 flex-wrap mt-3'><button id='pp_finish' class='btn btn-success'>Terminar reto</button></div></div><div id='pp_err' class='mt-3'></div></div><script>(function(){const form=document.getElementById('pp_form');const out=document.getElementById('pp_out');const grid=document.getElementById('pp_grid');const err=document.getElementById('pp_err');const finish=document.getElementById('pp_finish');const hasPets=document.getElementById('pp_has_pets');const petsBox=document.getElementById('pp_pets_box');const pets=document.getElementById('pp_pets');const hasKids=document.getElementById('pp_has_kids');const kidsBox=document.getElementById('pp_kids_box');const kids=document.getElementById('pp_kids');const likeFootball=document.getElementById('pp_like_football');const teamBox=document.getElementById('pp_team_box');const team=document.getElementById('pp_team');function csrf(){const m=document.querySelector('meta[name=\\\"csrf-token\\\"]');return m?m.getAttribute('content'):'';}function showErr(msg){err.innerHTML=`<div class='alert alert-danger mb-0'>${msg}</div>`;}function toggle(){petsBox.style.display=(hasPets.value==='si')?'block':'none';if(hasPets.value!=='si')pets.value='';kidsBox.style.display=(hasKids.value==='si')?'block':'none';if(hasKids.value!=='si')kids.value='';teamBox.style.display=(likeFootball.value==='si')?'block':'none';if(likeFootball.value!=='si')team.value='';}hasPets.addEventListener('change',toggle);hasKids.addEventListener('change',toggle);likeFootball.addEventListener('change',toggle);toggle();form.addEventListener('submit',async(e)=>{e.preventDefault();err.innerHTML='';grid.innerHTML='';const payload={pets:(hasPets.value==='si'?pets.value:''),kids:(hasKids.value==='si'?kids.value:''),city:document.getElementById('pp_city').value||'',birth_year:document.getElementById('pp_year').value||'',fav_number:document.getElementById('pp_num').value||'',singer:document.getElementById('pp_singer').value||'',likes_football:likeFootball.value||'no',team:(likeFootball.value==='si'?team.value:'')};try{const res=await fetch('/api/personal-pw',{method:'POST',credentials:'same-origin',headers:{'Content-Type':'application/json','X-CSRFToken':csrf()},body:JSON.stringify(payload)});const data=await res.json();if(!data.ok){showErr(data.error||'No se pudo generar la lista.');return;}const list=(data.passwords||[]).slice(0,30);if(list.length===0){showErr('No se pudo generar ninguna combinación.');return;}for(let i=0;i<list.length;i++){const col=document.createElement('div');col.className='col-12 col-md-6';col.innerHTML=`<div class='bg-secondary rounded p-2 text-white' style='word-break:break-all;'>${list[i]}</div>`;grid.appendChild(col);}form.style.display='none';out.style.display='block';}catch(_){showErr('Error de red o servidor.');}});finish.addEventListener('click',async()=>{const wrapper=document.getElementById('practical-wrapper');const challengeId=wrapper?wrapper.dataset.challengeId:null;const redirectUrl=wrapper&&wrapper.dataset.redirectUrl?wrapper.dataset.redirectUrl:'/panel';if(!challengeId){window.location.href=redirectUrl;return;}try{await fetch(`/challenge/${challengeId}/complete-info`,{method:'POST',credentials:'same-origin',headers:{'Content-Type':'application/json','X-CSRFToken':csrf()}});}catch(_){}window.location.href=redirectUrl;});})();</script>",
+                "order_index": 1
+              },
               {
                 "title": "Contraseñas seguras",
                 "question": "¿Utilizas contraseñas complejas (mezcla de mayúsculas, minúsculas, números y símbolos)?",
@@ -224,7 +235,7 @@
                 "is_training": 1,
                 "is_practical": 0,
                 "content": null,
-                "order_index": 1
+                "order_index": 2
               },
               {
                 "title": "Contraseñas seguras",
@@ -239,7 +250,7 @@
                 "is_training": 1,
                 "is_practical": 0,
                 "content": null,
-                "order_index": 2
+                "order_index":3
               },
               {
                 "title": "Contraseñas seguras",
@@ -255,7 +266,7 @@
                 "is_training": 1,
                 "is_practical": 0,
                 "content": null,
-                "order_index": 3
+                "order_index": 4
               },
               {
                 "title": "Contraseñas seguras",

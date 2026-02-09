@@ -131,48 +131,79 @@
                             <h6 class="text-white mb-2"><i class="fa fa-eye me-2"></i>Revisión del reto práctico</h6>
 
                             {% if practical_feedback %}
-                                {% if practical_feedback.password_length is defined %}
-                                    <div class="text-white-50 small">
-                                        Contraseña introducida: <strong class="text-white">{{ practical_feedback.password_length }}</strong> caracteres
+                                {# SOLO mostrar el mensaje rojo si este reto es el formulario (pp_form) #}
+                                {% if practical_feedback.message is defined and challenge.content and 'pp_form' in challenge.content %}
+                                    <div class="bg-dark border border-danger rounded p-3 mb-0">
+                                        <h6 class="text-danger mb-2">
+                                            <i class="fa fa-exclamation-triangle me-2"></i>
+                                            Reto: uso de información personal en contraseñas
+                                        </h6>
+
+                                        <p class="text-white-50 mb-0">
+                                            En este reto se han generado contraseñas a partir de
+                                            <strong class="text-white">datos personales</strong> como mascotas,
+                                            hijos, fechas o lugares habituales.
+                                            <br><br>
+                                            Si alguna de las contraseñas generadas
+                                            <strong class="text-white">coincidía o se parecía</strong>
+                                            a una contraseña que utilizas en la vida real, deberías
+                                            <strong class="text-white">cambiarla inmediatamente</strong> por una
+                                            contraseña <strong class="text-white">única, larga y no predecible</strong>.
+                                            <br><br>
+                                            <strong class="text-white">Privacidad:</strong> este ejercicio es únicamente educativo.
+                                            <strong class="text-white">No se almacena ninguna información personal ni contraseñas reales</strong>.
+                                        </p>
                                     </div>
-                                {% endif %}
+                                {% else %}
 
-                                {% if practical_feedback.pwned_count is defined %}
-                                    <div class="text-white-50 small mt-1">
-                                        Apariciones en brechas: <strong class="text-white">{{ practical_feedback.pwned_count }}</strong>
-                                    </div>
-                                {% endif %}
+                                    {# Feedback normal (HIBP u otros retos prácticos) #}
+                                    {% if practical_feedback.password_length is defined %}
+                                        <div class="text-white-50 small">
+                                            Contraseña introducida: <strong class="text-white">{{ practical_feedback.password_length }}</strong> caracteres
+                                        </div>
+                                    {% endif %}
 
-                                {% if practical_feedback.missing_requirements is defined and practical_feedback.missing_requirements %}
-                                <div class="text-white-50 small mt-2">
-                                    <div class="text-white"><strong>Te falta cumplir:</strong></div>
-                                    <ul class="mb-0 mt-1 ps-3">
-                                    {% for r in practical_feedback.missing_requirements %}
-                                        <li class="text-white-50">
-                                        {% if r == 'has_upper' %}
-                                            <span class="text-white">❌</span> Al menos una <strong class="text-white">mayúscula</strong> (A-Z)
-                                        {% elif r == 'has_digit' %}
-                                            <span class="text-white">❌</span> Al menos un <strong class="text-white">número</strong> (0-9)
-                                        {% elif r == 'has_symbol' %}
-                                            <span class="text-white">❌</span> Al menos un <strong class="text-white">símbolo</strong> (!@#$%)
-                                        {% elif r == 'min_length' %}
-                                            <span class="text-white">❌</span> Más <strong class="text-white">longitud</strong> (mínimo recomendado 12+)
-                                        {% else %}
-                                            <span class="text-white">❌</span> {{ r }}
-                                        {% endif %}
-                                        </li>
-                                    {% endfor %}
-                                    </ul>
-                                </div>
-                                {% endif %}
+                                    {% if practical_feedback.pwned_count is defined %}
+                                        <div class="text-white-50 small mt-1">
+                                            Apariciones en brechas: <strong class="text-white">{{ practical_feedback.pwned_count }}</strong>
+                                        </div>
+                                    {% endif %}
 
+                                    {% if practical_feedback.missing_requirements is defined and practical_feedback.missing_requirements %}
+                                        <div class="text-white-50 small mt-2">
+                                            <div class="text-white"><strong>Te falta cumplir:</strong></div>
+                                            <ul class="mb-0 mt-1 ps-3">
+                                            {% for r in practical_feedback.missing_requirements %}
+                                                <li class="text-white-50">
+                                                {% if r == 'has_upper' %}
+                                                    <span class="text-white">❌</span> Al menos una <strong class="text-white">mayúscula</strong> (A-Z)
+                                                {% elif r == 'has_digit' %}
+                                                    <span class="text-white">❌</span> Al menos un <strong class="text-white">número</strong> (0-9)
+                                                {% elif r == 'has_symbol' %}
+                                                    <span class="text-white">❌</span> Al menos un <strong class="text-white">símbolo</strong> (!@#$%)
+                                                {% elif r == 'min_length' %}
+                                                    <span class="text-white">❌</span> Más <strong class="text-white">longitud</strong> (mínimo recomendado 12+)
+                                                {% else %}
+                                                    <span class="text-white">❌</span> {{ r }}
+                                                {% endif %}
+                                                </li>
+                                            {% endfor %}
+                                            </ul>
+                                        </div>
+                                    {% endif %}
+
+                                {% endif %}
                             {% else %}
                                 <div class="text-white-50 small">No hay feedback guardado para este reto.</div>
                             {% endif %}
+
                         </div>
 
                         <div class="mt-3 d-flex justify-content-between align-items-center">
-                            <span class="badge bg-primary score-badge">Puntuación: {{ user_score }}</span>
+                            {# Ocultar puntuación SOLO en el reto del formulario (pp_form) #}
+                            {% if not (practical_feedback and practical_feedback.message is defined and challenge.content and 'pp_form' in challenge.content) %}
+                                <span class="badge bg-primary score-badge">Puntuación: {{ user_score }}</span>
+                            {% endif %}
 
                             {% if next_url %}
                                 <a class="btn btn-primary" href="{{ next_url }}">
