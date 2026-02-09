@@ -2,9 +2,30 @@ from flask import Flask, render_template, redirect, url_for, request, abort, ses
 from flask_login import LoginManager, UserMixin, login_user, logout_user, login_required, current_user
 from flask_session import Session
 from werkzeug.security import generate_password_hash, check_password_hash
-import sqlite3, os, string, json, hashlib, requests
+import sqlite3, os, string, json, hashlib, requests, logging
 from flask_wtf.csrf import CSRFProtect
+from logging.config import dictConfig
 
+
+dictConfig({
+    "version": 1,
+    "formatters": {
+        "default": {
+            "format": "[%(asctime)s] %(levelname)s in %(module)s: %(message)s",
+        }
+    },
+    "handlers": {
+        "wsgi": {
+            "class": "logging.StreamHandler",
+            "stream": "ext://sys.stderr",
+            "formatter": "default",
+        }
+    },
+    "root": {
+        "level": "INFO",
+        "handlers": ["wsgi"]
+    }
+})
 
 app = Flask(__name__, static_folder='static', static_url_path='/')
 app.secret_key = os.environ.get("SECRET_KEY") or os.urandom(32)
@@ -107,6 +128,7 @@ def init_db():
             FOREIGN KEY (challenge_id) REFERENCES challenges(id)
         );
         """)
+
 
         conn.execute("""
         CREATE TABLE IF NOT EXISTS user_training_progress (
@@ -400,6 +422,7 @@ def load_user(user_id):
 
 @app.route("/")
 def landing():
+    app.logger.info("Acceso a la plataforma")
     return render_template("landing.html")
 
 
@@ -408,11 +431,14 @@ def signin():
     if request.method == "POST":
         username = request.form.get("username", "").strip().lower()
         password = request.form.get("password", "")
+        app.logger.info(f"Intento de inicio de sesión: usuario={username}")
         u = get_user_by_username(username)
         if u and check_password_hash(u["password"], password):
             login_user(User(u["id"], u["name"], u["email"], u["password"],  u["age"],  u["gender"],  u["studies"]))
             session["username"] = u["id"]
+            app.logger.info(f"Inicio de sesión correcto: usuario={username}")
             return redirect(url_for("panel"))
+        app.logger.warning(f"Inicio de sesión fallido: usuario={username}")
         return render_template("signin.html", error="Usuario o contraseña incorrectos.")
     return render_template("signin.html")
 
@@ -425,30 +451,46 @@ def signup():
         email = request.form.get("email", "").strip().lower()
         password = request.form.get("password", "")
         confirm_password = request.form.get("confirm_password", "")
-        age = request.form.get("age")
-        gender = request.form.get("gender")
-        studies = request.form.get("studies")
+        user_age = request.form.get("age", "").strip()
+        gender = request.form.get("gender", "")
+        studies = request.form.get("studies", "")
 
-        if not name or not username or not email or not password or not confirm_password or not age or not gender or not studies:
+        if not name or not username or not email or not password or not confirm_password or not user_age or not gender or not studies:
             return render_template("signup.html", error="Rellena todos los campos.")
+
+        try:
+            age_int = int(user_age)
+        except ValueError:
+            return render_template("signup.html", error="La edad debe ser un número entero válido.")
+
+        if age_int < 1 or age_int > 120:
+            return render_template("signup.html", error="La edad debe estar entre 1 y 120.")
+
         if password != confirm_password:
             return render_template("signup.html", error="Las contraseñas no coinciden.")
         if not passwordValidation(password):
-            return render_template("signup.html", error="La contraseña debe tener al menos 8 caracteres e incluir mayúsculas, minúsculas, números y símbolos.")
+            return render_template(
+                "signup.html",
+                error="La contraseña debe tener al menos 8 caracteres e incluir mayúsculas, minúsculas, números y símbolos."
+            )
         if get_user_by_username(username):
             return render_template("signup.html", error="Ese usuario ya existe.")
 
-        create_user(username, name, email, password, age, gender, studies)
+        app.logger.info(f"Registro de nuevo usuario: usuario={username}, email={email}")
+
+        create_user(username, name, email, password, age_int, gender, studies)
         u = get_user_by_username(username)
         login_user(User(u["id"], u["name"], u["email"], u["password"], u["age"], u["gender"], u["studies"]))
         session["username"] = u["id"]
         return redirect(url_for("panel"))
+
     return render_template("signup.html")
 
 
 @app.route("/logout")
 @login_required
 def logout():
+    app.logger.info(f"Cierre de sesión: usuario={current_user.id}")
     logout_user()
     session.pop("username", None)
     return redirect(url_for("signin"))
@@ -1077,5 +1119,6 @@ def not_found(e):
 
 
 if __name__ == "__main__":
+    app.logger.info("Arranque de la aplicación")
     default_admin() 
     app.run(host='0.0.0.0', port=5000, debug=True)
