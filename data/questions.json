@@ -13,6 +13,18 @@
             "pre": [
               {
                 "title": "Dispositivos maliciosos",
+                "question": null,
+                "correct_answer": null,
+                "options": [],
+                "points": 10,
+                "is_training": 1,
+                "is_practical": 1,
+                "content": "<div class=\"bg-dark rounded p-3\" id=\"practical-wrapper\" data-challenge-id=\"{{challenge.id}}\" data-redirect-url=\"{{redirect_url}}\">\n\n  <div class=\"mb-3 text-white\">\n   <strong> Has encontrado un USB tirado en el suelo y decides conectarlo a tu ordenador para ver su contenido.\n    <br>\n   ¿Qué riesgos ves en esta situación y qué harías para actuar de forma segura?\n </strong> </div>\n\n  <div class=\"mb-3\">\n    <img src=\"/img/usbmalicioso.png\" class=\"img-fluid rounded\" style=\"max-height: 320px; object-fit: contain; width: 100%;\" alt=\"USB encontrado en el suelo\">\n  </div>\n\n  <div class=\"mb-3\">\n    <label class=\"form-label text-white\">Introduce a continuación tu respuesta</label>\n    <textarea id=\"img_answer\" class=\"form-control bg-secondary text-white border-0\" rows=\"4\" placeholder=\"Escribe aquí tu respuesta...\"></textarea>\n  </div>\n\n  <div class=\"d-flex gap-2 flex-wrap\">\n    <button id=\"img_send\" class=\"btn btn-primary\">Enviar</button>\n  </div>\n\n  <div id=\"img_msg\" class=\"mt-3\"></div>\n</div>\n\n<script>\n(function(){\n  const wrapper = document.getElementById('practical-wrapper');\n  const btn = document.getElementById('img_send');\n  const answerEl = document.getElementById('img_answer');\n  const msg = document.getElementById('img_msg');\n\n  function csrf(){\n    const m = document.querySelector('meta[name=\\\"csrf-token\\\"]');\n    return m ? m.getAttribute('content') : '';\n  }\n\n  function show(ok, text){\n    msg.innerHTML = `<div class=\\\"alert ${ok ? 'alert-success' : 'alert-danger'} mb-0\\\">${text}</div>`;\n  }\n\n  btn.addEventListener('click', async () => {\n    const challengeId = wrapper ? wrapper.dataset.challengeId : null;\n    const redirectUrl = (wrapper && wrapper.dataset.redirectUrl) ? wrapper.dataset.redirectUrl : '/panel';\n    const answer = (answerEl.value || '').trim();\n\n    if (!answer){\n      show(false, 'Escribe una respuesta antes de enviar.');\n      return;\n    }\n\n    btn.disabled = true;\n    answerEl.disabled = true;\n\n    try{\n      const res = await fetch(`/challenge/${challengeId}/complete-info`, {\n        method: 'POST',\n        credentials: 'same-origin',\n        headers: {\n          'Content-Type': 'application/json',\n          'X-CSRFToken': csrf()\n        },\n        body: JSON.stringify({ answer })\n      });\n\n      const data = await res.json();\n      if (!data.ok){\n        show(false, data.error || 'No se pudo guardar el reto.');\n        btn.disabled = false;\n        answerEl.disabled = false;\n        return;\n      }\n\n      show(true, 'Reto guardado. Redirigiendo...');\n      window.location.href = redirectUrl;\n    }catch(e){\n      show(false, 'Error de red o servidor.');\n      btn.disabled = false;\n      answerEl.disabled = false;\n    }\n  });\n})();\n</script>",
+                "order_index": 1
+              },
+
+              {
+                "title": "Dispositivos maliciosos",
                 "question": "¿Qué es un USB malicioso?",
                 "correct_answer": "Un USB que puede ejecutar ataques o acciones no deseadas",
                 "options": [
@@ -24,7 +36,7 @@
                 "is_training": 1,
                 "is_practical": 0,
                 "content": null,
-                "order_index": 1
+                "order_index": 4
               },
               {
                 "title": "Dispositivos maliciosos",
@@ -56,7 +68,7 @@
                 "is_training": 1,
                 "is_practical": 0,
                 "content": null,
-                "order_index": 2
+                "order_index": 3
               }
             ],
             "post": [
@@ -161,6 +173,17 @@
             "pre": [
               {
                 "title": "Pagos contactless y riesgos NFC",
+                "question": null,
+                "correct_answer": null,
+                "options": [],
+                "points": 10,
+                "is_training": 1,
+                "is_practical": 1,
+                "content": "<div class=\"bg-dark rounded p-3\" id=\"practical-wrapper\" data-challenge-id=\"{{challenge.id}}\" data-redirect-url=\"{{redirect_url}}\">\n\n  <div class=\"mb-3 text-white\">\n   <strong> Te encuentras en un lugar con mucha gente y llevas tu tarjeta contactless o el móvil con NFC activado.\n    <br>\n   ¿Qué riesgos ves en esta situación y qué harías para reducirlos?\n </strong> </div>\n\n  <div class=\"mb-3\">\n    <img src=\"/img/nfc.png\" class=\"img-fluid rounded\" style=\"max-height: 320px; object-fit: contain; width: 100%;\" alt=\"Riesgos NFC / contactless\">\n  </div>\n\n  <div class=\"mb-3\">\n    <label class=\"form-label text-white\">Introduce a continuación tu respuesta</label>\n    <textarea id=\"img_answer\" class=\"form-control bg-secondary text-white border-0\" rows=\"4\" placeholder=\"Escribe aquí tu respuesta...\"></textarea>\n  </div>\n\n  <div class=\"d-flex gap-2 flex-wrap\">\n    <button id=\"img_send\" class=\"btn btn-primary\">Enviar</button>\n  </div>\n\n  <div id=\"img_msg\" class=\"mt-3\"></div>\n</div>\n\n<script>\n(function(){\n  const wrapper = document.getElementById('practical-wrapper');\n  const btn = document.getElementById('img_send');\n  const answerEl = document.getElementById('img_answer');\n  const msg = document.getElementById('img_msg');\n\n  function csrf(){\n    const m = document.querySelector('meta[name=\\\"csrf-token\\\"]');\n    return m ? m.getAttribute('content') : '';\n  }\n\n  function show(ok, text){\n    msg.innerHTML = `<div class=\\\"alert ${ok ? 'alert-success' : 'alert-danger'} mb-0\\\">${text}</div>`;\n  }\n\n  btn.addEventListener('click', async () => {\n    const challengeId = wrapper ? wrapper.dataset.challengeId : null;\n    const redirectUrl = (wrapper && wrapper.dataset.redirectUrl) ? wrapper.dataset.redirectUrl : '/panel';\n    const answer = (answerEl.value || '').trim();\n\n    if (!answer){\n      show(false, 'Escribe una respuesta antes de enviar.');\n      return;\n    }\n\n    btn.disabled = true;\n    answerEl.disabled = true;\n\n    try{\n      const res = await fetch(`/challenge/${challengeId}/complete-info`, {\n        method: 'POST',\n        credentials: 'same-origin',\n        headers: {\n          'Content-Type': 'application/json',\n          'X-CSRFToken': csrf()\n        },\n        body: JSON.stringify({ answer })\n      });\n\n      const data = await res.json();\n      if (!data.ok){\n        show(false, data.error || 'No se pudo guardar el reto.');\n        btn.disabled = false;\n        answerEl.disabled = false;\n        return;\n      }\n\n      show(true, 'Reto guardado. Redirigiendo...');\n      window.location.href = redirectUrl;\n    }catch(e){\n      show(false, 'Error de red o servidor.');\n      btn.disabled = false;\n      answerEl.disabled = false;\n    }\n  });\n})();\n</script>",
+                "order_index": 1
+              },
+              {
+                "title": "Pagos contactless y riesgos NFC",
                 "question": "¿Qué medida ayuda a reducir el riesgo de NFC/contactless?",
                 "correct_answer": "Desactivar NFC cuando no se use",
                 "options": [
@@ -173,7 +196,22 @@
                 "is_training": 1,
                 "is_practical": 0,
                 "content": null,
-                "order_index": 1
+                "order_index": 2
+              },
+              {
+                "title": "Pagos contactless y riesgos NFC",
+                "question": "¿Cuál de las siguientes opciones es una buena prática para la protección de los pagos contactless?",
+                "correct_answer": "Establecer un límite bajo en la tarjeta de crédito para evitar cobros grandes en caso de pérdida del dispositivo",
+                "options": [
+                  "Comprar un dispositivo nuevo",
+                  "Pedir una tarjeta de crédito nueva",
+                  "Establecer un límite bajo en la tarjeta de crédito para evitar cobros grandes en caso de pérdida del dispositivo"
+                ],
+                "points": 10,
+                "is_training": 1,
+                "is_practical": 0,
+                "content": null,
+                "order_index": 2
               }
             ],
             "post": [
@@ -439,6 +477,39 @@
                 "order_index": 1
               },
               {
+                "title": "Filtración de información sensible",
+                "question": null,
+                "correct_answer": null,
+                "options": [],
+                "points": 10,
+                "is_training": 1,
+                "is_practical": 1,
+                "content": "<div class=\"bg-dark rounded p-3\" id=\"practical-wrapper\" data-challenge-id=\"{{challenge.id}}\" data-redirect-url=\"{{redirect_url}}\">\n\n  <div class=\"mb-3 text-white\">\n   <strong> Te encuentras en una videoconferencia compartiendo pantalla y aparece un mensaje con información bancaria o sensible.\n    <br>\n   ¿Qué riesgos ves y qué harías para evitar filtrar datos?\n </strong> </div>\n\n  <div class=\"mb-3\">\n    <img src=\"/img/bank_sharescreen.png\" class=\"img-fluid rounded\" style=\"max-height: 320px; object-fit: contain; width: 100%;\" alt=\"Compartir pantalla con datos bancarios\">\n  </div>\n\n  <div class=\"mb-3\">\n    <label class=\"form-label text-white\">Introduce a continuación tu respuesta</label>\n    <textarea id=\"img_answer\" class=\"form-control bg-secondary text-white border-0\" rows=\"4\" placeholder=\"Escribe aquí tu respuesta...\"></textarea>\n  </div>\n\n  <div class=\"d-flex gap-2 flex-wrap\">\n    <button id=\"img_send\" class=\"btn btn-primary\">Enviar</button>\n  </div>\n\n  <div id=\"img_msg\" class=\"mt-3\"></div>\n</div>\n\n<script>\n(function(){\n  const wrapper = document.getElementById('practical-wrapper');\n  const btn = document.getElementById('img_send');\n  const answerEl = document.getElementById('img_answer');\n  const msg = document.getElementById('img_msg');\n\n  function csrf(){\n    const m = document.querySelector('meta[name=\\\"csrf-token\\\"]');\n    return m ? m.getAttribute('content') : '';\n  }\n\n  function show(ok, text){\n    msg.innerHTML = `<div class=\\\"alert ${ok ? 'alert-success' : 'alert-danger'} mb-0\\\">${text}</div>`;\n  }\n\n  btn.addEventListener('click', async () => {\n    const challengeId = wrapper ? wrapper.dataset.challengeId : null;\n    const redirectUrl = (wrapper && wrapper.dataset.redirectUrl) ? wrapper.dataset.redirectUrl : '/panel';\n    const answer = (answerEl.value || '').trim();\n\n    if (!answer){\n      show(false, 'Escribe una respuesta antes de enviar.');\n      return;\n    }\n\n    btn.disabled = true;\n    answerEl.disabled = true;\n\n    try{\n      const res = await fetch(`/challenge/${challengeId}/complete-info`, {\n        method: 'POST',\n        credentials: 'same-origin',\n        headers: {\n          'Content-Type': 'application/json',\n          'X-CSRFToken': csrf()\n        },\n        body: JSON.stringify({ answer })\n      });\n\n      const data = await res.json();\n      if (!data.ok){\n        show(false, data.error || 'No se pudo guardar el reto.');\n        btn.disabled = false;\n        answerEl.disabled = false;\n        return;\n      }\n\n      show(true, 'Reto guardado. Redirigiendo...');\n      window.location.href = redirectUrl;\n    }catch(e){\n      show(false, 'Error de red o servidor.');\n      btn.disabled = false;\n      answerEl.disabled = false;\n    }\n  });\n})();\n</script>",
+                "order_index": 2
+              },
+              {
+                "title": "Filtración de información sensible",
+                "question": null,
+                "correct_answer": null,
+                "options": [],
+                "points": 10,
+                "is_training": 1,
+                "is_practical": 1,
+                "content": "<div class=\"bg-dark rounded p-3\" id=\"practical-wrapper\" data-challenge-id=\"{{challenge.id}}\" data-redirect-url=\"{{redirect_url}}\">\n\n  <div class=\"mb-3 text-white\">\n   <strong> Sales del coche sin darte cuenta de que has olvidado la cartera y tu tarjeta queda expuesta.\n    <br>\n   ¿Qué riesgos hay y cómo los evitarías?\n </strong> </div>\n\n  <div class=\"mb-3\">\n    <img src=\"/img/creditcard_car.png\" class=\"img-fluid rounded\" style=\"max-height: 320px; object-fit: contain; width: 100%;\" alt=\"Tarjeta de crédito en el coche\">\n  </div>\n\n  <div class=\"mb-3\">\n    <label class=\"form-label text-white\">Introduce a continuación tu respuesta</label>\n    <textarea id=\"img_answer\" class=\"form-control bg-secondary text-white border-0\" rows=\"4\" placeholder=\"Escribe aquí tu respuesta...\"></textarea>\n  </div>\n\n  <div class=\"d-flex gap-2 flex-wrap\">\n    <button id=\"img_send\" class=\"btn btn-primary\">Enviar</button>\n  </div>\n\n  <div id=\"img_msg\" class=\"mt-3\"></div>\n</div>\n\n<script>\n(function(){\n  const wrapper = document.getElementById('practical-wrapper');\n  const btn = document.getElementById('img_send');\n  const answerEl = document.getElementById('img_answer');\n  const msg = document.getElementById('img_msg');\n\n  function csrf(){\n    const m = document.querySelector('meta[name=\\\"csrf-token\\\"]');\n    return m ? m.getAttribute('content') : '';\n  }\n\n  function show(ok, text){\n    msg.innerHTML = `<div class=\\\"alert ${ok ? 'alert-success' : 'alert-danger'} mb-0\\\">${text}</div>`;\n  }\n\n  btn.addEventListener('click', async () => {\n    const challengeId = wrapper ? wrapper.dataset.challengeId : null;\n    const redirectUrl = (wrapper && wrapper.dataset.redirectUrl) ? wrapper.dataset.redirectUrl : '/panel';\n    const answer = (answerEl.value || '').trim();\n\n    if (!answer){\n      show(false, 'Escribe una respuesta antes de enviar.');\n      return;\n    }\n\n    btn.disabled = true;\n    answerEl.disabled = true;\n\n    try{\n      const res = await fetch(`/challenge/${challengeId}/complete-info`, {\n        method: 'POST',\n        credentials: 'same-origin',\n        headers: {\n          'Content-Type': 'application/json',\n          'X-CSRFToken': csrf()\n        },\n        body: JSON.stringify({ answer })\n      });\n\n      const data = await res.json();\n      if (!data.ok){\n        show(false, data.error || 'No se pudo guardar el reto.');\n        btn.disabled = false;\n        answerEl.disabled = false;\n        return;\n      }\n\n      show(true, 'Reto guardado. Redirigiendo...');\n      window.location.href = redirectUrl;\n    }catch(e){\n      show(false, 'Error de red o servidor.');\n      btn.disabled = false;\n      answerEl.disabled = false;\n    }\n  });\n})();\n</script>",
+                "order_index": 3
+              },
+              {
+                "title": "Filtración de información sensible",
+                "question": null,
+                "correct_answer": null,
+                "options": [],
+                "points": 10,
+                "is_training": 1,
+                "is_practical": 1,
+                "content": "<div class=\"bg-dark rounded p-3\" id=\"practical-wrapper\" data-challenge-id=\"{{challenge.id}}\" data-redirect-url=\"{{redirect_url}}\">\n\n  <div class=\"mb-3 text-white\">\n   <strong> Una influencer sube una foto a las redes sociales y, sin darse cuenta, se ve una tarjeta de crédito en la imagen.\n    <br>\n   ¿Qué riesgos ves y qué medidas tomarías antes de publicar una imagen así?\n </strong> </div>\n\n  <div class=\"mb-3\">\n    <img src=\"/img/creditcard_influencer.png\" class=\"img-fluid rounded\" style=\"max-height: 320px; object-fit: contain; width: 100%;\" alt=\"Tarjeta de crédito en una foto\">\n  </div>\n\n  <div class=\"mb-3\">\n    <label class=\"form-label text-white\">Introduce a continuación tu respuesta</label>\n    <textarea id=\"img_answer\" class=\"form-control bg-secondary text-white border-0\" rows=\"4\" placeholder=\"Escribe aquí tu respuesta...\"></textarea>\n  </div>\n\n  <div class=\"d-flex gap-2 flex-wrap\">\n    <button id=\"img_send\" class=\"btn btn-primary\">Enviar</button>\n  </div>\n\n  <div id=\"img_msg\" class=\"mt-3\"></div>\n</div>\n\n<script>\n(function(){\n  const wrapper = document.getElementById('practical-wrapper');\n  const btn = document.getElementById('img_send');\n  const answerEl = document.getElementById('img_answer');\n  const msg = document.getElementById('img_msg');\n\n  function csrf(){\n    const m = document.querySelector('meta[name=\\\"csrf-token\\\"]');\n    return m ? m.getAttribute('content') : '';\n  }\n\n  function show(ok, text){\n    msg.innerHTML = `<div class=\\\"alert ${ok ? 'alert-success' : 'alert-danger'} mb-0\\\">${text}</div>`;\n  }\n\n  btn.addEventListener('click', async () => {\n    const challengeId = wrapper ? wrapper.dataset.challengeId : null;\n    const redirectUrl = (wrapper && wrapper.dataset.redirectUrl) ? wrapper.dataset.redirectUrl : '/panel';\n    const answer = (answerEl.value || '').trim();\n\n    if (!answer){\n      show(false, 'Escribe una respuesta antes de enviar.');\n      return;\n    }\n\n    btn.disabled = true;\n    answerEl.disabled = true;\n\n    try{\n      const res = await fetch(`/challenge/${challengeId}/complete-info`, {\n        method: 'POST',\n        credentials: 'same-origin',\n        headers: {\n          'Content-Type': 'application/json',\n          'X-CSRFToken': csrf()\n        },\n        body: JSON.stringify({ answer })\n      });\n\n      const data = await res.json();\n      if (!data.ok){\n        show(false, data.error || 'No se pudo guardar el reto.');\n        btn.disabled = false;\n        answerEl.disabled = false;\n        return;\n      }\n\n      show(true, 'Reto guardado. Redirigiendo...');\n      window.location.href = redirectUrl;\n    }catch(e){\n      show(false, 'Error de red o servidor.');\n      btn.disabled = false;\n      answerEl.disabled = false;\n    }\n  });\n})();\n</script>",
+                "order_index": 4
+              },
+              {
                 "title": "Filtración de credenciales",
                 "question": "¿Se ha visto tu contraseña comprometida en alguna brecha de seguridad?",
                 "correct_answer": "No, mi contraseña no ha aparecido en ninguna brecha",
@@ -450,7 +521,7 @@
                 "is_training": 1,
                 "is_practical": 0,
                 "content": null,
-                "order_index": 2
+                "order_index": 5
               },
               {
                 "title": "Filtración de credenciales",
@@ -466,7 +537,7 @@
                 "is_training": 1,
                 "is_practical": 0,
                 "content": null,
-                "order_index": 3
+                "order_index": 6
               }
             ],
             "post": [

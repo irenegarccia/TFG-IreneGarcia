@@ -110,6 +110,7 @@ def init_db():
 
             is_practical INTEGER NOT NULL DEFAULT 0,
             content TEXT,
+            img TEXT,
 
             FOREIGN KEY (subcategory_code) REFERENCES subcategories(subcategory_code),
             UNIQUE(subcategory_code, phase, order_index)
@@ -189,8 +190,8 @@ def add_data():
                             (title, subcategory_code, phase, order_index,
                              is_training, points, question, correct_answer,
                              option1, option2, option3, option4,
-                             is_practical, content)
-                            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                             is_practical, content, img)
+                            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
                         """, (
                             ch["title"],
                             sub["subcategory_code"],
@@ -202,7 +203,8 @@ def add_data():
                             ch.get("correct_answer"),
                             o1, o2, o3, o4,
                             int(ch.get("is_practical", 0)),
-                            ch.get("content")
+                            ch.get("content"),
+                            ch.get("img")
                         ))
 
         conn.commit()
@@ -485,14 +487,18 @@ def challenge_complete_info(challenge_id):
     if is_challenge_completed(current_user.id, challenge_id):
         return {"ok": True}
 
+    data = request.get_json(silent=True) or {}
+    user_text = (data.get("answer") or "").strip()
+
     mark_challenge_completed(
         current_user.id,
         challenge_id,
         score=0,
-        user_answer=None
+        user_answer=user_text if user_text else None
     )
 
     return {"ok": True}
+
 
 
 login_manager = LoginManager()
@@ -1074,6 +1080,7 @@ def subcategory_review_challenge(subcategory_code, phase, challenge_id):
 
     user_answer = progress.get("user_answer")
     practical_feedback = None
+    img_practical = bool(challenge.get("img"))
 
     if int(challenge.get("is_practical", 0)) and user_answer:
         try:
@@ -1097,6 +1104,7 @@ def subcategory_review_challenge(subcategory_code, phase, challenge_id):
         review_mode=True,
         user_answer=user_answer,
         practical_feedback=practical_feedback,
+        img_practical=img_practical,
         user_score=int(progress.get("score") or 0),
         next_url=next_url,
         end_url=end_url,
@@ -1104,6 +1112,7 @@ def subcategory_review_challenge(subcategory_code, phase, challenge_id):
         subcategory_code=subcategory_code,
         redirect_url=redirect_url
     )
+
 
 
 def count_phase_total_for_subcategory(subcategory_code: str, phase: str) -> int:
