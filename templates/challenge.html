@@ -128,8 +128,6 @@
                 {% if challenge.is_practical|int == 1 %}
                     {% if review_mode %}
                         <div class="bg-dark rounded p-3">
-                            <h6 class="text-white mb-2"><i class="fa fa-eye me-2"></i>Revisión del reto práctico</h6>
-
                             {% if img_practical %}
                                 <div class="mb-3 text-white">
                                     <strong>{{ (challenge.question or '') | replace('\n','<br>') | safe }}</strong>
@@ -235,18 +233,120 @@
                         </div>
 
                     {% else %}
-                        {% if challenge.content %}
-                            <div id="practical-wrapper"
+                        {% if challenge.img %}
+
+                            <div class="bg-dark rounded p-3" id="practical-question_content"
+                                data-challenge-id="{{ challenge.id }}"
+                                data-redirect-url="{{ redirect_url }}">
+
+                                <div class="mb-3 text-white">
+                                    <strong>{{ (challenge.question or '') | replace('\n','<br>') | safe }}</strong>
+                                </div>
+
+                                <div class="mb-3">
+                                    <img src="{{ challenge.img }}" class="img-fluid rounded"
+                                        style="max-height: 320px; object-fit: contain; width: 100%;"
+                                        alt="Imagen del reto">
+                                </div>
+
+                                <div class="mb-3">
+                                    <label class="form-label text-white">Introduce a continuación tu respuesta</label>
+                                    <textarea id="img_answer" class="form-control bg-secondary text-white border-0"
+                                            rows="4" placeholder="Escribe aquí tu respuesta..."></textarea>
+                                </div>
+
+                                <div class="d-flex gap-2 flex-wrap">
+                                    <button id="img_send" class="btn btn-primary">Enviar</button>
+                                </div>
+
+                                <div id="img_msg" class="mt-3"></div>
+                            </div>
+
+                        <script>
+                        (function(){
+
+                        const question_content = document.getElementById('practical-question_content');
+                        const btn = document.getElementById('img_send');
+                        const img_answer = document.getElementById('img_answer');
+                        const msg_content = document.getElementById('img_msg');
+
+                        function csrf(){
+                            const m = document.querySelector('meta[name="csrf-token"]');
+                            return m ? m.getAttribute('content') : '';
+                        }
+
+                        function show(ok, text){
+                            msg_content.innerHTML =
+                            `<div class="alert ${ok ? 'alert-success' : 'alert-danger'} mb-0">${text}</div>`;
+                        }
+
+                        btn.addEventListener('click', async () => {
+
+                            const challengeId = question_content ? question_content.dataset.challengeId : null;
+                            const redirectUrl = (question_content && question_content.dataset.redirectUrl)
+                                                ? question_content.dataset.redirectUrl
+                                                : '/panel';
+
+                            const answer = (img_answer.value || '').trim();
+
+                            if (!answer){
+                            show(false, 'Escribe una respuesta antes de enviar.');
+                            return;
+                            }
+
+                            btn.disabled = true;
+                            img_answer.disabled = true;
+
+                            try {
+
+                            const res = await fetch(`/challenge/${challengeId}/complete-info`, {
+                                method: 'POST',
+                                credentials: 'same-origin',
+                                headers: {
+                                'Content-Type': 'application/json',
+                                'X-CSRFToken': csrf()
+                                },
+                                body: JSON.stringify({ answer })
+                            });
+
+                            const data = await res.json();
+
+                            if (data.ok || data.success){
+                                show(true, 'Reto completado correctamente.');
+                                setTimeout(() => {
+                                window.location.href = redirectUrl;
+                                }, 1200);
+                            } else {
+                                show(false, 'Ha ocurrido un error al enviar la respuesta.');
+                                btn.disabled = false;
+                                img_answer.disabled = false;
+                            }
+
+                            } catch (e) {
+                            show(false, 'Error de conexión.');
+                            btn.disabled = false;
+                            img_answer.disabled = false;
+                            }
+
+                        });
+
+                        })();
+                        </script>
+
+                        {% elif challenge.content %}
+                            <div id="practical-question_content"
                                 class="mt-2"
                                 data-challenge-id="{{ challenge.id }}"
                                 data-redirect-url="{{ redirect_url }}">
                                 {{ challenge.content | safe }}
                             </div>
+
                         {% else %}
                             <div class="alert alert-warning mb-0">
-                                Este reto práctico no tiene contenido (HTML) asociado.
+                                Este reto práctico no tiene contenido.
                             </div>
                         {% endif %}
+
                     {% endif %}
 
                 {% else %}
