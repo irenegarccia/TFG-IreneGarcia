@@ -7,6 +7,7 @@ from werkzeug.security import generate_password_hash, check_password_hash
 import sqlite3, os, string, json, hashlib, requests, logging
 from flask_wtf.csrf import CSRFProtect
 from logging.config import dictConfig
+from google import genai
 
 
 dictConfig({
@@ -111,6 +112,7 @@ def init_db():
             is_practical INTEGER NOT NULL DEFAULT 0,
             content TEXT,
             img TEXT,
+            ideal_answer TEXT,
 
             FOREIGN KEY (subcategory_code) REFERENCES subcategories(subcategory_code),
             UNIQUE(subcategory_code, phase, order_index)
@@ -126,6 +128,8 @@ def init_db():
             completed_date TEXT,
             score INTEGER NOT NULL DEFAULT 0,
             user_answer TEXT,
+            ai_score INTEGER,
+            ai_comment TEXT,
             PRIMARY KEY (user_id, challenge_id),
             FOREIGN KEY (user_id) REFERENCES users(id),
             FOREIGN KEY (challenge_id) REFERENCES challenges(id)
@@ -188,10 +192,10 @@ def add_data():
                         conn.execute("""
                             INSERT OR IGNORE INTO challenges
                             (title, subcategory_code, phase, order_index,
-                             is_training, points, question, correct_answer,
-                             option1, option2, option3, option4,
-                             is_practical, content, img)
-                            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                            is_training, points, question, correct_answer,
+                            option1, option2, option3, option4,
+                            is_practical, content, img, ideal_answer)
+                            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
                         """, (
                             ch["title"],
                             sub["subcategory_code"],
@@ -204,8 +208,10 @@ def add_data():
                             o1, o2, o3, o4,
                             int(ch.get("is_practical", 0)),
                             ch.get("content"),
-                            ch.get("img")
+                            ch.get("img"),
+                            ch.get("ideal_answer")
                         ))
+
 
         conn.commit()
 
@@ -412,6 +418,77 @@ def split_values(text):
         if v and v not in values:
             values.append(v)
     return values
+
+
+def gemini_client():
+    api_key = "AIzaSyB8uLH7wOJRknOKAKqlKeIoBG9u10UYNqo"
+    return genai.Client(api_key=api_key)
+
+
+def get_ai_feedback(user_id, challenge_id):
+    with get_conn() as conn:
+        row = conn.execute("""
+            SELECT ai_score, ai_comment
+            FROM user_challenge_progress
+            WHERE user_id = ? AND challenge_id = ?
+        """, (user_id, challenge_id)).fetchone()
+        if not row:
+            return None
+        if row["ai_score"] is None and row["ai_comment"] is None:
+            return None
+        return {"score": row["ai_score"], "comment": row["ai_comment"]}
+
+
+def save_ai_feedback(user_id, challenge_id, score, comment):
+    with get_conn() as conn:
+        conn.execute("""
+            UPDATE user_challenge_progress
+            SET ai_score = ?, ai_comment = ?
+            WHERE user_id = ? AND challenge_id = ?
+        """, (score, comment, user_id, challenge_id))
+        conn.commit()
+
+def ai_evaluate_answer(question: str, ideal_answer: str, user_answer: str) -> dict:
+    client = gemini_client()
+
+    prompt = f"""Eres un evaluador docente. Valora la respuesta del estudiante comparándola con una respuesta ideal.
+
+PREGUNTA:
+{question}
+
+RESPUESTA IDEAL (criterios):
+{ideal_answer}
+
+RESPUESTA DEL ESTUDIANTE:
+{user_answer}
+
+Devuelve SOLO un JSON válido con este formato:
+{{
+  "score": <entero 1..10>,
+  "comment": "<2-5 frases: qué está bien y qué falta/mejoraría>"
+}}
+""".strip()
+
+    res = client.models.generate_content(
+        model="gemini-2.0-flash",
+        contents=prompt
+    )
+
+    text = (res.text or "").strip()
+    text = text.replace("```json", "").replace("```", "").strip()
+
+    start = text.find("{")
+    end = text.rfind("}")
+    if start != -1 and end != -1 and end > start:
+        text = text[start:end+1]
+
+    data = json.loads(text)
+
+    score = max(1, min(10, int(data.get("score", 1))))
+    comment = str(data.get("comment", "")).strip()
+
+    return {"score": score, "comment": comment}
+
 
 def generate_password_list(words, year, fav_number, singer, likes_football, teams):
     base = [w for w in words if w]
@@ -1096,6 +1173,35 @@ def subcategory_review_challenge(subcategory_code, phase, challenge_id):
 
     redirect_url = url_for("category_page", category_code=category_code)
 
+    ai_feedback = None
+
+    if int(challenge.get("is_practical", 0)):
+        ideal = (challenge.get("ideal_answer") or "").strip()
+
+        if user_answer and ideal:
+            ai_feedback = get_ai_feedback(current_user.id, challenge_id)
+
+            if not ai_feedback:
+                try:
+                    result = ai_evaluate_answer(
+                        question=(challenge.get("question") or challenge.get("title") or "").strip(),
+                        ideal_answer=ideal,
+                        user_answer=str(user_answer)
+                    )
+                    save_ai_feedback(current_user.id, challenge_id, result["score"], result["comment"])
+                    ai_feedback = result
+                except Exception as e:
+                    msg = str(e)
+
+                    if "429" in msg or "RESOURCE_EXHAUSTED" in msg:
+                        ai_feedback = {
+                            "score": None,
+                            "comment": "La IA no está disponible ahora mismo por límite de cuota. Inténtalo en unos segundos o más tarde."
+                        }
+                    else:
+                        ai_feedback = {"score": None, "comment": f"No se pudo generar el feedback automático: {e}"}
+
+
     return render_template(
         "challenge.html",
         challenge=challenge,
@@ -1103,6 +1209,7 @@ def subcategory_review_challenge(subcategory_code, phase, challenge_id):
         completed=True,
         review_mode=True,
         user_answer=user_answer,
+        ai_feedback=ai_feedback,
         practical_feedback=practical_feedback,
         img_practical=img_practical,
         user_score=int(progress.get("score") or 0),
@@ -1112,6 +1219,7 @@ def subcategory_review_challenge(subcategory_code, phase, challenge_id):
         subcategory_code=subcategory_code,
         redirect_url=redirect_url
     )
+
 
 
 

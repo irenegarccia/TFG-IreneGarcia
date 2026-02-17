@@ -29,7 +29,7 @@
     <link href="{{ url_for('static', filename='css/style.css') }}" rel="stylesheet">
 </head>
 
-<body>
+<body data-challenge-id="{{ challenge.id }}" data-redirect-url="{{ redirect_url }}">
 <div class="container-fluid position-relative d-flex p-0">
 
         <!-- Sidebar Start -->
@@ -132,7 +132,7 @@
                                 <div class="mb-3 text-white">
                                     <strong>{{ (challenge.question or '') | replace('\n','<br>') | safe }}</strong>
                                 </div>
-
+                                
                                 {% if challenge.img %}
                                 <div class="mb-3">
                                     <img src="{{ challenge.img }}" class="img-fluid rounded"
@@ -147,6 +147,21 @@
                                         {{ (user_answer or 'Sin respuesta guardada') }}
                                     </div>
                                 </div>
+
+                                {% if ai_feedback %}
+                                <div class="mt-3">
+                                    <div class="text-white mb-2"><strong>Feedback IA</strong></div>
+
+                                    {% if ai_feedback.score %}
+                                    <span class="badge bg-primary">Puntuación: {{ ai_feedback.score }}/10</span>
+                                    {% endif %}
+
+                                    <div class="bg-dark border rounded p-3 mt-2 text-white" style="white-space: pre-wrap;">
+                                    {{ ai_feedback.comment }}
+                                    </div>
+                                </div>
+                                {% endif %}
+
                             {% else %}
 
                                 {% if practical_feedback %}
@@ -235,7 +250,7 @@
                     {% else %}
                         {% if challenge.img %}
 
-                            <div class="bg-dark rounded p-3" id="practical-question_content"
+                            <div class="bg-dark rounded p-3" id="practical-wrapper"
                                 data-challenge-id="{{ challenge.id }}"
                                 data-redirect-url="{{ redirect_url }}">
 
@@ -265,7 +280,7 @@
                         <script>
                         (function(){
 
-                        const question_content = document.getElementById('practical-question_content');
+                        const wrapper = document.getElementById('practical-wrapper');
                         const btn = document.getElementById('img_send');
                         const img_answer = document.getElementById('img_answer');
                         const msg_content = document.getElementById('img_msg');
@@ -282,9 +297,9 @@
 
                         btn.addEventListener('click', async () => {
 
-                            const challengeId = question_content ? question_content.dataset.challengeId : null;
-                            const redirectUrl = (question_content && question_content.dataset.redirectUrl)
-                                                ? question_content.dataset.redirectUrl
+                            const challengeId = wrapper ? wrapper.dataset.challengeId : null;
+                            const redirectUrl = (wrapper && wrapper.dataset.redirectUrl)
+                                                ? wrapper.dataset.redirectUrl
                                                 : '/panel';
 
                             const answer = (img_answer.value || '').trim();
@@ -334,7 +349,7 @@
                         </script>
 
                         {% elif challenge.content %}
-                            <div id="practical-question_content"
+                            <div id="practical-wrapper"
                                 class="mt-2"
                                 data-challenge-id="{{ challenge.id }}"
                                 data-redirect-url="{{ redirect_url }}">
