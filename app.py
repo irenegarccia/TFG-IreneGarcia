@@ -1,10 +1,10 @@
 import re
 import unicodedata
-from flask import Flask, render_template, redirect, url_for, request, abort, session
+from flask import Flask, render_template, redirect, url_for, request, abort, session, send_file
 from flask_login import LoginManager, UserMixin, login_user, logout_user, login_required, current_user
 from flask_session import Session
 from werkzeug.security import generate_password_hash, check_password_hash
-import sqlite3, os, string, json, hashlib, requests, logging
+import sqlite3, os, string, json, hashlib, requests, logging, subprocess, tempfile, uuid, sys, shutil, random
 from flask_wtf.csrf import CSRFProtect
 from logging.config import dictConfig
 from google import genai
@@ -419,6 +419,139 @@ def split_values(text):
             values.append(v)
     return values
 
+def run_cupp_and_save_txt(profile: dict):
+    cupp_script = os.path.join(BASE_DIR, "cupp", "cupp.py")
+    if not os.path.isfile(cupp_script):
+        raise RuntimeError("No existe cupp/cupp.py dentro del proyecto.")
+
+    first_name = normalize(profile.get("first_name", "")) or "user"
+    surname = normalize(profile.get("surname", ""))
+    nickname = normalize(profile.get("nickname", ""))
+    birthdate = normalize(profile.get("birthdate", "")) 
+    partner_name = normalize(profile.get("partner_name", ""))
+    partner_nick = normalize(profile.get("partner_nick", ""))
+    partner_birth = normalize(profile.get("partner_birthdate", ""))
+    child_name = normalize(profile.get("child_name", ""))
+    child_nick = normalize(profile.get("child_nick", ""))
+    child_birth = normalize(profile.get("child_birthdate", ""))
+    pet_name = normalize(profile.get("pet_name", ""))
+    company = normalize(profile.get("company", ""))
+    raw_keywords = profile.get("keywords") or ""
+
+    extra_fields = [
+        profile.get("city", ""),
+        profile.get("country", ""),
+        profile.get("favorite_color", ""),
+        profile.get("favorite_team", ""),
+        profile.get("favorite_player", ""),
+        profile.get("favorite_food", ""),
+        profile.get("school", ""),
+        profile.get("university", ""),
+        profile.get("degree", ""),
+        profile.get("hobby", ""),
+        profile.get("instagram", ""),
+        profile.get("tiktok", ""),
+        profile.get("github", ""),
+        profile.get("username_alt", ""),
+        profile.get("phone", ""),
+        profile.get("car_brand", ""),
+        profile.get("car_model", ""),
+    ]
+
+    all_kw = []
+    all_kw += split_values(raw_keywords)
+    for x in extra_fields:
+        all_kw += split_values(str(x))
+
+    keywords = ",".join(all_kw)
+
+    add_keywords = "y" if keywords else "n"
+
+    use_special = "y" if profile.get("use_special", True) else "n"
+    use_numbers = "y" if profile.get("use_numbers", True) else "n"
+    use_leet = "y" if profile.get("use_leet", False) else "n"
+
+    answers = [
+        first_name,      
+        surname,         
+        nickname,         
+        birthdate,      
+        partner_name,   
+        partner_nick,   
+        partner_birth,   
+        child_name,      
+        child_nick,      
+        child_birth,    
+        pet_name,        
+        company,        
+        add_keywords,   
+        keywords if keywords else "",
+        use_special,    
+        use_numbers,     
+        use_leet,        
+    ]
+    padding = "\n" * 80  
+    stdin_payload = "\n".join(answers) + "\n" + padding
+
+
+    cupp_cwd = os.path.join(BASE_DIR, "cupp")
+
+    proc = subprocess.run(
+        [sys.executable, cupp_script, "-i", "-q"],
+        input=stdin_payload,
+        text=True,
+        cwd=cupp_cwd,
+        capture_output=True,
+        timeout=60
+    )
+    if proc.returncode != 0:
+        raise RuntimeError(
+            f"CUPP falló (code={proc.returncode}).\nSTDERR:\n{proc.stderr[:2000]}\n\nSTDOUT:\n{proc.stdout[:2000]}"
+        )
+
+    txts = [os.path.join(cupp_cwd, f) for f in os.listdir(cupp_cwd) if f.lower().endswith(".txt")]
+    if not txts:
+        raise RuntimeError("CUPP no generó ningún .txt.")
+
+    generated = max(txts, key=os.path.getmtime)
+
+
+    out_dir = os.path.join(INSTANCE_DIR, "generated_wordlists")
+    os.makedirs(out_dir, exist_ok=True)
+
+    token = uuid.uuid4().hex
+    out_path = os.path.join(out_dir, f"{token}.txt")
+    shutil.copyfile(generated, out_path)
+    try:
+        os.remove(generated)
+    except Exception:
+        pass
+
+    K = int((profile or {}).get("preview_size") or 30)  
+    K = max(10, min(200, K))                            
+
+    preview = []
+    seen = 0
+    rng = random.SystemRandom()
+
+    with open(out_path, "r", encoding="utf-8", errors="ignore") as f:
+        for line in f:
+            pw = line.strip()
+            if not pw:
+                continue
+
+            seen += 1
+            if len(preview) < K:
+                preview.append(pw)
+            else:
+                j = rng.randrange(seen)
+                if j < K:
+                    preview[j] = pw
+
+    rng.shuffle(preview)
+    return token, out_path, preview
+
+
 
 def gemini_client():
     api_key = "AIzaSyB8uLH7wOJRknOKAKqlKeIoBG9u10UYNqo"
@@ -482,76 +615,16 @@ Devuelve SOLO un JSON válido con este formato:
     if start != -1 and end != -1 and end > start:
         text = text[start:end+1]
 
-    data = json.loads(text)
+    try:
+        data = json.loads(text)
+    except Exception:
+        return {"score": 1, "comment": "No se pudo generar la respuesta de la IA (formato inválido)."}
+
 
     score = max(1, min(10, int(data.get("score", 1))))
     comment = str(data.get("comment", "")).strip()
 
     return {"score": score, "comment": comment}
-
-
-def generate_password_list(words, year, fav_number, singer, likes_football, teams):
-    base = [w for w in words if w]
-    year = normalize(year)
-    fav_number = normalize(fav_number)
-    singer = normalize(singer)
-
-    extras = []
-    if year: extras.append(year)
-    if fav_number: extras.append(fav_number)
-    if singer: extras.append(singer)
-    if likes_football == "si":
-        extras += [t for t in teams if t]
-
-    def variants(w):
-        v = []
-        if w: v.append(w)
-        if w and w.capitalize() not in v: v.append(w.capitalize())
-        if w and w.upper() not in v: v.append(w.upper())
-        return v
-
-    base_v = []
-    for w in base:
-        for x in variants(w):
-            if x not in base_v:
-                base_v.append(x)
-
-    extras_v = []
-    for e in extras:
-        for x in variants(e):
-            if x not in extras_v:
-                extras_v.append(x)
-
-    results = []
-    seps = ["", "_", ".", "-"]
-
-    def add(x):
-        if x and x not in results and len(results) < 30:
-            results.append(x)
-
-    for w in base_v:
-        add(w)
-
-    for w in base_v:
-        for e in extras_v:
-            for s in seps:
-                add(f"{w}{s}{e}")
-                add(f"{e}{s}{w}")
-
-    for i in range(len(base_v)):
-        for j in range(i + 1, len(base_v)):
-            for s in seps:
-                add(f"{base_v[i]}{s}{base_v[j]}")
-                add(f"{base_v[j]}{s}{base_v[i]}")
-
-    for i in range(len(base_v)):
-        for j in range(i + 1, len(base_v)):
-            for e in extras_v:
-                for s in seps:
-                    add(f"{base_v[i]}{s}{base_v[j]}{s}{e}")
-                    add(f"{e}{s}{base_v[i]}{s}{base_v[j]}")
-
-    return results
 
 
 @app.route("/challenge/<int:challenge_id>/complete-info", methods=["POST"])
@@ -1021,36 +1094,6 @@ def challenge_complete(challenge_id):
     return {"ok": True, "score": score, "feedback": feedback}
 
 
-@app.route("/api/personal-pw", methods=["POST"])
-@login_required
-def api_personal_pw():
-    data = request.get_json(silent=True) or {}
-
-    pets = split_values(data.get("pets", ""))
-    kids = split_values(data.get("kids", ""))
-    city = normalize(data.get("city", ""))
-    year = data.get("birth_year", "")
-    fav_number = data.get("fav_number", "")
-    singer = data.get("singer", "")
-
-    likes_football = (data.get("likes_football") or "no").strip().lower()
-    teams = split_values(data.get("team", "")) if likes_football == "si" else []
-
-    name_parts = split_values(current_user.name)
-
-    words = []
-    for x in name_parts + pets + kids:
-        if x and x not in words:
-            words.append(x)
-
-    if city and city not in words:
-        words.append(city)
-
-    passwords = generate_password_list(words, year, fav_number, singer, likes_football, teams)
-
-    return {"ok": True, "passwords": passwords}
-
-
 @app.route("/subcategory/<subcategory_code>/<phase>/next")
 @login_required
 def next_challenge(subcategory_code, phase):
@@ -1117,6 +1160,42 @@ def subcategory_review_start(subcategory_code, phase):
 
     first_id = completed[0]["id"]
     return redirect(url_for("subcategory_review_challenge", subcategory_code=subcategory_code, phase=phase, challenge_id=first_id))
+
+@app.route("/api/cupp/generate", methods=["POST"])
+@login_required
+def api_cupp_generate():
+    profile = request.get_json(silent=True) or {}
+
+    try:
+        token, path, preview = run_cupp_and_save_txt(profile)
+        session["cupp_last_token"] = token
+
+        return {
+            "ok": True,
+            "preview": preview,
+            "download_url": url_for("api_cupp_download", token=token)
+        }
+    except Exception as e:
+        app.logger.exception("Error generando wordlist con CUPP")
+        return {"ok": False, "error": str(e)}, 500
+
+
+@app.route("/api/cupp/download/<token>", methods=["GET"])
+@login_required
+def api_cupp_download(token):
+    if token != session.get("cupp_last_token"):
+        abort(403)
+
+    wordlist_path = os.path.join(INSTANCE_DIR, "generated_wordlists", f"{token}.txt")
+    if not os.path.isfile(wordlist_path):
+        abort(404)
+
+    return send_file(
+        wordlist_path,
+        as_attachment=True,
+        download_name="cupp_wordlist.txt",
+        mimetype="text/plain"
+    )
 
 
 @app.route("/subcategory/<subcategory_code>/<phase>/review/<int:challenge_id>")

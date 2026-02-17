@@ -10,7 +10,7 @@
           "text": "Un USB malicioso es un dispositivo que no solo guarda archivos. Puede estar preparado para ejecutar acciones automáticas al conectarlo, aprovechando que el sistema confía en los dispositivos físicos.",
           "bullets": [
             "Puede ejecutar acciones sin que te des cuenta.",
-            "Algunos se hacen pasar por un teclado y escriben comandos solos.",
+            "Algunos se hacen pasar por un teclado y escriben comandos automáticamente (ataques tipo BadUSB).",
             "No hace falta abrir ningún archivo para que sea peligroso.",
             "El riesgo es mayor si el ordenador está desbloqueado."
           ]
@@ -26,12 +26,43 @@
           ]
         },
         {
+          "title": "Caso práctico: encuentras un USB en el suelo",
+          "text": "Has encontrado un USB tirado en el suelo y quieres devolverlo a su propietario. Lo conectas y aparentemente no hay nada dentro. ¿Estás a salvo? No necesariamente. Algunos USB maliciosos no muestran archivos visibles porque su objetivo no es almacenar datos, sino ejecutar acciones automáticas o incluso dañar físicamente el equipo.",
+          "bullets": [
+            "Puede contener malware oculto que se ejecute automáticamente.",
+            "Puede simular ser un teclado y ejecutar comandos en segundos.",
+            "Puede estar diseñado para provocar descargas eléctricas que dañen el hardware (USB killer).",
+            "El hecho de que no haya archivos visibles no significa que no haya riesgo."
+          ]
+        },
+        {
+          "title": "Cómo analizar un USB de forma segura",
+          "text": "Si por motivos profesionales o académicos es necesario analizar un USB desconocido, nunca debe hacerse en el ordenador personal o de trabajo principal.",
+          "bullets": [
+            "Utilizar una máquina virtual aislada (VM) sin acceso a red o con red controlada.",
+            "Analizarlo dentro de una sandbox para observar comportamientos sospechosos.",
+            "Usar un equipo de pruebas que no contenga información sensible.",
+            "Desactivar la ejecución automática antes de conectarlo."
+          ]
+        },
+        {
+          "title": "Protección frente a USB destructivos",
+          "text": "Algunos dispositivos maliciosos no buscan robar información, sino destruir físicamente el equipo. Existen USB diseñados para liberar descargas eléctricas al conectarse y dañar la placa base.",
+          "bullets": [
+            "Existen dispositivos conocidos como 'USB killer' que descargan electricidad para quemar componentes.",
+            "El daño puede ser inmediato e irreversible.",
+            "Una buena práctica en entornos técnicos es usar adaptadores USB de protección.",
+            "Estos adaptadores actúan como barrera eléctrica y absorben posibles descargas."
+          ]
+        },
+        {
           "title": "Buenas prácticas si encuentras un USB desconocido",
           "text": "Aunque parezca inofensivo, conectar un USB desconocido es un riesgo innecesario. Existen formas más seguras de gestionarlo.",
           "bullets": [
             "No lo conectes a tu ordenador personal ni del trabajo.",
-            "Avísalo a la persona responsable (profesor, IT, administración).",
-            "Si se analiza, que sea en un equipo de pruebas o aislado."
+            "Entrégalo a personal responsable (IT, administración, profesor).",
+            "Si se analiza, que sea en un entorno aislado y controlado.",
+            "Nunca lo conectes por simple curiosidad."
           ]
         },
         {
@@ -40,8 +71,8 @@
           "bullets": [
             "Desconéctalo inmediatamente.",
             "No escribas contraseñas ni aceptes mensajes extraños.",
-            "Si puedes, desconecta internet.",
-            "Pasa un escaneo de seguridad.",
+            "Desconecta internet si es posible.",
+            "Ejecuta un análisis de seguridad completo.",
             "Informa del incidente cuanto antes."
           ]
         }
