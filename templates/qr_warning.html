@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="csrf-token" content="{{ csrf_token() }}">
+  <title>Aviso</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body class="bg-dark text-white d-flex align-items-center justify-content-center" style="min-height:100vh;">
+  <div class="container" style="max-width:720px;">
+    <div class="p-4 rounded" style="background:#1e1e1f; border:1px solid rgba(220,53,69,.35); border-radius:16px;">
+      <h3 class="text-danger mb-3">
+        ⚠️ Aviso de seguridad
+      </h3>
+      <p class="text-white-50 mb-0">
+        Has accedido a un QR que podría ser malicioso. En un caso real, esto podría llevarte a una web fraudulenta,
+        descargar malware o robar tus credenciales.
+      </p>
+      <div class="d-flex gap-2 flex-wrap mt-4">
+        <a class="btn btn-success" href="{{ url_for('category_page', category_code=category_code) }}">
+          Terminar
+        </a>
+      </div>
+      <script>
+      document.getElementById("finishBtn").addEventListener("click", function() {
+        const csrf = document.querySelector('meta[name="csrf-token"]')?.getAttribute("content");
+
+        fetch("/qr/finish", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "X-CSRFToken": csrf
+          },
+          credentials: "same-origin",
+          body: JSON.stringify({})
+        })
+        .then(async (response) => {
+          const ct = response.headers.get("content-type") || "";
+          if (!ct.includes("application/json")) {
+            const text = await response.text();
+            alert("No se pudo finalizar (sesión o CSRF). Revisa que estés logueada en este navegador.");
+            throw new Error("Respuesta no JSON: " + text.slice(0, 200));
+          }
+          return response.json();
+        })
+        .then(data => {
+          if (data.ok && data.redirect) {
+            window.location.href = data.redirect; 
+          } else {
+            alert(data.error || "Error al finalizar");
+          }
+        })
+        .catch(err => console.error(err));
+      });
+      </script>
+        <p class="text-white-50 mt-3 mb-0">
+          Nota: el reto se evaluará cuando pulses “Terminar”.
+        </p>
+    </div>
+  </div>
+</body>
+</html>

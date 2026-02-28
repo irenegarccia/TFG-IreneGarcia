@@ -598,6 +598,14 @@
             "pre": [
               {
                 "title": "Códigos QR",
+                "is_training": 0,
+                "points": 10,
+                "is_practical": 1,
+                "content": "qr_dynamic",
+                "order_index": 1
+              },
+              {
+                "title": "Códigos QR",
                 "question": "¿Cuál es un riesgo típico de los códigos QR?",
                 "correct_answer": "Redirigir a webs falsas o maliciosas",
                 "options": [
@@ -610,7 +618,7 @@
                 "is_training": 1,
                 "is_practical": 0,
                 "content": null,
-                "order_index": 1
+                "order_index": 2
               }
             ],
             "post": [
@@ -727,19 +735,55 @@
             "pre": [
               {
                 "title": "Gestión de información sensible",
-                "question": "¿Qué es información sensible?",
-                "correct_answer": "Datos que pueden identificarte o afectar tu privacidad",
-                "options": [
-                  "El tiempo",
-                  "Un meme",
-                  "Datos que pueden identificarte o afectar tu privacidad",
-                  "Una canción"
-                ],
+                "question": "Una influencer sube una foto a las redes sociales y, sin darse cuenta, se ve una tarjeta de crédito en la imagen.\n\n¿Qué riesgos ves y qué medidas tomarías antes de publicar una imagen así?",
+                "correct_answer": null,
+                "options": [],
                 "points": 10,
                 "is_training": 1,
-                "is_practical": 0,
+                "is_practical": 1,
+                "img": "/img/creditcard_influencer.png",
                 "content": null,
-                "order_index": 1
+                "order_index": 1,
+                "ideal_answer": "El riesgo es la exposición pública de datos bancarios, lo que puede facilitar fraudes, compras no autorizadas o clonación de tarjeta. Al publicar en redes sociales, la información puede difundirse rápidamente y quedar almacenada permanentemente. Antes de publicar, se deben revisar cuidadosamente las imágenes, ocultar o difuminar datos sensibles y evitar mostrar documentos, tarjetas o información personal identificable."
+              },
+              {
+                "title": "Gestión de información sensible",
+                "question": "Una persona va en el metro y accede a su aplicación del banco, mientras tanto, la persona de al lado observa todo. \n\n¿Qué riesgos conllevan este tipo de situaciones?",
+                "correct_answer": null,
+                "options": [],
+                "points": 10,
+                "is_training": 1,
+                "is_practical": 1,
+                "img": "/img/bank_publictransport.png",
+                "content": null,
+                "order_index": 2,
+                "ideal_answer": "El principal riesgo es la exposición de información financiera sensible a personas cercanas (shoulder surfing). Alguien podría ver el saldo, movimientos o incluso capturar la pantalla con una fotografía para utilizar esos datos con fines fraudulentos. Para protegerse, se debe evitar consultar información bancaria en espacios públicos concurridos, utilizar protectores de pantalla antiespía, reducir el brillo de pantalla y activar autenticación biométrica o doble factor en la aplicación bancaria."
+              },
+              {
+                "title": "Gestión de información sensible",
+                "question": "Una persona tira una caja a la basura con la etiqueta de envío completamente visible.\n\n¿Qué riesgos implica desechar paquetes con datos personales a la vista y qué deberías hacer antes de tirarlos?",
+                "correct_answer": null,
+                "options": [],
+                "points": 10,
+                "is_training": 1,
+                "is_practical": 1,
+                "img": "/img/order_information.png",
+                "content": null,
+                "order_index": 3,
+                "ideal_answer": "El riesgo principal es la exposición de datos personales como nombre completo, dirección, teléfono, correo electrónico o DNI. Esta información puede utilizarse para suplantación de identidad, fraudes, phishing personalizado o incluso robos dirigidos. Antes de desechar un paquete, se debe eliminar o destruir la etiqueta de envío, borrar o tachar los datos sensibles y, si es posible, romper el código de barras o triturar la etiqueta para evitar que pueda recuperarse la información."
+              },
+              {
+                "title": "Gestión de información sensible",
+                "question": "Una persona tira a la basura documentos empresariales con información sensible.\n\n¿Qué riesgos supone esta acción y qué debería haberse hecho antes de desechar esta documentación?",
+                "correct_answer": null,
+                "options": [],
+                "points": 10,
+                "is_training": 1,
+                "is_practical": 1,
+                "img": "/img/work_information.png",
+                "content": null,
+                "order_index": 4,
+                "ideal_answer": "El riesgo principal es la fuga de información sensible mediante técnicas como el dumpster diving. Cualquier persona podría recuperar los documentos y obtener datos financieros, información interna de la empresa, contactos, direcciones o credenciales de red. La exposición de la contraseña Wi-Fi podría permitir accesos no autorizados a la red corporativa. Antes de desechar este tipo de documentación, debería haberse destruido mediante trituradora o servicio especializado de destrucción segura, eliminar cualquier credencial visible y aplicar una política interna de gestión segura de residuos y protección de la información."
               },
               {
                 "title": "Gestión de información sensible",
@@ -754,7 +798,7 @@
                 "is_training": 1,
                 "is_practical": 0,
                 "content": null,
-                "order_index": 2
+                "order_index": 5
               }
             ],
             "post": [

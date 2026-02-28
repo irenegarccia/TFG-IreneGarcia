@@ -8,6 +8,11 @@ import sqlite3, os, string, json, hashlib, requests, logging, subprocess, tempfi
 from flask_wtf.csrf import CSRFProtect
 from logging.config import dictConfig
 from google import genai
+import hmac
+import base64
+import io
+from datetime import datetime
+import qrcode
 
 
 dictConfig({
@@ -49,6 +54,46 @@ app.config["DATABASE"] = DB_PATH
 QUESTIONS_JSON_PATH = os.path.join(BASE_DIR, "data", "questions.json")
 TRAINING_JSON_PATH = os.path.join(BASE_DIR, "data", "training.json")
 _training_cache = {"mtime": None, "by_sub": {}}
+# --- QR dinámico (sin tablas extra) ---
+QR_SECRET = os.environ.get("QR_SECRET", "CAMBIA_ESTO_EN_PRODUCCION")
+
+def get_public_base_url():
+    # En prod define PUBLIC_BASE_URL=http://tfg-irene.grafo.etsii.urjc.es
+    return os.environ.get("PUBLIC_BASE_URL", "http://localhost:5000").rstrip("/")
+
+def make_qr_token(user_id: str) -> str:
+    # Token firmando: user_id.firma
+    uid = str(user_id)
+    sig = hmac.new(QR_SECRET.encode(), uid.encode(), hashlib.sha256).digest()
+    sig = base64.urlsafe_b64encode(sig)[:12].decode()
+    return f"{uid}.{sig}"
+
+def verify_qr_token(token: str):
+    try:
+        uid, sig = token.split(".", 1)
+    except ValueError:
+        return None
+    expected = hmac.new(QR_SECRET.encode(), uid.encode(), hashlib.sha256).digest()
+    expected = base64.urlsafe_b64encode(expected)[:12].decode()
+    if hmac.compare_digest(expected, sig):
+        return uid
+    return None
+
+def make_qr_base64_png(url: str) -> str:
+    qr = qrcode.QRCode(version=1, box_size=10, border=2)
+    qr.add_data(url)
+    qr.make(fit=True)
+    img = qr.make_image(fill_color="black", back_color="white")
+    buf = io.BytesIO()
+    img.save(buf, format="PNG")
+    return base64.b64encode(buf.getvalue()).decode("utf-8")
+
+def get_qr_dynamic_challenge_id():
+    with get_conn() as conn:
+        row = conn.execute(
+            "SELECT id FROM challenges WHERE is_practical = 1 AND content LIKE '%qr_dynamic%' LIMIT 1"
+        ).fetchone()
+        return row["id"] if row else None
 
 def get_conn():
     conn = sqlite3.connect(app.config["DATABASE"])
@@ -554,7 +599,7 @@ def run_cupp_and_save_txt(profile: dict):
 
 
 def gemini_client():
-    api_key = "AIzaSyB8uLH7wOJRknOKAKqlKeIoBG9u10UYNqo"
+    api_key = "AIzaSyDqDvNcUGwiLa1VTfWNOToY6a3MNU54SfY" #os.environment("LLM") #"AIzaSyB8uLH7wOJRknOKAKqlKeIoBG9u10UYNqo"
     return genai.Client(api_key=api_key)
 
 
@@ -634,6 +679,16 @@ def challenge_complete_info(challenge_id):
     if not challenge:
         return {"ok": False, "error": "Reto no encontrado"}, 404
 
+    if challenge.get("content") and "qr_dynamic" in (challenge.get("content") or ""):
+        if not is_challenge_completed(current_user.id, challenge_id):
+            mark_challenge_completed(
+                current_user.id,
+                challenge_id,
+                score=10,
+                user_answer="QR cerrado, el usuario no ha caído, reto superado"
+            )
+        return {"ok": True, "score": 10, "feedback": {"opened": False}}
+
     if is_challenge_completed(current_user.id, challenge_id):
         return {"ok": True}
 
@@ -648,7 +703,6 @@ def challenge_complete_info(challenge_id):
     )
 
     return {"ok": True}
-
 
 
 login_manager = LoginManager()
@@ -950,6 +1004,13 @@ def challenge_page(challenge_id):
             challenge.get("option4"),
         ]
         options = [o.strip() for o in raw_options if o and str(o).strip()]
+    
+    qr_image_b64 = None
+    qr_public_url = None
+    if int(challenge.get("is_practical", 0)) and challenge.get("content") and "qr_dynamic" in challenge["content"]:
+        token = make_qr_token(current_user.id)
+        qr_public_url = f"{get_public_base_url()}/qr/{token}"
+        qr_image_b64 = make_qr_base64_png(qr_public_url)
 
     return render_template(
         "challenge.html",
@@ -959,9 +1020,10 @@ def challenge_page(challenge_id):
         review_mode=False, 
         category_code=category_code,
         subcategory_code=challenge["subcategory_code"],
-        redirect_url=redirect_url
+        redirect_url=redirect_url,
+        qr_image_b64=qr_image_b64,
+        qr_public_url=qr_public_url
     )
-
 
 
 @app.route("/challenge/<int:challenge_id>/submit", methods=["POST"])
@@ -1093,6 +1155,34 @@ def challenge_complete(challenge_id):
 
     return {"ok": True, "score": score, "feedback": feedback}
 
+
+@app.route("/qr/<token>", methods=["GET"])
+def qr_dynamic_landing(token):
+    user_id = verify_qr_token(token)
+    if not user_id:
+        abort(404)
+
+    challenge_id = get_qr_dynamic_challenge_id()
+    if not challenge_id:
+        abort(404)
+
+    if not is_challenge_completed(user_id, challenge_id):
+        mark_challenge_completed(
+            user_id,
+            challenge_id,
+            score=0,
+            user_answer="QR abierto, el usuario falló el reto"
+        )
+
+    ch = get_challenge_by_id(challenge_id)
+    if not ch:
+        abort(404)
+
+    category_code = get_category_code_by_subcategory(ch["subcategory_code"])
+    if not category_code:
+        abort(404)
+
+    return render_template("qr_warning.html", category_code=category_code)
 
 @app.route("/subcategory/<subcategory_code>/<phase>/next")
 @login_required
@@ -1271,6 +1361,7 @@ def subcategory_review_challenge(subcategory_code, phase, challenge_id):
                     ai_feedback = result
                 except Exception as e:
                     msg = str(e)
+                    print(msg)
 
                     if "429" in msg or "RESOURCE_EXHAUSTED" in msg:
                         ai_feedback = {

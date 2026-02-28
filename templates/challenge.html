@@ -349,12 +349,148 @@
                         </script>
 
                         {% elif challenge.content %}
-                            <div id="practical-wrapper"
-                                class="mt-2"
-                                data-challenge-id="{{ challenge.id }}"
-                                data-redirect-url="{{ redirect_url }}">
-                                {{ challenge.content | safe }}
-                            </div>
+
+                            {% if 'qr_dynamic' in challenge.content %}
+
+                                <div id="practical-wrapper"
+                                    class="bg-dark rounded p-4 position-relative"
+                                    data-challenge-id="{{ challenge.id }}"
+                                    data-redirect-url="{{ redirect_url }}">
+
+                                    <button id="qr_close"
+                                            type="button"
+                                            class="btn btn-sm btn-outline-light position-absolute"
+                                            style="top: 14px; right: 14px; border-radius: 999px; width: 36px; height: 36px; display:flex; align-items:center; justify-content:center;">
+                                        <i class="fa fa-times"></i>
+                                                                            </button>
+
+                                        <div class="text-center">
+                                            <h5 class="text-white mb-3">
+                                                <i class="fa fa-qrcode text-primary me-2"></i>Escanea el siguiente QR
+                                            </h5>
+
+                                            {% if qr_image_b64 %}
+                                                <div class="bg-secondary rounded p-3 d-inline-block">
+                                                    <img src="data:image/png;base64,{{ qr_image_b64 }}"
+                                                        alt="QR"
+                                                        class="img-fluid"
+                                                        style="max-width: 260px; height: auto;">
+                                                </div>
+                                            {% else %}
+                                                <div class="alert alert-warning mt-2 mb-0">
+                                                    No se ha podido generar el QR.
+                                                </div>
+                                            {% endif %}
+
+                                            <div class="mt-4 d-flex justify-content-center gap-2 flex-wrap">
+                                                <button id="qr_finish" class="btn btn-success px-4">
+                                                    <i class="fa fa-check me-2"></i>Terminar
+                                                </button>
+                                            </div>
+
+                                            <div id="qr_msg" class="mt-3"></div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="modal fade" id="qrSafeModal" tabindex="-1" aria-hidden="true"
+                                    data-bs-backdrop="static" data-bs-keyboard="false">
+                                <div class="modal-dialog modal-dialog-centered">
+                                    <div class="modal-content bg-secondary border-0" style="border-radius: 16px;">
+                                    
+                                    <div class="modal-body text-center p-4">
+                                        <div class="mb-3">
+                                        <i class="fa fa-check-circle" style="font-size:48px; color:#22c55e;"></i>
+                                        </div>
+
+                                        <h4 class="mb-2" style="color:#22c55e;">¡Felicidades!</h4>
+                                        <p class="text-white-50 mb-0">
+                                        Has actuado de forma segura: no has accedido al enlace del QR.
+                                        </p>
+                                    </div>
+
+                                    <div class="modal-footer border-0 justify-content-center pb-4">
+                                        <button id="qr_continue" type="button" class="btn btn-success px-4" data-bs-dismiss="modal">
+                                        Continuar
+                                        </button>
+                                    </div>
+
+                                    </div>
+
+                                <script>
+                                (function(){
+                                    const wrapper  = document.getElementById('practical-wrapper');
+                                    const btnFinish = document.getElementById('qr_finish');
+                                    const btnClose  = document.getElementById('qr_close');
+                                    const msgBox    = document.getElementById('qr_msg');
+
+                                    function csrf(){
+                                        const m = document.querySelector('meta[name="csrf-token"]');
+                                        return m ? m.getAttribute('content') : '';
+                                    }
+
+                                    function showMsg(ok, text){
+                                        msgBox.innerHTML = `<div class="alert ${ok ? 'alert-success' : 'alert-danger'} mb-0">${text}</div>`;
+                                    }
+
+                                    async function completeAsSafe(){
+                                        const challengeId = wrapper ? wrapper.dataset.challengeId : null;
+                                        const redirectUrl = (wrapper && wrapper.dataset.redirectUrl) ? wrapper.dataset.redirectUrl : '/panel';
+                                        if (!challengeId) return;
+
+                                        btnFinish.disabled = true;
+                                        btnClose.disabled  = true;
+
+                                        try{
+                                            const res = await fetch(`/challenge/${challengeId}/complete-info`, {
+                                                method: 'POST',
+                                                credentials: 'same-origin',
+                                                headers: {
+                                                    'Content-Type': 'application/json',
+                                                    'X-CSRFToken': csrf()
+                                                },
+                                                body: JSON.stringify({})
+                                            });
+
+                                            const data = await res.json();
+
+                                            if (data.ok){
+                                                const modalEl = document.getElementById('qrSafeModal');
+                                                const modal = new bootstrap.Modal(modalEl);
+                                                modal.show();
+
+                                                modalEl.addEventListener('hidden.bs.modal', () => {
+                                                    window.location.href = redirectUrl;
+                                                }, { once: true });
+
+                                            } else {
+                                                showMsg(false, data.error || 'No se pudo completar el reto.');
+                                                btnFinish.disabled = false;
+                                                btnClose.disabled  = false;
+                                            }
+
+                                        } catch(e){
+                                            showMsg(false, 'Error de conexión.');
+                                            btnFinish.disabled = false;
+                                            btnClose.disabled  = false;
+                                        }
+                                    }
+
+                                    btnFinish.addEventListener('click', completeAsSafe);
+                                    btnClose.addEventListener('click', completeAsSafe);
+                                })();
+                                </script>
+
+                            {% else %}
+
+                                <div id="practical-wrapper"
+                                    class="mt-2"
+                                    data-challenge-id="{{ challenge.id }}"
+                                    data-redirect-url="{{ redirect_url }}">
+                                    {{ challenge.content | safe }}
+                                </div>
+
+                            {% endif %}
 
                         {% else %}
                             <div class="alert alert-warning mb-0">
