@@ -128,7 +128,41 @@
                 {% if challenge.is_practical|int == 1 %}
                     {% if review_mode %}
                         <div class="bg-dark rounded p-3">
-                            {% if img_practical %}
+                            {% if challenge.content and 'qr_dynamic' in challenge.content %}
+                            {% if user_qr_opened %}
+                                <div class="border border-danger rounded p-3 mb-3" style="background: rgba(220,53,69,.08);">
+                                    <h6 class="text-danger mb-2">
+                                        <i class="fa fa-exclamation-triangle me-2"></i>
+                                        No deberías haber accedido
+                                    </h6>
+                                    <p class="text-white-50 mb-2">
+                                        En un caso real, ese QR podría llevarte a una web fraudulenta, robar credenciales o descargar malware.
+                                    </p>
+                                    <div class="text-white mb-2"><strong>Qué deberías hacer:</strong></div>
+                                    <ul class="text-white-50 mb-0 ps-3">
+                                        <li>Comprueba el origen (cartel, remitente, contexto).</li>
+                                        <li>Si puedes, previsualiza el enlace antes de abrirlo.</li>
+                                        <li>No introduzcas datos si no estás 100% segura del sitio.</li>
+                                        <li>Si dudas: no entres y reporta el QR (empresa / local / IT).</li>
+                                    </ul>
+                                </div>
+                            {% else %}
+                                <div class="border border-success rounded p-3 mb-3" style="background: rgba(25,135,84,.08);">
+                                    <h6 class="text-success mb-2">
+                                        <i class="fa fa-check-circle me-2"></i>
+                                        Muy bien: has actuado de forma segura
+                                    </h6>
+                                    <p class="text-white-50 mb-2">
+                                        Has evitado acceder a un QR potencialmente malicioso. Esa es la decisión correcta cuando no puedes verificar el origen.
+                                    </p>
+                                    <div class="text-white mb-2"><strong>Consejo práctico:</strong></div>
+                                    <p class="text-white-50 mb-0">
+                                        Si necesitas escanear QRs a menudo, usa una app/cámara que muestre el enlace antes de abrirlo y revisa el dominio.
+                                    </p>
+                                </div>
+                            {% endif %}
+                            
+                        {% elif img_practical %}
                                 <div class="mb-3 text-white">
                                     <strong>{{ (challenge.question or '') | replace('\n','<br>') | safe }}</strong>
                                 </div>
