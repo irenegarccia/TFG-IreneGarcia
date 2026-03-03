@@ -585,7 +585,7 @@
       ]
     },
 
-    {
+    { 
       "category_code": "social_engineering",
       "title": "Ingeniería Social",
       "order_index": 3,
@@ -606,13 +606,13 @@
               },
               {
                 "title": "Códigos QR",
-                "question": "¿Cuál es un riesgo típico de los códigos QR?",
-                "correct_answer": "Redirigir a webs falsas o maliciosas",
+                "question": "¿Con qué frecuencia escaneas códigos QR sin verificar previamente su origen o contexto?",
+                "correct_answer": "Con cierta frecuencia",
                 "options": [
-                  "Mejorar la batería del móvil",
-                  "Redirigir a webs falsas o maliciosas",
-                  "Aumentar la velocidad de Internet",
-                  "Aumentar el almacenamiento"
+                  "Nunca escaneo códigos QR",
+                  "Solo cuando conozco claramente su procedencia",
+                  "Con cierta frecuencia",
+                  "Muy frecuentemente sin comprobar su origen"
                 ],
                 "points": 10,
                 "is_training": 1,
@@ -624,13 +624,13 @@
             "post": [
               {
                 "title": "Códigos QR",
-                "question": "Antes de escanear un código QR, ¿qué verificación es recomendable realizar?",
-                "correct_answer": "Comprobar el contexto, el origen y la dirección de destino",
+                "question": "¿Qué riesgo implica un código QR con contenido malicioso superpuesto sobre un código QR legítimo?",
+                "correct_answer": "Puede redirigir a contenido malicioso sin que el usuario lo detecte",
                 "options": [
-                  "Escanearlo sin revisar su procedencia",
-                  "Comprobar el contexto, el origen y la dirección de destino",
-                  "Compartirlo con otros usuarios",
-                  "Desactivar el dispositivo"
+                  "No supone ningún riesgo si el diseño parece legítimo",
+                  "Puede redirigir a contenido malicioso sin que el usuario lo detecte",
+                  "Solo afecta a dispositivos antiguos",
+                  "Únicamente ralentiza el sistema"
                 ],
                 "points": 10,
                 "is_training": 0,
@@ -649,31 +649,77 @@
             "pre": [
               {
                 "title": "Llamadas fraudulentas",
-                "question": "Una táctica común en llamadas fraudulentas es…",
-                "correct_answer": "Crear urgencia y pedir datos personales",
+                "question": "¿Por qué en muchas llamadas fraudulentas el interlocutor intenta transmitir urgencia y control de la situación?",
+                "correct_answer": "Para que la víctima actúe rápidamente sin verificar la información",
                 "options": [
-                  "Ofrecer regalos sin más",
-                  "Crear urgencia y pedir datos personales",
-                  "Decirte que te relajes",
-                  "No decir nada"
+                  "Para ofrecer un servicio más eficaz",
+                  "Para que la víctima actúe rápidamente sin verificar la información",
+                  "Para realizar el procedimiento más rápido"
                 ],
                 "points": 10,
                 "is_training": 1,
                 "is_practical": 0,
                 "content": null,
                 "order_index": 1
+              },
+              {
+                "title": "Llamadas fraudulentas",
+                "question": "Recibes el siguiente mensaje: «Hemos cometido un error durante la transferencia de tu dinero y necesitamos que lo devuelvas lo antes posible», ¿cuál es el principal riesgo?",
+                "correct_answer": "Que se esté intentando provocar urgencia para obtener dinero o información personal",
+                "options": [
+                  "Que sea una notificación administrativa rutinaria",
+                  "Que se esté intentando provocar urgencia para obtener dinero o información personal",
+                  "Que no tenga consecuencias"
+                ],
+                "points": 10,
+                "is_training": 1,
+                "is_practical": 0,
+                "content": null,
+                "order_index": 2
+              },
+              {
+                "title": "Llamadas fraudulentas",
+                "question": "En un contexto sospechoso, una persona solicita confirmar datos personales como el número de teléfono o la fecha de nacimiento.\n\n¿Cuál es el objetivo más probable de esta acción?",
+                "correct_answer": "Recopilar o validar información para facilitar un fraude posterior",
+                "options": [
+                  "Actualizar registros sin impacto de seguridad",
+                  "Recopilar o validar información para facilitar un fraude posterior",
+                  "Realizar un estudio estadístico anónimo",
+                  "Mejorar la calidad del servicio"
+                ],
+                "points": 10,
+                "is_training": 1,
+                "is_practical": 0,
+                "content": null,
+                "order_index": 3
+              },
+              {
+                "title": "Llamadas fraudulentas",
+                "question": "Si recibes una llamada o mensaje sospechoso y respondes afirmando «Sí, soy yo», ¿qué riesgo puede derivarse de esa acción?",
+                "correct_answer": "Que la respuesta afirmativa sea grabada y utilizada para suplantación o validación fraudulenta",
+                "options": [
+                  "Ninguno, confirmar la identidad siempre es seguro",
+                  "Que la respuesta afirmativa sea grabada y utilizada para suplantación o validación fraudulenta",
+                  "Solo implica recibir más publicidad",
+                  "Únicamente confirma que el número está activo"
+                ],
+                "points": 10,
+                "is_training": 1,
+                "is_practical": 0,
+                "content": null,
+                "order_index": 4
               }
             ],
             "post": [
               {
                 "title": "Llamadas fraudulentas",
-                "question": "Si se recibe una llamada solicitando información personal de forma urgente, ¿cuál es la respuesta más adecuada?",
-                "correct_answer": "Finalizar la llamada y verificar la información por canales oficiales",
+                "question": "Si durante una llamada te piden: «Dime el día en el que naciste», ¿qué riesgo supone facilitar esta información?",
+                "correct_answer": "Puede utilizarse para suplantación de identidad o validación de cuentas",
                 "options": [
-                  "Facilitar los datos solicitados",
-                  "Finalizar la llamada y verificar la información por canales oficiales",
-                  "Enviar documentación personal por mensajería",
-                  "Continuar la conversación para obtener más información"
+                  "No supone ningún riesgo si solo es la fecha",
+                  "Puede utilizarse para suplantación de identidad o validación de cuentas",
+                  "Es una práctica habitual sin consecuencias",
+                  "Solo sirve para fines estadísticos"
                 ],
                 "points": 10,
                 "is_training": 0,
@@ -692,37 +738,85 @@
             "pre": [
               {
                 "title": "Conexiones WI-FI",
-                "question": "El principal riesgo del Wi-Fi público suele ser…",
-                "correct_answer": "Intercepción del tráfico (robo de información)",
+                "question": "¿Te conectas a redes wifi públicas que no requieren contraseña?",
+                "correct_answer": "Nunca",
                 "options": [
-                  "Que consuma más RAM",
-                  "Intercepción del tráfico (robo de información)",
-                  "Mejorar la cámara",
-                  "Mejorar el GPS"
+                  "Nunca",
+                  "Sí, en determinadas ocasiones",
+                  "Sí, con frecuencia",
+                  "No estoy seguro/a"
                 ],
                 "points": 10,
                 "is_training": 1,
                 "is_practical": 0,
                 "content": null,
                 "order_index": 1
+              },
+              {
+                "title": "Conexiones WI-FI",
+                "question": "¿Cómo valorarías el nivel de seguridad de las redes wifi públicas en relación con la protección de tu información privada?",
+                "correct_answer": "Presentan riesgos significativos de seguridad",
+                "options": [
+                  "Son completamente seguras",
+                  "Presentan riesgos significativos de seguridad",
+                  "Son seguras si el lugar es conocido",
+                  "No suponen ningún riesgo relevante"
+                ],
+                "points": 10,
+                "is_training": 1,
+                "is_practical": 0,
+                "content": null,
+                "order_index": 2
+              },
+              {
+                "title": "Conexiones WI-FI",
+                "question": "Cuando te conectas a una red wifi pública o abierta, ¿verificas que la conexión utilice un certificado de seguridad válido (HTTPS) antes de introducir información personal?",
+                "correct_answer": "Sí, compruebo que la conexión sea segura antes de introducir datos",
+                "options": [
+                  "No, nunca verifico el certificado",
+                  "Solo si voy a realizar una operación sensible",
+                  "Sí, compruebo que la conexión sea segura antes de introducir datos",
+                  "No sé cómo verificarlo"
+                ],
+                "points": 10,
+                "is_training": 1,
+                "is_practical": 0,
+                "content": null,
+                "order_index": 3
               }
             ],
             "post": [
               {
                 "title": "Conexiones WI-FI",
-                "question": "En el uso de redes Wi-Fi públicas, ¿qué medida reduce de forma más eficaz el riesgo de seguridad?",
-                "correct_answer": "Evitar operaciones sensibles o utilizar una red privada virtual (VPN)",
+                "question": "¿Qué riesgo principal puede derivarse del uso de redes wifi públicas sin protección adecuada?",
+                "correct_answer": "Intercepción del tráfico y robo de información",
                 "options": [
-                  "Acceder a servicios bancarios sin restricciones",
-                  "Evitar operaciones sensibles o utilizar una red privada virtual (VPN)",
-                  "Compartir la red con otros usuarios",
-                  "Desactivar las medidas de seguridad"
+                  "Aumento del consumo de batería",
+                  "Intercepción del tráfico y robo de información",
+                  "Pérdida de cobertura móvil",
+                  "Reducción de velocidad del dispositivo"
                 ],
                 "points": 10,
                 "is_training": 0,
                 "is_practical": 0,
                 "content": null,
                 "order_index": 1
+              },
+              {
+                "title": "Conexiones WI-FI",
+                "question": "Antes de conectarte a una red wifi abierta, ¿compruebas que realmente pertenece al establecimiento o entidad que dice representarla?",
+                "correct_answer": "Sí, verifico la legitimidad de la red antes de conectarme",
+                "options": [
+                  "No, me conecto a la primera red disponible",
+                  "Solo si la red me genera dudas",
+                  "Sí, verifico la legitimidad de la red antes de conectarme",
+                  "No considero necesario comprobarlo"
+                ],
+                "points": 10,
+                "is_training": 1,
+                "is_practical": 0,
+                "content": null,
+                "order_index": 2
               }
             ]
           }
@@ -735,6 +829,23 @@
             "pre": [
               {
                 "title": "Gestión de información sensible",
+                "question": "¿Cuál es una posible consecuencia de compartir información confidencial (por ejemplo, dirección, teléfono o datos visibles en una etiqueta de envío) en un entorno no controlado?",
+                "correct_answer": "Facilitar fraudes o suplantación de identidad",
+                "options": [
+                  "Mejorar la visibilidad en redes sociales",
+                  "Facilitar fraudes o suplantación de identidad",
+                  "Reducir el riesgo de ataques",
+                  "No tiene ninguna consecuencia relevante"
+                ],
+                "points": 10,
+                "is_training": 1,
+                "is_practical": 0,
+                "content": null,
+                "order_index": 1
+              },
+
+              {
+                "title": "Gestión de información sensible",
                 "question": "Una influencer sube una foto a las redes sociales y, sin darse cuenta, se ve una tarjeta de crédito en la imagen.\n\n¿Qué riesgos ves y qué medidas tomarías antes de publicar una imagen así?",
                 "correct_answer": null,
                 "options": [],
@@ -743,12 +854,12 @@
                 "is_practical": 1,
                 "img": "/img/creditcard_influencer.png",
                 "content": null,
-                "order_index": 1,
-                "ideal_answer": "El riesgo es la exposición pública de datos bancarios, lo que puede facilitar fraudes, compras no autorizadas o clonación de tarjeta. Al publicar en redes sociales, la información puede difundirse rápidamente y quedar almacenada permanentemente. Antes de publicar, se deben revisar cuidadosamente las imágenes, ocultar o difuminar datos sensibles y evitar mostrar documentos, tarjetas o información personal identificable."
+                "order_index": 3,
+                "ideal_answer": "El riesgo es la exposición pública de datos bancarios..."
               },
               {
                 "title": "Gestión de información sensible",
-                "question": "Una persona va en el metro y accede a su aplicación del banco, mientras tanto, la persona de al lado observa todo. \n\n¿Qué riesgos conllevan este tipo de situaciones?",
+                "question": "Una persona va en el metro y accede a su aplicación del banco, mientras tanto, la persona de al lado observa todo.\n\n¿Qué riesgos conllevan este tipo de situaciones?",
                 "correct_answer": null,
                 "options": [],
                 "points": 10,
@@ -756,8 +867,8 @@
                 "is_practical": 1,
                 "img": "/img/bank_publictransport.png",
                 "content": null,
-                "order_index": 2,
-                "ideal_answer": "El principal riesgo es la exposición de información financiera sensible a personas cercanas (shoulder surfing). Alguien podría ver el saldo, movimientos o incluso capturar la pantalla con una fotografía para utilizar esos datos con fines fraudulentos. Para protegerse, se debe evitar consultar información bancaria en espacios públicos concurridos, utilizar protectores de pantalla antiespía, reducir el brillo de pantalla y activar autenticación biométrica o doble factor en la aplicación bancaria."
+                "order_index": 4,
+                "ideal_answer": "El principal riesgo es la exposición de información financiera sensible..."
               },
               {
                 "title": "Gestión de información sensible",
@@ -769,8 +880,8 @@
                 "is_practical": 1,
                 "img": "/img/order_information.png",
                 "content": null,
-                "order_index": 3,
-                "ideal_answer": "El riesgo principal es la exposición de datos personales como nombre completo, dirección, teléfono, correo electrónico o DNI. Esta información puede utilizarse para suplantación de identidad, fraudes, phishing personalizado o incluso robos dirigidos. Antes de desechar un paquete, se debe eliminar o destruir la etiqueta de envío, borrar o tachar los datos sensibles y, si es posible, romper el código de barras o triturar la etiqueta para evitar que pueda recuperarse la información."
+                "order_index": 5,
+                "ideal_answer": "El riesgo principal es la exposición de datos personales..."
               },
               {
                 "title": "Gestión de información sensible",
@@ -782,35 +893,20 @@
                 "is_practical": 1,
                 "img": "/img/work_information.png",
                 "content": null,
-                "order_index": 4,
-                "ideal_answer": "El riesgo principal es la fuga de información sensible mediante técnicas como el dumpster diving. Cualquier persona podría recuperar los documentos y obtener datos financieros, información interna de la empresa, contactos, direcciones o credenciales de red. La exposición de la contraseña Wi-Fi podría permitir accesos no autorizados a la red corporativa. Antes de desechar este tipo de documentación, debería haberse destruido mediante trituradora o servicio especializado de destrucción segura, eliminar cualquier credencial visible y aplicar una política interna de gestión segura de residuos y protección de la información."
-              },
-              {
-                "title": "Gestión de información sensible",
-                "question": "¿Bloqueas tu ordenador o dispositivo móvil cuando lo dejas sin supervisión?",
-                "correct_answer": "Siempre me aseguro de bloquearlo",
-                "options": [
-                  "Siempre me aseguro de bloquearlo",
-                  "Depende de la situación, a veces se me olvida",
-                  "Nunca utilizo métodos de bloqueo"
-                ],
-                "points": 10,
-                "is_training": 1,
-                "is_practical": 0,
-                "content": null,
-                "order_index": 5
+                "order_index": 2,
+                "ideal_answer": "El riesgo principal es la fuga de información sensible..."
               }
             ],
             "post": [
               {
                 "title": "Gestión de información sensible",
-                "question": "¿Cuál es una buena práctica en la gestión de información sensible?",
-                "correct_answer": "Compartir únicamente la información necesaria y con los destinatarios adecuados",
+                "question": "¿Cómo describirías la ingeniería social?",
+                "correct_answer": "Una técnica de manipulación psicológica destinada a obtener información confidencial",
                 "options": [
-                  "Publicarla en redes sociales",
-                  "Compartir únicamente la información necesaria y con los destinatarios adecuados",
-                  "Enviar datos sin verificar",
-                  "Utilizar siempre redes públicas"
+                  "Un sistema automático de cifrado",
+                  "Una técnica de manipulación psicológica destinada a obtener información confidencial",
+                  "Una actualización del sistema operativo",
+                  "Un método de mejora del rendimiento"
                 ],
                 "points": 10,
                 "is_training": 0,
@@ -823,7 +919,6 @@
         }
       ]
     },
-
     {
       "category_code": "phishing",
       "title": "Phishing",

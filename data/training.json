@@ -244,6 +244,234 @@
           ]
         }
       ]
+    },
+    
+    {
+      "subcategory_code": "social_qr",
+      "intro": "Los códigos QR facilitan el acceso rápido a enlaces, menús o promociones, pero también se usan como vector de ingeniería social para redirigir a sitios maliciosos o engañar al usuario. El riesgo aumenta cuando se escanean sin revisar el contexto ni el origen.",
+      "rule_text": "Antes de escanear un QR: revisa el contexto, busca señales de manipulación y desconfía si te lleva a introducir datos o hacer una acción urgente.",
+      "sections": [
+        {
+          "title": "Por qué un QR puede ser peligroso",
+          "text": "Un código QR no muestra el destino a simple vista. Eso permite que el atacante esconda un enlace fraudulento que aparenta ser legítimo. El objetivo suele ser redirigir a webs falsas, mostrar formularios engañosos o llevar al usuario a ejecutar acciones que normalmente no haría.",
+          "bullets": [
+            "El QR oculta el enlace real: no sabes adónde vas hasta abrirlo.",
+            "Puede redirigir a páginas falsas que imitan servicios reales.",
+            "Puede empujar a actuar rápido (p. ej., “caduca hoy”, “verifica ahora”).",
+            "En espacios públicos se confía más y se verifica menos."
+          ]
+        },
+        {
+          "title": "Caso clave: QR malicioso superpuesto sobre un QR legítimo",
+          "text": "Una técnica habitual es pegar un QR malicioso encima de uno legítimo. Visualmente parece el original, pero el destino cambia completamente. Esto funciona especialmente bien en carteles, restaurantes, máquinas expendedoras o zonas de alto tránsito donde nadie revisa el QR de cerca.",
+          "bullets": [
+            "Puede redirigir a contenido malicioso sin que el usuario lo detecte.",
+            "La víctima cree que está usando el QR “de siempre”.",
+            "Suele pasar desapercibido si es una pegatina bien colocada.",
+            "Si el QR te lleva a introducir datos, el riesgo se multiplica."
+          ]
+        },
+        {
+          "title": "Señales de sospecha y qué comprobar",
+          "text": "La prevención se basa en el contexto: qué lugar es, quién lo ha puesto y si el QR muestra señales físicas de manipulación. Si el QR parece añadido encima, mal alineado o distinto al resto de cartelería, conviene no escanearlo.",
+          "bullets": [
+            "Comprueba si hay pegatinas encima o bordes levantados.",
+            "Desconfía de QRs en sitios donde no encajan con el entorno.",
+            "Si el móvil muestra el enlace antes de abrir, revisa el dominio.",
+            "Evita introducir datos si no puedes verificar el origen."
+          ]
+        },
+        {
+          "title": "Qué hacer si ya lo has escaneado",
+          "text": "Escanear no siempre implica daño inmediato, pero si el QR te llevó a una web extraña o te pidió datos, lo más seguro es cortar la interacción y no continuar. Si llegaste a abrir una página sospechosa, no sigas instrucciones, no descargues nada y cierra la pestaña.",
+          "bullets": [
+            "Cierra la página si pide acciones urgentes o datos personales.",
+            "No descargues archivos ni instales apps desde enlaces del QR.",
+            "Si era un QR en un lugar público, avisa al responsable del local.",
+            "Si crees que diste información, informa y revisa el impacto cuanto antes."
+          ]
+        }
+      ]
+    },
+    {
+      "subcategory_code": "social_calls",
+      "intro": "Las llamadas y mensajes fraudulentos son una forma común de ingeniería social. Se basan en manipular emociones (urgencia, miedo, presión o autoridad) para que la víctima confirme datos, siga instrucciones o realice acciones sin verificar.",
+      "rule_text": "Si te presionan por teléfono: NO confirmes datos, NO sigas instrucciones y verifica siempre por canales oficiales.",
+      "sections": [
+        {
+          "title": "Cómo funciona la manipulación en llamadas",
+          "text": "El atacante busca que actúes sin pensar. Para ello usa frases que transmiten urgencia y autoridad (por ejemplo, soporte técnico, banco, empresa) y te empuja a hacer lo que te pide antes de que puedas comprobar si es real.",
+          "bullets": [
+            "Urgencia: “tienes que hacerlo ahora”.",
+            "Autoridad: “soy del banco / soporte / empresa”.",
+            "Presión emocional: “tranquila y sigue mis instrucciones”.",
+            "Objetivo: datos personales, verificación de identidad o dinero."
+          ]
+        },
+        {
+          "title": "Frases típicas y qué intención tienen",
+          "text": "Las frases persuasivas no suelen ser neutras: están diseñadas para controlar la conversación y reducir tu capacidad de verificación. Si una llamada te obliga a actuar rápido o te pide calma mientras te guía, es una señal clara de manipulación.",
+          "bullets": [
+            "«Puedo ayudarte… Lo único que necesito es que te calmes y sigas mis instrucciones»: control + autoridad.",
+            "«Hemos cometido un error durante la transferencia… devuélvelo lo antes posible»: urgencia + presión económica.",
+            "«¿Es este tu número de teléfono?» / «¿Cuál es tu dirección?» / «Dime el día en el que naciste»: recopilación y confirmación de datos."
+          ]
+        },
+        {
+          "title": "Riesgo de contestar “Sí” o “Sí, soy yo”",
+          "text": "Confirmar con un “sí” puede parecer inofensivo, pero en contextos sospechosos puede usarse como validación de identidad o para seguir presionando con más información personal. En algunos casos incluso intentan obtener una confirmación grabable o una aceptación verbal para reforzar el engaño.",
+          "bullets": [
+            "No confirmes identidad si tú no iniciaste el contacto.",
+            "Evita responder con afirmaciones cerradas en llamadas dudosas.",
+            "No aportes datos “para verificar” si no puedes comprobar a quién hablas.",
+            "La seguridad está en cortar la conversación y verificar por tu cuenta."
+          ]
+        },
+        {
+          "title": "Verificación de números: Truecaller, listados de spam y criterio práctico",
+          "text": "Una medida útil es comprobar si el número ha sido reportado como spam. Existen apps y listados públicos donde usuarios reportan números sospechosos. Esto no sustituye la verificación oficial, pero ayuda a detectar patrones de fraude.",
+          "bullets": [
+            "Comprueba el número con herramientas tipo Truecaller o listados públicos de spam (por ejemplo, páginas de reportes).",
+            "Si se hacen pasar por una entidad, cuelga y llama tú al número oficial (web oficial, contrato, tarjeta).",
+            "Desconfía si piden datos personales o pagos “para solucionar un error”.",
+            "No sigas instrucciones por teléfono si no puedes validar al interlocutor."
+          ]
+        },
+        {
+          "title": "Truecaller: identificación y filtrado de llamadas",
+          "text": "Truecaller es una aplicación de identificación de llamadas que permite conocer información sobre números desconocidos antes de responder. Funciona mediante una base de datos colaborativa en la que millones de usuarios reportan números asociados a spam, fraude, publicidad agresiva o intentos de estafa. Cuando se recibe una llamada, la aplicación compara el número entrante con su base de datos y muestra una alerta si ha sido previamente reportado. Más información disponible en su web oficial: https://www.truecaller.com/",
+          "bullets": [
+            "Identifica números desconocidos mostrando nombre asociado o etiquetas como “posible spam” o “fraude”.",
+            "Se basa en reportes de usuarios y en bases de datos agregadas.",
+            "Permite bloquear automáticamente números marcados como sospechosos.",
+            "Ayuda a detectar patrones de llamadas fraudulentas repetidas.",
+            "No garantiza que una llamada sea segura solo porque no esté reportada."
+          ]
+        },
+        {
+          "title": "Reducir llamadas no deseadas: Lista Robinson",
+          "text": "Para minimizar el ruido de llamadas comerciales no deseadas, una opción conocida es inscribirse en servicios de exclusión publicitaria (como la Lista Robinson). Reducir llamadas comerciales también reduce oportunidades para que un fraude “pase por normal”.",
+          "bullets": [
+            "Disminuye el volumen de llamadas comerciales no deseadas.",
+            "Reduce situaciones en las que un atacante se camufla como “oferta” o “promoción”.",
+            "Aun así, si te llaman y te piden datos: siempre verifica."
+          ]
+        }
+      ]
+    },
+    {
+      "subcategory_code": "social_wifi",
+      "intro": "Conectarse a Wi-Fi público o abierto puede exponer información y facilitar ataques si no se comprueba la legitimidad de la red ni la seguridad de la conexión. El riesgo no es solo “que no tenga contraseña”, sino no saber quién controla realmente esa red.",
+      "rule_text": "En Wi-Fi abierto: verifica que la red es legítima y revisa la seguridad de la conexión (HTTPS/certificados). Evita acciones sensibles.",
+      "sections": [
+        {
+          "title": "Qué riesgos existen en Wi-Fi público o abierto",
+          "text": "Las redes públicas pueden permitir que terceros intercepten tráfico o creen puntos de acceso falsos. Un atacante puede poner una red con un nombre parecido al del establecimiento para que el usuario se conecte sin darse cuenta.",
+          "bullets": [
+            "Intercepción del tráfico y exposición de información.",
+            "Redes falsas con nombres similares.",
+            "Captura de datos si el usuario navega o inicia sesión sin medidas.",
+            "Mayor riesgo si se realizan acciones sensibles mientras se está conectado."
+          ]
+        },
+        {
+          "title": "Verificar desde dónde te conectas",
+          "text": "La práctica clave es confirmar que la red pertenece realmente al lugar. La gente suele conectarse al primer Wi-Fi que ve, y ese hábito es explotable. Verificar el nombre exacto y pedir confirmación al personal reduce el riesgo de caer en una red falsa.",
+          "bullets": [
+            "Pregunta al personal cuál es el nombre exacto de la red oficial.",
+            "Desconfía de redes duplicadas o con nombres “muy genéricos” (p. ej., Free WiFi).",
+            "Evita la conexión automática a redes abiertas.",
+            "Si hay dudas, usa datos móviles."
+          ]
+        },
+        {
+          "title": "Certificados, HTTPS y señales de conexión insegura",
+          "text": "Aunque la red sea legítima, la seguridad también depende de cómo navegas. Si la web no es segura o el navegador advierte de certificados, no debes introducir datos. Esto es especialmente importante en redes abiertas donde la manipulación del tráfico es más plausible.",
+          "bullets": [
+            "Comprueba que las webs importantes usen HTTPS antes de introducir datos.",
+            "Si el navegador muestra aviso de certificado o “no seguro”, no continúes.",
+            "Evita iniciar sesión o introducir datos personales en redes abiertas.",
+            "Prioriza conexiones seguras o alternativas (por ejemplo, datos móviles)."
+          ]
+        },
+        {
+          "title": "Buenas prácticas al usar Wi-Fi pública",
+          "text": "La forma más eficaz de reducir riesgo es limitar lo que haces en esa red y mantener hábitos de verificación. El objetivo es que, aunque la red sea insegura, el impacto sea mínimo.",
+          "bullets": [
+            "Evita operaciones sensibles mientras estés conectado a Wi-Fi público.",
+            "No aceptes ventanas emergentes o “portales” que pidan datos extraños.",
+            "Desconéctate al terminar y no guardes la red si no es necesaria.",
+            "Si sospechas de la red, abandónala y cambia a otra conexión."
+          ]
+        }
+      ]
+    },
+    {
+      "subcategory_code": "social_sensitive_info",
+      "intro": "La ingeniería social también se apoya en errores cotidianos de exposición de información: datos en imágenes, pantallas visibles en público, etiquetas de envío en la basura o documentos tirados sin destruir. Pequeños descuidos pueden facilitar fraudes y suplantaciones.",
+      "rule_text": "Antes de publicar o desechar: revisa, oculta y destruye lo que pueda identificarte o dar acceso a información.",
+      "sections": [
+        {
+          "title": "Qué se considera información sensible en el día a día",
+          "text": "La información sensible no es solo “algo secreto”: es cualquier dato que permita identificarte, localizarte o personalizar un engaño. Muchas veces el atacante solo necesita pequeñas piezas para construir un fraude convincente.",
+          "bullets": [
+            "Nombre completo, dirección, teléfono o datos de envío.",
+            "Datos visibles en documentos o tarjetas en imágenes.",
+            "Información corporativa (documentos internos, procedimientos, contactos).",
+            "Cualquier dato que facilite suplantación o fraude dirigido."
+          ]
+        },
+        {
+          "title": "Consecuencias de compartir información confidencial",
+          "text": "Compartir información confidencial puede tener consecuencias negativas porque facilita ataques más creíbles y personalizados. Una vez expuesta, puede difundirse o almacenarse de forma permanente (por ejemplo, en redes sociales).",
+          "bullets": [
+            "Fraudes dirigidos y suplantación de identidad.",
+            "Phishing más convincente (con datos reales).",
+            "Pérdida de privacidad y posible impacto económico o reputacional.",
+            "Dificultad para “borrar” la información una vez publicada."
+          ]
+        },
+        {
+          "title": "Imágenes y redes sociales: revisar antes de publicar",
+          "text": "Las fotos pueden revelar más de lo que parece: tarjetas, documentos, pantallas, etiquetas o información de fondo. Una publicación inocente puede dar datos suficientes para un fraude.",
+          "bullets": [
+            "Revisa si se ven tarjetas, documentos o datos en segundo plano.",
+            "Oculta o difumina cualquier dato identificable antes de publicar.",
+            "Evita enseñar tickets, tarjetas o documentos aunque sea “un momento”.",
+            "Recuerda que una imagen puede circular fuera de tu control."
+          ]
+        },
+        {
+          "title": "Pantallas visibles en público (shoulder surfing)",
+          "text": "En transporte público o lugares concurridos, otras personas pueden ver tu pantalla o incluso grabarla. Esto se aprovecha para conocer información personal o financiera y para hacer fraudes posteriores.",
+          "bullets": [
+            "Evita mostrar información sensible en espacios concurridos.",
+            "Colócate de forma que reduzcas el ángulo de visión de terceros.",
+            "Si notas miradas insistentes, cambia de postura o deja la app.",
+            "Si se trata de información crítica, espera a un entorno privado."
+          ]
+        },
+        {
+          "title": "Desechar paquetes: etiquetas de envío visibles",
+          "text": "Tirar un paquete con la etiqueta intacta expone nombre, dirección y a veces teléfono. Esa información puede usarse para suplantación, fraude o ataques personalizados. Es un error común y fácil de evitar.",
+          "bullets": [
+            "Destruye o elimina la etiqueta antes de tirar la caja.",
+            "Tacha o rompe los datos personales y códigos visibles.",
+            "No dejes intactos códigos de barras/identificadores si no es necesario.",
+            "Trata la etiqueta como un documento con datos personales."
+          ]
+        },
+        {
+          "title": "Documentos empresariales sin destruir: riesgo de fuga de información",
+          "text": "Tirar documentación interna sin destruir facilita que cualquiera la recupere. Esto puede exponer datos corporativos, contactos, procedimientos e información que favorezca ingeniería social dentro de la empresa.",
+          "bullets": [
+            "No tires documentación interna sin destruirla (trituración o método seguro).",
+            "No dejes papeles en impresoras o zonas compartidas.",
+            "Sigue políticas de destrucción segura si estás en una organización.",
+            "Piensa: “si alguien lo recoge, ¿qué podría sacar de aquí?”"
+          ]
+        }
+      ]
     }
   ]
 }
