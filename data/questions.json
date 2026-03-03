@@ -654,7 +654,7 @@
                 "options": [
                   "Para ofrecer un servicio más eficaz",
                   "Para que la víctima actúe rápidamente sin verificar la información",
-                  "Para realizar el procedimiento más rápido"
+                  "únicamente es para realizar el procedimiento más rápido"
                 ],
                 "points": 10,
                 "is_training": 1,
@@ -931,20 +931,67 @@
           "challenges": {
             "pre": [
               {
-                "title": "Propagación de malware",
-                "question": "¿A través de qué medio consideras que se puede propagar un malware?",
-                "correct_answer": "Todas las anteriores",
+                "title": "Reconocimiento de webs y correos fraudulentos",
+                "question": "¿Qué es el phishing?",
+                "correct_answer": "Una técnica de engaño para obtener datos personales o credenciales haciéndose pasar por una entidad legítima",
                 "options": [
-                  "Dispositivos usb u otros dispositivos externos",
-                  "Archivos adjuntos en correos electrónicos",
-                  "Enlaces, descargas o aplicaciones obtenidas desde páginas web o internet",
-                  "Todas las anteriores"
+                  "Un sistema de cifrado de correos electrónicos",
+                  "Una técnica de engaño para obtener datos personales o credenciales haciéndose pasar por una entidad legítima",
+                  "Un programa antivirus",
+                  "Un tipo de conexión segura"
                 ],
                 "points": 10,
                 "is_training": 1,
                 "is_practical": 0,
                 "content": null,
                 "order_index": 1
+              },
+              {
+                "title": "Reconocimiento de webs y correos fraudulentos",
+                "question": "¿A través de qué medios puede propagarse un intento de phishing o malware?",
+                "correct_answer": "Correo electrónico, SMS, redes sociales o enlaces web",
+                "options": [
+                  "Se puede transmitir mediante correo electrónico, SMS, redes sociales o enlaces web",
+                  "Solo se propaga si contesto al SMS o correo electrónico fraudulento",
+                  "Si lo meto en SPAM ya no supone ningún riesgo"
+                ],
+                "points": 10,
+                "is_training": 1,
+                "is_practical": 0,
+                "content": null,
+                "order_index": 2
+              },
+              {
+                "title": "Reconocimiento de webs y correos fraudulentos",
+                "question": "Si recibes una solicitud de Bizum inesperada, ¿qué implica aceptar la operación?",
+                "correct_answer": "Que estás enviando dinero, no recibiéndolo",
+                "options": [
+                  "Que estás recibiendo el dinero automáticamente",
+                  "Que estás enviando dinero, no recibiéndolo",
+                  "Que el banco revisará la operación antes de ejecutarla",
+                  "Que no tiene efecto inmediato"
+                ],
+                "points": 10,
+                "is_training": 1,
+                "is_practical": 0,
+                "content": null,
+                "order_index": 3
+              },
+              {
+                "title": "Reconocimiento de webs y correos fraudulentos",
+                "question": "¿Con qué frecuencia abres archivos adjuntos de remitentes desconocidos?",
+                "correct_answer": "Puede suponer un riesgo y debería verificarse antes de abrirlo",
+                "options": [
+                  "Siempre los abro si parecen importantes",
+                  "Puede suponer un riesgo y debería verificarse antes de abrirlo",
+                  "Los abro si incluyen el logotipo de una empresa",
+                  "Nunca reviso el remitente"
+                ],
+                "points": 10,
+                "is_training": 1,
+                "is_practical": 0,
+                "content": null,
+                "order_index": 4
               },
               {
                 "title": "Reconocimiento de webs y correos fraudulentos",
@@ -960,10 +1007,58 @@
                 "is_training": 1,
                 "is_practical": 0,
                 "content": null,
-                "order_index": 2
+                "order_index": 5
               }
             ],
             "post": [
+              {
+                "title": "Reconocimiento de webs y correos fraudulentos",
+                "question": "¿Cuál es el indicador más claro de que un correo puede ser fraudulento?",
+                "correct_answer": "Solicita datos personales con urgencia y redirige a una web con dominio sospechoso",
+                "options": [
+                  "Incluye el logotipo oficial de una empresa",
+                  "Está escrito sin faltas de ortografía",
+                  "Solicita datos personales con urgencia y redirige a una web con dominio sospechoso",
+                  "Incluye un saludo formal"
+                ],
+                "points": 10,
+                "is_training": 0,
+                "is_practical": 0,
+                "content": null,
+                "order_index": 1
+              },
+              {
+                "title": "Reconocimiento de webs y correos fraudulentos",
+                "question": "Si recibes un correo de una tienda online mientras utilizas tu correo profesional, ¿cuál es la actuación más segura?",
+                "correct_answer": "No responder y comprobar directamente en la web oficial de la tienda",
+                "options": [
+                  "Responder al correo para pedir aclaraciones",
+                  "Abrir el enlace para verificar la información",
+                  "No responder y comprobar directamente en la web oficial de la tienda",
+                  "Reenviarlo a un compañero"
+                ],
+                "points": 10,
+                "is_training": 0,
+                "is_practical": 0,
+                "content": null,
+                "order_index": 2
+              },
+              {
+                "title": "Reconocimiento de webs y correos fraudulentos",
+                "question": "¿Qué deberías hacer si recibes un archivo adjunto inesperado por correo electrónico?",
+                "correct_answer": "No abrirlo y verificar la identidad del remitente por un canal alternativo",
+                "options": [
+                  "Abrirlo para comprobar qué contiene",
+                  "Descargarlo y analizarlo después",
+                  "No abrirlo y verificar la identidad del remitente por un canal alternativo",
+                  "Ignorarlo sin más"
+                ],
+                "points": 10,
+                "is_training": 0,
+                "is_practical": 0,
+                "content": null,
+                "order_index": 3
+              },
               {
                 "title": "Reconocimiento de webs y correos fraudulentos",
                 "question": "Si un correo solicita el acceso a través de un enlace sospechoso, ¿cuál es la actuación correcta?",

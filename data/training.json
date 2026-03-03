@@ -6,7 +6,7 @@
       "rule_text": "Si no es tuyo o no sabes de dónde sale: NO lo conectes. Repórtalo y, si hay que analizarlo, que sea en un entorno aislado.",
       "sections": [
         {
-          "title": "Qué es un USB malicioso",
+          "title": "¿Qué es un USB malicioso?",
           "text": "Un USB malicioso es un dispositivo que no solo guarda archivos. Puede estar preparado para ejecutar acciones automáticas al conectarlo, aprovechando que el sistema confía en los dispositivos físicos.",
           "bullets": [
             "Puede ejecutar acciones sin que te des cuenta.",
@@ -16,7 +16,7 @@
           ]
         },
         {
-          "title": "Por qué un USB puede ser peligroso",
+          "title": "¿Por qué un USB puede ser peligroso?",
           "text": "El problema no es el USB en sí, sino la confianza que los sistemas tienen en él. Esa confianza puede ser explotada para modificar el equipo o acceder a información.",
           "bullets": [
             "Puede instalar programas maliciosos en el equipo.",
@@ -36,7 +36,7 @@
           ]
         },
         {
-          "title": "Cómo analizar un USB de forma segura",
+          "title": "¿Cómo analizar un USB de forma segura?",
           "text": "Si por motivos profesionales o académicos es necesario analizar un USB desconocido, nunca debe hacerse en el ordenador personal o de trabajo principal.",
           "bullets": [
             "Utilizar una máquina virtual aislada (VM) sin acceso a red o con red controlada.",
@@ -66,7 +66,7 @@
           ]
         },
         {
-          "title": "Qué hacer si ya lo conectaste por error",
+          "title": "¿Qué hacer si ya lo conectaste por error?",
           "text": "Si el USB ya se ha conectado, es importante reducir posibles daños aunque no se note nada extraño.",
           "bullets": [
             "Desconéctalo inmediatamente.",
@@ -84,7 +84,7 @@
       "rule_text": "Primero protege tu correo principal. Luego bloquea o borra el dispositivo y revisa accesos.",
       "sections": [
         {
-          "title": "Por qué perder un dispositivo es un riesgo",
+          "title": "¿Por qué perder un dispositivo es un riesgo?",
           "text": "Los dispositivos suelen tener sesiones abiertas y contraseñas guardadas. Esto convierte la pérdida física en un problema de seguridad digital.",
           "bullets": [
             "Sesiones abiertas = acceso directo.",
@@ -94,7 +94,7 @@
           ]
         },
         {
-          "title": "Qué datos suelen quedar más expuestos",
+          "title": "¿Qué datos suelen quedar más expuestos?",
           "text": "El mayor riesgo no son solo los archivos, sino el acceso a servicios conectados.",
           "bullets": [
             "Correo electrónico y redes sociales.",
@@ -104,7 +104,7 @@
           ]
         },
         {
-          "title": "Qué hacer lo antes posible",
+          "title": "¿Qué hacer lo antes posible?",
           "text": "Actuar rápido ayuda a cortar accesos antes de que alguien los aproveche.",
           "bullets": [
             "Intentar localizar o bloquear el dispositivo.",
@@ -114,7 +114,7 @@
           ]
         },
         {
-          "title": "Cómo reducir el impacto en el futuro",
+          "title": "¿Cómo reducir el impacto en el futuro?",
           "text": "Algunas medidas sencillas reducen mucho el daño si vuelve a ocurrir.",
           "bullets": [
             "Usar bloqueo con PIN largo o biometría.",
@@ -131,7 +131,7 @@
       "rule_text": "Usa NFC solo cuando lo necesites y con el móvil bloqueado.",
       "sections": [
         {
-          "title": "Qué es NFC",
+          "title": "¿Qué es NFC?",
           "text": "NFC permite la comunicación entre dispositivos cuando están muy cerca. Está pensada para acciones rápidas y concretas.",
           "bullets": [
             "Funciona solo a pocos centímetros.",
@@ -165,7 +165,7 @@
       "rule_text": "Contraseñas largas, únicas y con 2FA siempre que se pueda.",
       "sections": [
         {
-          "title": "Qué hace que una contraseña sea segura",
+          "title": "¿Qué hace que una contraseña sea segura?",
           "text": "La seguridad de una contraseña depende más de su longitud y de no reutilizarla que de trucos complicados.",
           "bullets": [
             "La longitud es más importante que los símbolos.",
@@ -175,7 +175,7 @@
           ]
         },
         {
-          "title": "Qué es el 2FA (doble factor de autenticación)",
+          "title": "¿Qué es el 2FA? (doble factor de autenticación)",
           "text": "El doble factor añade una comprobación extra para asegurarse de que eres tú quien accede, incluso si alguien conoce la contraseña.",
           "bullets": [
             "Primero escribes tu contraseña.",
@@ -185,7 +185,7 @@
           ]
         },
         {
-          "title": "Por qué no reutilizar contraseñas",
+          "title": "¿Por qué no reutilizar contraseñas?",
           "text": "Reutilizar contraseñas convierte un problema pequeño en uno mucho mayor.",
           "bullets": [
             "Si una web se filtra, prueban esa contraseña en otras.",
@@ -210,7 +210,7 @@
           ]
         },
         {
-          "title": "Por qué usar uno",
+          "title": "¿Por qué usar uno?",
           "text": "Facilita mantener buenas prácticas sin esfuerzo constante.",
           "bullets": [
             "Evita reutilizar contraseñas.",
@@ -234,7 +234,7 @@
           ]
         },
         {
-          "title": "Qué hacer si ocurre",
+          "title": "¿Qué hacer si ocurre?",
           "text": "La rapidez reduce el impacto y evita problemas mayores.",
           "bullets": [
             "Cambiar la contraseña inmediatamente.",
@@ -252,7 +252,7 @@
       "rule_text": "Antes de escanear un QR: revisa el contexto, busca señales de manipulación y desconfía si te lleva a introducir datos o hacer una acción urgente.",
       "sections": [
         {
-          "title": "Por qué un QR puede ser peligroso",
+          "title": "¿Por qué un QR puede ser peligroso?",
           "text": "Un código QR no muestra el destino a simple vista. Eso permite que el atacante esconda un enlace fraudulento que aparenta ser legítimo. El objetivo suele ser redirigir a webs falsas, mostrar formularios engañosos o llevar al usuario a ejecutar acciones que normalmente no haría.",
           "bullets": [
             "El QR oculta el enlace real: no sabes adónde vas hasta abrirlo.",
@@ -282,7 +282,7 @@
           ]
         },
         {
-          "title": "Qué hacer si ya lo has escaneado",
+          "title": "¿Qué hacer si ya lo has escaneado?",
           "text": "Escanear no siempre implica daño inmediato, pero si el QR te llevó a una web extraña o te pidió datos, lo más seguro es cortar la interacción y no continuar. Si llegaste a abrir una página sospechosa, no sigas instrucciones, no descargues nada y cierra la pestaña.",
           "bullets": [
             "Cierra la página si pide acciones urgentes o datos personales.",
@@ -299,7 +299,7 @@
       "rule_text": "Si te presionan por teléfono: NO confirmes datos, NO sigas instrucciones y verifica siempre por canales oficiales.",
       "sections": [
         {
-          "title": "Cómo funciona la manipulación en llamadas",
+          "title": "¿Cómo funciona la manipulación en llamadas?",
           "text": "El atacante busca que actúes sin pensar. Para ello usa frases que transmiten urgencia y autoridad (por ejemplo, soporte técnico, banco, empresa) y te empuja a hacer lo que te pide antes de que puedas comprobar si es real.",
           "bullets": [
             "Urgencia: “tienes que hacerlo ahora”.",
@@ -469,6 +469,93 @@
             "No dejes papeles en impresoras o zonas compartidas.",
             "Sigue políticas de destrucción segura si estás en una organización.",
             "Piensa: “si alguien lo recoge, ¿qué podría sacar de aquí?”"
+          ]
+        }
+      ]
+    },
+    {
+      "subcategory_code": "phish_recognition",
+      "intro": "El phishing consiste en engañar a una persona para que haga una acción insegura (pinchar un enlace, abrir un adjunto, autorizar una operación o facilitar información) haciéndose pasar por una entidad legítima. Puede llegar por correo, SMS, redes sociales o webs falsas y suele apoyarse en urgencia, miedo o recompensas para que no verifiques nada.",
+      "rule_text": "Si te piden actuar con urgencia: PARA. Verifica el remitente, el enlace y el contexto antes de abrir adjuntos, pinchar enlaces o autorizar operaciones.",
+      "sections": [
+        {
+          "title": "¿Qué es phishing?",
+          "text": "El phishing es una técnica de ingeniería social que busca que la víctima confíe en un mensaje o web que aparenta ser real (banco, empresa, tienda online, organismo público). Su éxito se basa en que el usuario actúa rápido sin comprobar el origen. En muchos casos, el objetivo es robar datos o conseguir que autorices una acción (por ejemplo, un pago o una solicitud).",
+          "bullets": [
+            "Suplantación de identidad: el atacante finge ser una entidad legítima.",
+            "Presión psicológica: urgencia, miedo, amenaza o premio para que no verifiques.",
+            "Objetivo: que la víctima haga clic, abra un adjunto o autorice una acción.",
+            "Puede afectar tanto a cuentas personales como a entornos de trabajo."
+          ]
+        },
+        {
+          "title": "¿Por dónde puede llegar? (correo, SMS, redes sociales y webs)",
+          "text": "Los intentos de phishing y la distribución de malware pueden propagarse por múltiples canales. No se limita al correo: también es habitual en SMS (smishing), mensajes en redes sociales, aplicaciones de mensajería y webs falsas que imitan páginas de acceso o de compra.",
+          "bullets": [
+            "Correo electrónico: enlaces y adjuntos que parecen legítimos.",
+            "SMS (smishing): enlaces cortos o mensajes urgentes sobre entregas, bancos o multas.",
+            "Redes sociales y mensajería: archivos o enlaces enviados desde cuentas comprometidas.",
+            "Webs falsas: páginas clonadas para que introduzcas datos o para redirigir a descargas."
+          ]
+        },
+        {
+          "title": "Señales típicas de un correo o web fraudulenta",
+          "text": "Aunque algunos ataques están bien escritos, suelen dejar pistas. Lo importante es entrenar el hábito de verificar: quién lo envía, adónde lleva el enlace y qué te está pidiendo que hagas.",
+          "bullets": [
+            "Urgencia: “último aviso”, “bloqueo inmediato”, “responde ahora”.",
+            "Petición de acción sensible: iniciar sesión, confirmar datos, pagar o autorizar algo.",
+            "Enlaces a dominios raros o ligeramente modificados (parecidos al real).",
+            "Adjuntos inesperados, especialmente si no estabas esperando documentación.",
+            "Incongruencias: remitente que no encaja, contexto extraño, errores de formato."
+          ]
+        },
+        {
+          "title": "Adjuntos: cuándo son un riesgo y cómo actuar",
+          "text": "Abrir archivos adjuntos inesperados es una vía frecuente de infección o de engaño. El riesgo aumenta si el remitente es desconocido o si el mensaje usa urgencia. La medida clave es verificar antes de abrir.",
+          "bullets": [
+            "Si el adjunto es inesperado: no lo abras de inmediato.",
+            "Verifica el remitente por otro canal (por ejemplo, llamada al número oficial o contacto interno conocido).",
+            "Desconfía si el correo te presiona para abrirlo (“es urgente”, “es obligatorio”).",
+            "Si estás en entorno de trabajo, sigue el procedimiento interno (IT/seguridad)."
+          ]
+        },
+        {
+          "title": "Bizum: solicitudes inesperadas y el error más común",
+          "text": "Una solicitud de Bizum no es lo mismo que un ingreso. En muchos fraudes se envía una solicitud para que la víctima “acepte” pensando que va a cobrar, cuando en realidad está autorizando un envío de dinero. El factor clave es leer qué acción estás aprobando antes de confirmar.",
+          "bullets": [
+            "Aceptar una solicitud puede significar enviar dinero (no recibirlo).",
+            "Si no esperabas esa solicitud, trátala como sospechosa.",
+            "No confirmes por impulso: revisa el concepto y el destinatario.",
+            "Si tienes dudas, cancela y verifica con la persona por otra vía."
+          ]
+        },
+        {
+          "title": "Caso típico en entorno laboral: correos personales en el correo de trabajo",
+          "text": "Responder desde el correo de trabajo a correos de compras online u otros asuntos personales puede aumentar el riesgo: mezcla contextos, reduce la verificación y facilita que un atacante aproveche la rutina. La actuación segura es no responder y comprobar directamente en el canal oficial del servicio.",
+          "bullets": [
+            "No respondas a correos sospechosos desde el correo corporativo.",
+            "No uses el enlace del correo para “comprobar el pedido”: entra por la web oficial.",
+            "Evita reenviar a compañeros salvo que sea parte del protocolo.",
+            "Si es un posible phishing, notifícalo según el procedimiento del entorno."
+          ]
+        },
+        {
+          "title": "Qué hacer si crees que has recibido phishing",
+          "text": "La clave es cortar la interacción, no seguir instrucciones y verificar por canales oficiales. Cuanto antes se actúe, más fácil es reducir el impacto (especialmente si se llegó a hacer clic o abrir un archivo).",
+          "bullets": [
+            "No respondas ni sigas instrucciones del mensaje.",
+            "No hagas clic en enlaces ni abras adjuntos si hay dudas.",
+            "Verifica por canales oficiales (web oficial, teléfonos oficiales, soporte real).",
+            "Si estás en una organización, avisa a IT/seguridad según el protocolo."
+          ]
+        },
+        {
+          "title": "A quién acudir en España (además de la Policía)",
+          "text": "En caso de sufrir un ciberataque o un ciberdelito, además de acudir a la Policía, existe una institución especializada que ofrece ayuda, recursos y orientación para víctimas y ciudadanos.",
+          "bullets": [
+            "INCIBE (Instituto Nacional de Ciberseguridad) ofrece información y apoyo ante incidentes.",
+            "Útil para orientación, prevención y pasos recomendados según el tipo de incidente.",
+            "En entornos de trabajo, prioriza también los canales internos establecidos."
           ]
         }
       ]
