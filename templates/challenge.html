@@ -544,19 +544,32 @@
 
                         {% if review_mode %}
                         {% set ua = (user_answer or '')|trim %}
-                        <div class="d-flex flex-column gap-3 mt-3 {% if review_mode %}review-mode{% endif %}">
+                        <div class="row g-3 mt-3 {% if review_mode %}review-mode{% endif %}">
                             {% for opt in options %}
                             {% set is_selected = (ua == opt|trim) %}
                             {% set is_correct = (opt|trim == challenge.correct_answer|trim) %}
 
-                            <div class="quiz-option
-                                {% if is_selected %}selected{% endif %}
-                                {% if review_mode and is_correct %}correct{% endif %}
-                                {% if review_mode and is_selected and not is_correct %}wrong{% endif %}
-                            ">
+                            <div class="col-12 col-md-6">
+                                <div class="quiz-option h-100
+                                    {% if is_selected %}selected{% endif %}
+                                    {% if review_mode and is_correct %}correct{% endif %}
+                                    {% if review_mode and is_selected and not is_correct %}wrong{% endif %}
+                                ">
 
-                                <input type="radio" name="answer" disabled {% if ua == opt|trim %}checked{% endif %}>
-                                <label class="mb-0 flex-grow-1">{{ opt }}</label>
+                                    <input type="radio" name="answer" disabled {% if ua == opt|trim %}checked{% endif %}>
+                                    <label class="mb-0 flex-grow-1 w-100 d-block">
+                                        {% set o = (opt|string)|trim %}
+                                        {% set lower_o = o|lower %}
+                                        {% if lower_o.endswith('.png') or lower_o.endswith('.jpg') or lower_o.endswith('.jpeg') or lower_o.endswith('.webp') or lower_o.endswith('.gif') or lower_o.endswith('.svg') %}
+                                            <img src="{{ o }}"
+                                                alt="Opción"
+                                                class="img-fluid rounded w-100"
+                                                style="max-height: 380px; object-fit: contain;">
+                                        {% else %}
+                                            <span>{{ opt }}</span>
+                                        {% endif %}
+                                    </label>
+                                </div>
                             </div>
                             {% endfor %}
                         </div>
@@ -582,13 +595,25 @@
                             <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
                             <input type="hidden" name="subcategory_code" value="{{ subcategory_code }}">
 
-                            <div class="d-flex flex-column gap-3 mt-3">
+                            <div class="row g-3 mt-3">
                             {% for opt in options %}
-                                <div class="quiz-option">
-                                <input type="radio" id="opt{{ loop.index }}" name="answer" value="{{ opt }}" required>
-                                <label for="opt{{ loop.index }}" class="mb-0 flex-grow-1">
-                                    {{ opt }}
-                                </label>
+                                <div class="col-12 col-md-6">
+                                    <div class="quiz-option p-2 h-100">
+                                        <input type="radio" id="opt{{ loop.index }}" name="answer" value="{{ opt }}" required>
+
+                                        <label for="opt{{ loop.index }}" class="mb-0 w-100 d-block">
+                                            {% set o = (opt|string)|trim %}
+                                            {% set lower_o = o|lower %}
+                                            {% if lower_o.endswith('.png') or lower_o.endswith('.jpg') or lower_o.endswith('.jpeg') or lower_o.endswith('.webp') or lower_o.endswith('.gif') or lower_o.endswith('.svg') %}
+                                                <img src="{{ o }}"
+                                                    alt="Opción {{ loop.index }}"
+                                                    class="img-fluid rounded w-100"
+                                                    style="max-height: 380px; object-fit: contain;">
+                                            {% else %}
+                                                <span>{{ opt }}</span>
+                                            {% endif %}
+                                        </label>
+                                    </div>
                                 </div>
                             {% endfor %}
                             </div>

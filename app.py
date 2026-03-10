@@ -626,6 +626,19 @@ def save_ai_feedback(user_id, challenge_id, score, comment):
         """, (score, comment, user_id, challenge_id))
         conn.commit()
 
+def normalize_option_value(value):
+    if value is None:
+        return ""
+    value = str(value).strip()
+
+    value = re.sub(r"^/static/static/", "/static/", value)
+
+    return value
+
+
+def is_image_option(value):
+    value = normalize_option_value(value).lower()
+    return value.endswith((".png", ".jpg", ".jpeg", ".webp", ".gif", ".svg"))
 def ai_evaluate_answer(question: str, ideal_answer: str, user_answer: str) -> dict:
     client = gemini_client()
 
@@ -1003,7 +1016,13 @@ def challenge_page(challenge_id):
             challenge.get("option3"),
             challenge.get("option4"),
         ]
-        options = [o.strip() for o in raw_options if o and str(o).strip()]
+        options = [
+            normalize_option_value(o)
+            for o in raw_options
+            if o and str(o).strip()
+        ]
+
+    challenge["correct_answer"] = normalize_option_value(challenge.get("correct_answer"))
     
     qr_image_b64 = None
     qr_public_url = None
@@ -1322,7 +1341,13 @@ def subcategory_review_challenge(subcategory_code, phase, challenge_id):
             challenge.get("option3"),
             challenge.get("option4"),
         ]
-        options = [o.strip() for o in raw_options if o and str(o).strip()]
+        options = [
+            normalize_option_value(o)
+            for o in raw_options
+            if o and str(o).strip()
+        ]
+
+    challenge["correct_answer"] = normalize_option_value(challenge.get("correct_answer"))
 
     user_answer = progress.get("user_answer")
     practical_feedback = None

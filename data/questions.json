@@ -932,6 +932,34 @@
             "pre": [
               {
                 "title": "Reconocimiento de webs y correos fraudulentos",
+                "question": "Selecciona cuál de los dos correos es LEGÍTIMO.",
+                "correct_answer": "/img/email2.png",
+                "options": [
+                  "/img/email1.png",
+                  "/img/email2.png"
+                ],
+                "points": 10,
+                "is_training": 1,
+                "is_practical": 0,
+                "content": null,
+                "order_index": 1
+              },
+              {
+                "title": "Reconocimiento de webs y correos fraudulentos",
+                "question": "Selecciona cuál de los dos SMSs es LEGÍTIMO.",
+                "correct_answer": "/img/sms2.png",
+                "options": [
+                  "/img/sms1.png",
+                  "/img/sms2.png"
+                ],
+                "points": 10,
+                "is_training": 1,
+                "is_practical": 0,
+                "content": null,
+                "order_index": 2
+              },
+              {
+                "title": "Reconocimiento de webs y correos fraudulentos",
                 "question": "¿Qué es el phishing?",
                 "correct_answer": "Una técnica de engaño para obtener datos personales o credenciales haciéndose pasar por una entidad legítima",
                 "options": [
@@ -944,7 +972,7 @@
                 "is_training": 1,
                 "is_practical": 0,
                 "content": null,
-                "order_index": 1
+                "order_index": 6
               },
               {
                 "title": "Reconocimiento de webs y correos fraudulentos",
@@ -959,7 +987,7 @@
                 "is_training": 1,
                 "is_practical": 0,
                 "content": null,
-                "order_index": 2
+                "order_index": 7
               },
               {
                 "title": "Reconocimiento de webs y correos fraudulentos",
