@@ -559,6 +559,157 @@
           ]
         }
       ]
+    },
+    {
+      "subcategory_code": "dev_security",
+      "intro": "Los dispositivos personales como ordenadores, teléfonos móviles o tablets almacenan gran cantidad de información personal y profesional. Si no se aplican medidas básicas de protección, como el bloqueo del dispositivo o el control de accesos, otras personas podrían acceder fácilmente a esa información. Por este motivo, la seguridad del dispositivo es uno de los pilares fundamentales de la seguridad digital.",
+      "rule_text": "Bloquea siempre tus dispositivos y evita dejar información accesible cuando no los estés utilizando.",
+      "sections": [
+        {
+          "title": "Protección básica del dispositivo",
+          "text": "Una de las medidas más importantes para proteger un dispositivo es impedir el acceso no autorizado. Si un dispositivo se deja desbloqueado o sin supervisión, cualquier persona podría acceder a la información almacenada o utilizar aplicaciones abiertas.",
+          "bullets": [
+            "Bloquear el dispositivo cuando no se esté utilizando.",
+            "Evitar dejar el ordenador o el móvil sin supervisión.",
+            "Cerrar sesión en aplicaciones cuando se termine de utilizarlas.",
+            "Evitar compartir el dispositivo con otras personas si contiene información sensible."
+          ]
+        },
+        {
+          "title": "Riesgos de dejar dispositivos sin protección",
+          "text": "Muchos incidentes de seguridad ocurren porque el dispositivo queda accesible durante unos minutos. En ese tiempo otra persona podría acceder a documentos, correos electrónicos o aplicaciones abiertas.",
+          "bullets": [
+            "Acceso a información personal o profesional.",
+            "Uso indebido de cuentas o aplicaciones abiertas.",
+            "Posibilidad de copiar o compartir información confidencial.",
+            "Modificación de configuraciones del dispositivo."
+          ]
+        },
+        {
+          "title": "Buenas prácticas en el uso de dispositivos",
+          "text": "La protección de los dispositivos no depende solo de herramientas técnicas, sino también de hábitos de uso responsables.",
+          "bullets": [
+            "Utilizar métodos de bloqueo en el dispositivo.",
+            "No compartir códigos o métodos de acceso.",
+            "Evitar conectar dispositivos a equipos desconocidos.",
+            "Mantener el control físico del dispositivo en todo momento."
+          ]
+        }
+      ]
+    },
+
+    {
+      "subcategory_code": "dev_updates",
+      "intro": "Las actualizaciones y los parches de seguridad corrigen vulnerabilidades detectadas en sistemas operativos y aplicaciones. Muchos ataques informáticos aprovechan fallos conocidos que ya han sido solucionados por los desarrolladores, pero que siguen presentes en dispositivos que no se han actualizado.",
+      "rule_text": "Mantén siempre actualizado el sistema operativo y las aplicaciones de tu dispositivo.",
+      "sections": [
+        {
+          "title": "Por qué son importantes las actualizaciones",
+          "text": "Los fabricantes y desarrolladores publican actualizaciones para corregir errores y vulnerabilidades que podrían ser explotadas por atacantes. Instalar estas actualizaciones reduce significativamente el riesgo de ataque.",
+          "bullets": [
+            "Corrigen fallos de seguridad detectados.",
+            "Reducen la posibilidad de explotación de vulnerabilidades.",
+            "Mejoran la estabilidad y seguridad del sistema.",
+            "Protegen frente a amenazas conocidas."
+          ]
+        },
+        {
+          "title": "Riesgos de no actualizar el dispositivo",
+          "text": "Cuando un dispositivo no se actualiza, sigue utilizando versiones antiguas del software que pueden contener vulnerabilidades conocidas públicamente.",
+          "bullets": [
+            "Los atacantes pueden aprovechar fallos ya conocidos.",
+            "El sistema puede quedar expuesto a malware o accesos no autorizados.",
+            "Las aplicaciones antiguas pueden dejar de recibir soporte de seguridad.",
+            "Se incrementa el riesgo de brechas de seguridad."
+          ]
+        },
+        {
+          "title": "Buenas prácticas en la gestión de actualizaciones",
+          "text": "Mantener el dispositivo actualizado debe convertirse en un hábito habitual de seguridad.",
+          "bullets": [
+            "Instalar las actualizaciones del sistema operativo cuando estén disponibles.",
+            "Actualizar regularmente las aplicaciones instaladas.",
+            "No ignorar avisos de actualización importantes.",
+            "Utilizar siempre versiones oficiales del software."
+          ]
+        }
+      ]
+    },
+
+    {
+      "subcategory_code": "dev_byod",
+      "intro": "BYOD (Bring Your Own Device) se refiere al uso de dispositivos personales en entornos laborales. Esta práctica se ha vuelto habitual con el teletrabajo, pero también introduce nuevos riesgos de seguridad, ya que cada dispositivo puede convertirse en un punto de acceso a información de la organización.",
+      "rule_text": "Si utilizas tu dispositivo personal para trabajar, sigue siempre las políticas de seguridad de la organización.",
+      "sections": [
+        {
+          "title": "Qué es BYOD",
+          "text": "BYOD permite que los empleados utilicen sus propios dispositivos para acceder a recursos o información de la empresa. Aunque facilita la flexibilidad laboral, también puede aumentar el riesgo de incidentes de seguridad si no existen normas claras de uso.",
+          "bullets": [
+            "Uso de dispositivos personales en entornos laborales.",
+            "Acceso a aplicaciones o datos de la empresa desde dispositivos propios.",
+            "Necesidad de establecer políticas y normas de seguridad.",
+            "Incremento de los puntos de acceso a la información corporativa."
+          ]
+        },
+        {
+          "title": "Riesgos asociados a BYOD",
+          "text": "Cuando se utilizan dispositivos personales para trabajar, es posible que se mezclen datos personales y corporativos. Esto puede generar problemas si el dispositivo se pierde, se comparte o no está protegido adecuadamente.",
+          "bullets": [
+            "Mezcla de información personal y corporativa.",
+            "Acceso no autorizado si el dispositivo se comparte.",
+            "Pérdida de información sensible si el dispositivo se extravía.",
+            "Mayor superficie de ataque para los sistemas de la empresa."
+          ]
+        },
+        {
+          "title": "Buenas prácticas en entornos BYOD",
+          "text": "Las organizaciones suelen establecer políticas para reducir los riesgos asociados al uso de dispositivos personales en el trabajo.",
+          "bullets": [
+            "Seguir las políticas de seguridad de la empresa.",
+            "Cerrar sesión en aplicaciones corporativas cuando no se utilicen.",
+            "Evitar instalar aplicaciones no autorizadas en dispositivos utilizados para el trabajo.",
+            "No permitir que otras personas utilicen el dispositivo cuando contiene información corporativa."
+          ]
+        }
+      ]
+    },
+
+    {
+      "subcategory_code": "dp_principles",
+      "intro": "La privacidad digital implica comprender qué datos personales se comparten, con quién y con qué finalidad. Muchas aplicaciones solicitan permisos que permiten acceder a información del dispositivo como contactos, cámara o ubicación, y los usuarios suelen aceptarlos sin revisar si realmente son necesarios.",
+      "rule_text": "Revisa siempre los permisos que otorgas a las aplicaciones y comparte únicamente los datos necesarios.",
+      "sections": [
+        {
+          "title": "Permisos de aplicaciones",
+          "text": "Las aplicaciones pueden solicitar acceso a diferentes recursos del dispositivo. Aunque algunos permisos son necesarios para su funcionamiento, otros pueden suponer un riesgo si se conceden sin necesidad.",
+          "bullets": [
+            "Las aplicaciones pueden solicitar acceso a cámara, micrófono o contactos.",
+            "No todos los permisos solicitados son necesarios para su funcionamiento.",
+            "Es importante revisar los permisos antes de aceptarlos.",
+            "Los permisos pueden modificarse posteriormente desde la configuración del dispositivo."
+          ]
+        },
+        {
+          "title": "Acceso a contactos y datos personales",
+          "text": "Algunas aplicaciones solicitan acceso a la agenda de contactos u otros datos personales. Esto puede implicar que información personal se comparta con servicios externos sin que el usuario sea plenamente consciente.",
+          "bullets": [
+            "Algunas aplicaciones pueden acceder a la lista de contactos.",
+            "Los datos personales pueden utilizarse para distintos fines.",
+            "Es importante revisar qué aplicaciones tienen acceso a información personal.",
+            "Reducir los permisos innecesarios mejora la privacidad."
+          ]
+        },
+        {
+          "title": "Buenas prácticas de privacidad digital",
+          "text": "Comprender cómo se gestionan los datos personales es fundamental para mantener la privacidad en entornos digitales.",
+          "bullets": [
+            "Compartir únicamente la información necesaria.",
+            "Revisar periódicamente los permisos de las aplicaciones.",
+            "Evitar instalar aplicaciones que soliciten permisos excesivos.",
+            "Ser consciente de qué datos se están compartiendo."
+          ]
+        }
+      ]
     }
   ]
 }

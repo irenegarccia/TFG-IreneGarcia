@@ -1257,15 +1257,7 @@
               }
             ]
           }
-        }
-      ]
-    },
-
-    {
-      "category_code": "data_protection",
-      "title": "Protección de Datos",
-      "order_index": 6,
-      "subcategories": [
+        },
         {
           "subcategory_code": "dp_principles",
           "title": "Principios básicos",
