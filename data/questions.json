@@ -882,19 +882,6 @@
                 "content": null,
                 "order_index": 5,
                 "ideal_answer": "El riesgo principal es la exposición de datos personales..."
-              },
-              {
-                "title": "Gestión de información sensible",
-                "question": "Una persona tira a la basura documentos empresariales con información sensible.\n\n¿Qué riesgos supone esta acción y qué debería haberse hecho antes de desechar esta documentación?",
-                "correct_answer": null,
-                "options": [],
-                "points": 10,
-                "is_training": 1,
-                "is_practical": 1,
-                "img": "/img/work_information.png",
-                "content": null,
-                "order_index": 2,
-                "ideal_answer": "El riesgo principal es la fuga de información sensible..."
               }
             ],
             "post": [
@@ -1109,7 +1096,7 @@
       ]
     },
 
-    {
+   {
       "category_code": "devices",
       "title": "Dispositivos",
       "order_index": 5,
@@ -1121,13 +1108,14 @@
           "challenges": {
             "pre": [
               {
-                "title": "Bloqueo de dispositivos",
-                "question": "¿Bloqueas tu ordenador o dispositivo móvil cuando lo dejas sin supervisión?",
-                "correct_answer": "Siempre me aseguro de bloquearlo",
+                "title": "Seguridad en dispositivos",
+                "question": "¿Qué haces normalmente cuando terminas de utilizar tu ordenador o dispositivo móvil?",
+                "correct_answer": "Bloquear el dispositivo antes de dejarlo sin supervisión",
                 "options": [
-                  "Siempre me aseguro de bloquearlo",
-                  "Depende de la situación, a veces se me olvida",
-                  "Nunca utilizo métodos de bloqueo"
+                  "Bloquear el dispositivo antes de dejarlo sin supervisión",
+                  "Dejarlo encendido sin bloquear",
+                  "Apagar solo la pantalla",
+                  "No hago nada en particular"
                 ],
                 "points": 10,
                 "is_training": 1,
@@ -1137,13 +1125,274 @@
               },
               {
                 "title": "Seguridad en dispositivos",
-                "question": "Una medida básica de protección del dispositivo es…",
-                "correct_answer": "Bloqueo de pantalla y actualizaciones",
+                "question": "¿Proteges de forma adecuada tus dispositivos (ordenadores, móviles o memorias externas)?",
+                "correct_answer": "Sí, aplico medidas básicas de seguridad como bloqueo o control de acceso",
                 "options": [
-                  "No usar contraseña",
-                  "Bloqueo de pantalla y actualizaciones",
-                  "Compartir el PIN",
-                  "No actualizar nunca"
+                  "Sí, aplico medidas básicas de seguridad como bloqueo o control de acceso",
+                  "Solo cuando contienen información importante",
+                  "Rara vez pienso en ello",
+                  "No utilizo ninguna medida de protección"
+                ],
+                "points": 10,
+                "is_training": 1,
+                "is_practical": 0,
+                "content": null,
+                "order_index": 2
+              },
+              {
+                "title": "Seguridad en dispositivos",
+                "question": "¿Dónde guardas normalmente la información sensible en tus dispositivos?",
+                "correct_answer": "En ubicaciones seguras o protegidas",
+                "options": [
+                  "En ubicaciones seguras o protegidas",
+                  "En cualquier carpeta del dispositivo",
+                  "En el escritorio del ordenador",
+                  "No suelo tener información sensible"
+                ],
+                "points": 10,
+                "is_training": 1,
+                "is_practical": 0,
+                "content": null,
+                "order_index": 3
+              },
+              {
+                "title": "Seguridad en dispositivos",
+                "question": "¿Tienes instalado algún sistema de protección o antivirus en tu dispositivo móvil?",
+                "correct_answer": "Sí, utilizo herramientas de protección cuando es necesario",
+                "options": [
+                  "Sí, utilizo herramientas de protección cuando es necesario",
+                  "No estoy seguro",
+                  "No utilizo ninguna protección",
+                  "No sabía que era recomendable"
+                ],
+                "points": 10,
+                "is_training": 1,
+                "is_practical": 0,
+                "content": null,
+                "order_index": 4
+              },
+              {
+                "title": "Seguridad en dispositivos",
+                "question": "¿Eliminas las aplicaciones que ya no utilizas en tu dispositivo?",
+                "correct_answer": "Sí, para reducir riesgos y mantener el dispositivo más seguro",
+                "options": [
+                  "Sí, para reducir riesgos y mantener el dispositivo más seguro",
+                  "Solo a veces",
+                  "No suelo hacerlo",
+                  "Nunca elimino aplicaciones"
+                ],
+                "points": 10,
+                "is_training": 1,
+                "is_practical": 0,
+                "content": null,
+                "order_index": 5
+              }
+            ],
+            "post": [
+              {
+                "title": "Seguridad en dispositivos",
+                "question": "¿Cuál de las siguientes prácticas reduce mejor el riesgo de acceso no autorizado a un dispositivo?",
+                "correct_answer": "Bloquear el dispositivo cuando no se utiliza y evitar dejarlo sin supervisión",
+                "options": [
+                  "Bloquear el dispositivo cuando no se utiliza y evitar dejarlo sin supervisión",
+                  "Dejar el dispositivo encendido para acceder más rápido",
+                  "Compartir el dispositivo con otras personas",
+                  "No cerrar sesiones en aplicaciones"
+                ],
+                "points": 10,
+                "is_training": 0,
+                "is_practical": 0,
+                "content": null,
+                "order_index": 1
+              },
+              {
+                "title": "Seguridad en dispositivos",
+                "question": "¿Qué combinación de medidas proporciona una mayor protección a un dispositivo?",
+                "correct_answer": "Bloqueo del dispositivo, control de accesos y almacenamiento seguro de la información",
+                "options": [
+                  "Bloqueo del dispositivo, control de accesos y almacenamiento seguro de la información",
+                  "Usar el dispositivo solo en casa",
+                  "Apagar el dispositivo por la noche",
+                  "Cambiar el fondo de pantalla regularmente"
+                ],
+                "points": 10,
+                "is_training": 0,
+                "is_practical": 0,
+                "content": null,
+                "order_index": 2
+              },
+              {
+                "title": "Seguridad en dispositivos",
+                "question": "Si te levantas un momento en una cafetería y dejas tu ordenador en la mesa, ¿qué deberías hacer antes de alejarte?",
+                "correct_answer": "Bloquear la pantalla o cerrar sesión",
+                "options": [
+                  "Bloquear la pantalla o cerrar sesión",
+                  "Dejarlo encendido para volver rápido",
+                  "Cerrar solo el navegador",
+                  "No hacer nada"
+                ],
+                "points": 10,
+                "is_training": 0,
+                "is_practical": 1,
+                "content": "imagen_bloqueo_pantalla",
+                "order_index": 3
+              }
+            ]
+          }
+        },
+
+        {
+          "subcategory_code": "dev_updates",
+          "title": "Gestión de actualizaciones y parches de seguridad",
+          "order_index": 2,
+          "challenges": {
+            "pre": [
+              {
+                "title": "Gestión de actualizaciones y parches de seguridad",
+                "question": "¿Actualizas regularmente el sistema operativo y las aplicaciones de tus dispositivos?",
+                "correct_answer": "Sí, para mantener el sistema protegido frente a vulnerabilidades",
+                "options": [
+                  "Sí, para mantener el sistema protegido frente a vulnerabilidades",
+                  "Solo cuando el dispositivo deja de funcionar bien",
+                  "Rara vez actualizo el sistema",
+                  "No suelo prestar atención a las actualizaciones"
+                ],
+                "points": 10,
+                "is_training": 1,
+                "is_practical": 0,
+                "content": null,
+                "order_index": 1
+              },
+              {
+                "title": "Gestión de actualizaciones y parches de seguridad",
+                "question": "¿Por qué son importantes los parches de seguridad?",
+                "correct_answer": "Porque corrigen vulnerabilidades detectadas en el software",
+                "options": [
+                  "Porque cambian el diseño del sistema",
+                  "Porque corrigen vulnerabilidades detectadas en el software",
+                  "Porque eliminan archivos antiguos",
+                  "Porque aumentan el tamaño del almacenamiento"
+                ],
+                "points": 10,
+                "is_training": 1,
+                "is_practical": 0,
+                "content": null,
+                "order_index": 2
+              },
+              {
+                "title": "Gestión de actualizaciones y parches de seguridad",
+                "question": "¿Eres consciente de que tecnologías como Bluetooth pueden suponer una fuente de brechas de seguridad si se utilizan sin control?",
+                "correct_answer": "Sí, si permanecen activadas o se conectan a dispositivos desconocidos",
+                "options": [
+                  "Sí, si permanecen activadas o se conectan a dispositivos desconocidos",
+                  "No, Bluetooth siempre es seguro",
+                  "Solo es un riesgo en ordenadores antiguos",
+                  "No afecta a la seguridad del dispositivo"
+                ],
+                "points": 10,
+                "is_training": 1,
+                "is_practical": 0,
+                "content": null,
+                "order_index": 3
+              },
+              {
+                "title": "Gestión de actualizaciones y parches de seguridad",
+                "question": "¿Actualizas regularmente las aplicaciones instaladas en tu dispositivo?",
+                "correct_answer": "Sí, para mantenerlas protegidas frente a vulnerabilidades",
+                "options": [
+                  "Sí, para mantenerlas protegidas frente a vulnerabilidades",
+                  "Solo cuando dejan de funcionar",
+                  "Rara vez las actualizo",
+                  "Nunca las actualizo"
+                ],
+                "points": 10,
+                "is_training": 1,
+                "is_practical": 0,
+                "content": null,
+                "order_index": 4
+              }
+            ],
+            "post": [
+              {
+                "title": "Gestión de actualizaciones y parches de seguridad",
+                "question": "¿Qué riesgo se incrementa cuando un dispositivo no se actualiza durante largos periodos?",
+                "correct_answer": "La explotación de vulnerabilidades conocidas",
+                "options": [
+                  "La mejora del rendimiento",
+                  "La explotación de vulnerabilidades conocidas",
+                  "La reducción del almacenamiento",
+                  "La pérdida de calidad gráfica"
+                ],
+                "points": 10,
+                "is_training": 0,
+                "is_practical": 0,
+                "content": null,
+                "order_index": 1
+              },
+              {
+                "title": "Gestión de actualizaciones y parches de seguridad",
+                "question": "¿Cuál es la mejor práctica para mantener un dispositivo protegido frente a vulnerabilidades?",
+                "correct_answer": "Mantener actualizado el sistema operativo y las aplicaciones",
+                "options": [
+                  "Mantener actualizado el sistema operativo y las aplicaciones",
+                  "Actualizar solo cuando haya fallos visibles",
+                  "No instalar actualizaciones automáticas",
+                  "Ignorar los avisos de actualización"
+                ],
+                "points": 10,
+                "is_training": 0,
+                "is_practical": 0,
+                "content": null,
+                "order_index": 2
+              },
+              {
+                "title": "Bluetooth y seguridad",
+                "question": "¿Es recomendable mantener el Bluetooth siempre activado cuando no se está utilizando?",
+                "correct_answer": "No, porque puede facilitar intentos de conexión no autorizados",
+                "options": [
+                  "No, porque puede facilitar intentos de conexión no autorizados",
+                  "Sí, porque mejora la conectividad",
+                  "Sí, no supone ningún riesgo",
+                  "Depende del modelo del dispositivo"
+                ],
+                "points": 10,
+                "is_training": 0,
+                "is_practical": 1,
+                "content": "imagen_bluetooth",
+                "order_index": 3
+              }
+            ]
+          }
+        },
+
+        {
+          "subcategory_code": "dev_byod",
+          "title": "BYOD - Políticas y riesgos",
+          "order_index": 3,
+          "challenges": {
+            "pre": [
+              {
+                "title": "BYOD - Políticas y riesgos",
+                "question": "Una persona tira a la basura documentos empresariales con información sensible.\n\n¿Qué riesgos supone esta acción y qué debería haberse hecho antes de desechar esta documentación?",
+                "correct_answer": null,
+                "options": [],
+                "points": 10,
+                "is_training": 1,
+                "is_practical": 1,
+                "img": "/img/work_information.png",
+                "content": null,
+                "order_index": 1,
+                "ideal_answer": "El riesgo principal es la fuga de información sensible..."
+              },
+              {
+                "title": "BYOD - Políticas y riesgos",
+                "question": "Si utilizas tu dispositivo para acceder a información personal o de trabajo, ¿dejarías que otras personas lo usaran libremente?",
+                "correct_answer": "No, porque podrían acceder a información personal o sensible",
+                "options": [
+                  "No, porque podrían acceder a información personal o sensible",
+                  "Sí, si es por poco tiempo",
+                  "Sí, sin problema",
+                  "Depende de la persona"
                 ],
                 "points": 10,
                 "is_training": 1,
@@ -1154,149 +1403,128 @@
             ],
             "post": [
               {
-                "title": "Seguridad en dispositivos",
-                "question": "¿Qué combinación de medidas proporciona una mayor protección a un dispositivo?",
-                "correct_answer": "Bloqueo robusto, actualizaciones periódicas y copias de seguridad",
-                "options": [
-                  "No usar bloqueo ni actualizaciones",
-                  "Bloqueo robusto, actualizaciones periódicas y copias de seguridad",
-                  "Cambiar únicamente el fondo de pantalla",
-                  "Compartir el código de acceso"
-                ],
-                "points": 10,
-                "is_training": 0,
-                "is_practical": 0,
-                "content": null,
-                "order_index": 1
-              }
-            ]
-          }
-        },
-        {
-          "subcategory_code": "dev_updates",
-          "title": "Gestión de actualizaciones y parches de seguridad",
-          "order_index": 2,
-          "challenges": {
-            "pre": [
-              {
-                "title": "Gestión de actualizaciones y parches de seguridad",
-                "question": "¿Por qué es importante actualizar el software?",
-                "correct_answer": "Porque corrige vulnerabilidades",
-                "options": [
-                  "Porque lo hace más lento",
-                  "Porque corrige vulnerabilidades",
-                  "Porque cambia el fondo de pantalla",
-                  "Porque borra aplicaciones"
-                ],
-                "points": 10,
-                "is_training": 1,
-                "is_practical": 0,
-                "content": null,
-                "order_index": 1
-              }
-            ],
-            "post": [
-              {
-                "title": "Gestión de actualizaciones y parches de seguridad",
-                "question": "¿Qué riesgo se incrementa al no aplicar actualizaciones de seguridad?",
-                "correct_answer": "La explotación de vulnerabilidades ya conocidas",
-                "options": [
-                  "La mejora del rendimiento",
-                  "La explotación de vulnerabilidades ya conocidas",
-                  "El aumento del almacenamiento",
-                  "La mejora de la calidad de imagen"
-                ],
-                "points": 10,
-                "is_training": 0,
-                "is_practical": 0,
-                "content": null,
-                "order_index": 1
-              }
-            ]
-          }
-        },
-        {
-          "subcategory_code": "dev_byod",
-          "title": "BYOD - Políticas y riesgos",
-          "order_index": 3,
-          "challenges": {
-            "pre": [
-              {
-                "title": "BYOD - Políticas y riesgos",
-                "question": "BYOD significa…",
-                "correct_answer": "Bring Your Own Device (trae tu propio dispositivo)",
-                "options": [
-                  "Buy Your Own Data (compra tus datos)",
-                  "Bring Your Own Device (trae tu propio dispositivo)",
-                  "Backup Your OS Daily (copia el SO a diario)",
-                  "Block Your Old Device (bloquea tu dispositivo antiguo)"
-                ],
-                "points": 10,
-                "is_training": 1,
-                "is_practical": 0,
-                "content": null,
-                "order_index": 1
-              }
-            ],
-            "post": [
-              {
                 "title": "BYOD - Políticas y riesgos",
                 "question": "¿Cuál es un riesgo habitual asociado a políticas BYOD mal gestionadas?",
                 "correct_answer": "La mezcla de datos personales y corporativos sin controles adecuados",
                 "options": [
-                  "Mejorar la autonomía del dispositivo",
                   "La mezcla de datos personales y corporativos sin controles adecuados",
-                  "Incrementar la calidad de la conexión",
-                  "Reducir los costes de mantenimiento"
+                  "La mejora del rendimiento del dispositivo",
+                  "La reducción del almacenamiento",
+                  "La mejora de la conectividad"
                 ],
                 "points": 10,
                 "is_training": 0,
                 "is_practical": 0,
                 "content": null,
                 "order_index": 1
+              },
+              {
+                "title": "BYOD - Políticas y riesgos",
+                "question": "¿Qué práctica ayuda a reducir riesgos cuando se utilizan dispositivos personales para trabajar?",
+                "correct_answer": "Seguir las políticas de seguridad de la organización y cerrar sesiones al terminar",
+                "options": [
+                  "Seguir las políticas de seguridad de la organización y cerrar sesiones al terminar",
+                  "Compartir el dispositivo con otras personas",
+                  "Instalar cualquier aplicación sin control",
+                  "No cerrar sesiones nunca"
+                ],
+                "points": 10,
+                "is_training": 0,
+                "is_practical": 0,
+                "content": null,
+                "order_index": 2
               }
             ]
           }
         },
+
         {
           "subcategory_code": "dp_principles",
-          "title": "Principios básicos",
-          "order_index": 1,
+          "title": "Privacidad y permisos de aplicaciones",
+          "order_index": 4,
           "challenges": {
             "pre": [
               {
-                "title": "Principios básicos",
-                "question": "Un principio básico de protección de datos es…",
-                "correct_answer": "Minimización de datos (recoger solo lo necesario)",
+                "title": "Privacidad y permisos de aplicaciones",
+                "question": "¿Eres consciente de los permisos que otorgas a las aplicaciones (cámara, contactos, ubicación, etc.)?",
+                "correct_answer": "Sí, reviso los permisos antes de aceptarlos",
                 "options": [
-                  "Compartirlo todo",
-                  "Minimización de datos (recoger solo lo necesario)",
-                  "No hace falta consentimiento",
-                  "No cifrar nunca"
+                  "Sí, reviso los permisos antes de aceptarlos",
+                  "A veces, pero no siempre",
+                  "No suelo revisar los permisos",
+                  "No sabía que las aplicaciones pedían permisos"
                 ],
                 "points": 10,
                 "is_training": 1,
                 "is_practical": 0,
                 "content": null,
                 "order_index": 1
+              },
+              {
+                "title": "Privacidad y permisos de aplicaciones",
+                "question": "¿Eres consciente de que algunas aplicaciones pueden acceder a tus contactos o datos personales?",
+                "correct_answer": "Sí, dependiendo de los permisos concedidos",
+                "options": [
+                  "Sí, dependiendo de los permisos concedidos",
+                  "No, las aplicaciones no acceden a esa información",
+                  "Solo ocurre en aplicaciones antiguas",
+                  "No estoy seguro"
+                ],
+                "points": 10,
+                "is_training": 1,
+                "is_practical": 0,
+                "content": null,
+                "order_index": 2
+              },
+              {
+                "title": "Privacidad y permisos de aplicaciones",
+                "question": "Si una aplicación sencilla como un despertador solicita acceso a la cámara o a los contactos, ¿qué deberías hacer?",
+                "correct_answer": "Revisar si ese permiso es realmente necesario antes de aceptarlo",
+                "options": [
+                  "Revisar si ese permiso es realmente necesario antes de aceptarlo",
+                  "Aceptar todos los permisos",
+                  "Ignorar la solicitud sin revisarla",
+                  "Desinstalar el teléfono"
+                ],
+                "points": 10,
+                "is_training": 0,
+                "is_practical": 0,
+                "content": null,
+                "order_index": 3
               }
             ],
             "post": [
               {
-                "title": "Principios básicos",
-                "question": "¿Qué implica el principio de minimización de datos?",
-                "correct_answer": "Recoger únicamente los datos necesarios para el fin previsto",
+                "title": "Privacidad y permisos de aplicaciones",
+                "question": "¿Qué práctica ayuda a proteger mejor la privacidad en dispositivos móviles?",
+                "correct_answer": "Revisar y limitar los permisos de las aplicaciones",
                 "options": [
-                  "Recoger todos los datos posibles",
-                  "Recoger únicamente los datos necesarios para el fin previsto",
-                  "Compartir datos sin restricciones",
-                  "Conservar los datos de forma indefinida"
+                  "Revisar y limitar los permisos de las aplicaciones",
+                  "Aceptar todos los permisos automáticamente",
+                  "Instalar cualquier aplicación disponible",
+                  "No revisar nunca la configuración"
                 ],
                 "points": 10,
                 "is_training": 0,
                 "is_practical": 0,
                 "content": null,
                 "order_index": 1
+              },
+              {
+                "title": "Privacidad y permisos de aplicaciones",
+                "question": "¿Por qué es importante revisar los permisos de las aplicaciones?",
+                "correct_answer": "Porque pueden acceder a datos personales del dispositivo",
+                "options": [
+                  "Porque cambian el diseño del teléfono",
+                  "Porque pueden acceder a datos personales del dispositivo",
+                  "Porque aumentan el rendimiento",
+                  "Porque eliminan archivos automáticamente"
+                ],
+                "points": 10,
+                "is_training": 0,
+                "is_practical": 0,
+                "content": null,
+                "order_index": 2
               }
             ]
           }
