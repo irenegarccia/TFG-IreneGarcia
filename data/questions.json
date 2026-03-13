@@ -1425,6 +1425,22 @@
                 "is_practical": 0,
                 "content": null,
                 "order_index": 2
+              },
+              {
+                "title": "BYOD - Políticas y riesgos",
+                "question": "¿Qué riesgo puede aparecer si un dispositivo personal infectado se conecta a la red corporativa?",
+                "correct_answer": "La propagación de malware dentro de la red de la empresa",
+                "options": [
+                  "La propagación de malware dentro de la red de la empresa",
+                  "Una mejora en la seguridad de la red",
+                  "Una mayor velocidad de conexión",
+                  "La reducción de los riesgos de seguridad"
+                ],
+                "points": 10,
+                "is_training": 0,
+                "is_practical": 0,
+                "content": null,
+                "order_index": 3
               }
             ],
             "post": [
@@ -1459,6 +1475,22 @@
                 "is_practical": 0,
                 "content": null,
                 "order_index": 2
+              },
+              {
+                "title": "BYOD - Políticas y riesgos",
+                "question": "¿Qué significa BYOD?",
+                "correct_answer": "Permitir el uso de dispositivos personales para acceder a recursos de la empresa",
+                "options": [
+                  "Permitir el uso de dispositivos personales para acceder a recursos de la empresa",
+                  "Prohibir el uso de dispositivos personales",
+                  "Utilizar solo dispositivos corporativos",
+                  "Compartir dispositivos entre empleados"
+                ],
+                "points": 10,
+                "is_training": 0,
+                "is_practical": 0,
+                "content": null,
+                "order_index": 3
               }
             ]
           }
@@ -1470,6 +1502,19 @@
           "order_index": 4,
           "challenges": {
             "pre": [
+              {
+                "title": "Privacidad y permisos de aplicacioness",
+                "question": "Instalas una aplicación de edición de imágenes y, al abrirla, solicita permisos para acceder al teléfono, mensajes SMS, ubicación, contactos y cámara.\n\n¿Qué riesgos puede tener conceder estos permisos y qué deberías hacer antes de aceptarlos?",
+                "correct_answer": null,
+                "options": [],
+                "points": 10,
+                "is_training": 1,
+                "is_practical": 1,
+                "img": "/img/app_permissions.png",
+                "content": null,
+                "order_index": 1,
+                "ideal_answer": "El principal riesgo es conceder a la aplicación acceso a información o funciones que no son necesarias para su funcionamiento, lo que puede permitir el robo de datos personales, el envío de SMS sin permiso, el acceso a contactos o el seguimiento de la ubicación. Antes de aceptar los permisos, se debe revisar si son realmente necesarios para la función de la aplicación, consultar la reputación del desarrollador y conceder solo los permisos imprescindibles."
+              },
               {
                 "title": "Privacidad y permisos de aplicaciones",
                 "question": "¿Eres consciente de los permisos que otorgas a las aplicaciones (cámara, contactos, ubicación, etc.)?",
@@ -1484,7 +1529,7 @@
                 "is_training": 1,
                 "is_practical": 0,
                 "content": null,
-                "order_index": 1
+                "order_index": 4
               },
               {
                 "title": "Privacidad y permisos de aplicaciones",
