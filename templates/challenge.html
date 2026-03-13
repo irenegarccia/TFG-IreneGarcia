@@ -29,7 +29,7 @@
     <link href="{{ url_for('static', filename='css/style.css') }}" rel="stylesheet">
 </head>
 
-<body data-challenge-id="{{ challenge.id }}" data-redirect-url="{{ redirect_url }}">
+<body data-challenge-id="{{ challenge.id }}" data-redirect-url="{{ redirect_url }}" data-next-url="{{ next_challenge_url or '' }}">
 <div class="container-fluid position-relative d-flex p-0">
 
         <!-- Sidebar Start -->
@@ -286,7 +286,8 @@
 
                             <div class="bg-dark rounded p-3" id="practical-wrapper"
                                 data-challenge-id="{{ challenge.id }}"
-                                data-redirect-url="{{ redirect_url }}">
+                                data-redirect-url="{{ redirect_url }}"
+                                data-next-url="{{ next_challenge_url or '' }}">
 
                                 <div class="mb-3 text-white">
                                     <strong>{{ (challenge.question or '') | replace('\n','<br>') | safe }}</strong>
@@ -304,8 +305,16 @@
                                             rows="4" placeholder="Escribe aquí tu respuesta..."></textarea>
                                 </div>
 
-                                <div class="d-flex gap-2 flex-wrap">
-                                    <button id="img_send" class="btn btn-primary">Enviar</button>
+                                <div class="mt-4 d-flex justify-content-between align-items-center gap-2 flex-wrap">
+                                    <button id="img_send_menu" class="btn btn-primary">
+                                        <i class="fa fa-paper-plane me-2"></i>Enviar y volver al menú
+                                    </button>
+
+                                    {% if next_challenge_url %}
+                                    <button id="img_send_next" class="btn btn-success">
+                                        <i class="fa fa-arrow-right me-2"></i>Siguiente pregunta
+                                    </button>
+                                    {% endif %}
                                 </div>
 
                                 <div id="img_msg" class="mt-3"></div>
@@ -315,7 +324,8 @@
                         (function(){
 
                         const wrapper = document.getElementById('practical-wrapper');
-                        const btn = document.getElementById('img_send');
+                        const btnMenu = document.getElementById('img_send_menu');
+                        const btnNext = document.getElementById('img_send_next');
                         const img_answer = document.getElementById('img_answer');
                         const msg_content = document.getElementById('img_msg');
 
@@ -329,59 +339,67 @@
                             `<div class="alert ${ok ? 'alert-success' : 'alert-danger'} mb-0">${text}</div>`;
                         }
 
-                        btn.addEventListener('click', async () => {
+                        async function submitPractical(target) {
 
                             const challengeId = wrapper ? wrapper.dataset.challengeId : null;
                             const redirectUrl = (wrapper && wrapper.dataset.redirectUrl)
                                                 ? wrapper.dataset.redirectUrl
                                                 : '/panel';
+                            const nextUrl = (wrapper && wrapper.dataset.nextUrl)
+                                            ? wrapper.dataset.nextUrl
+                                            : redirectUrl;
 
                             const answer = (img_answer.value || '').trim();
 
                             if (!answer){
-                            show(false, 'Escribe una respuesta antes de enviar.');
-                            return;
+                                show(false, 'Escribe una respuesta antes de enviar.');
+                                return;
                             }
 
-                            btn.disabled = true;
+                            if (btnMenu) btnMenu.disabled = true;
+                            if (btnNext) btnNext.disabled = true;
                             img_answer.disabled = true;
 
                             try {
 
-                            const res = await fetch(`/challenge/${challengeId}/complete-info`, {
-                                method: 'POST',
-                                credentials: 'same-origin',
-                                headers: {
-                                'Content-Type': 'application/json',
-                                'X-CSRFToken': csrf()
-                                },
-                                body: JSON.stringify({ answer })
-                            });
+                                const res = await fetch(`/challenge/${challengeId}/complete-info`, {
+                                    method: 'POST',
+                                    credentials: 'same-origin',
+                                    headers: {
+                                        'Content-Type': 'application/json',
+                                        'X-CSRFToken': csrf()
+                                    },
+                                    body: JSON.stringify({ answer })
+                                });
 
-                            const data = await res.json();
+                                const data = await res.json();
 
-                            if (data.ok || data.success){
-                                show(true, 'Reto completado correctamente.');
-                                setTimeout(() => {
-                                window.location.href = redirectUrl;
-                                }, 1200);
-                            } else {
-                                show(false, 'Ha ocurrido un error al enviar la respuesta.');
-                                btn.disabled = false;
+                                if (data.ok || data.success){
+                                    show(true, 'Reto completado correctamente.');
+                                    setTimeout(() => {
+                                        window.location.href = (target === 'next') ? nextUrl : redirectUrl;
+                                    }, 1200);
+                                } else {
+                                    show(false, 'Ha ocurrido un error al enviar la respuesta.');
+                                    if (btnMenu) btnMenu.disabled = false;
+                                    if (btnNext) btnNext.disabled = false;
+                                    img_answer.disabled = false;
+                                }
+
+                            } catch (e) {
+                                show(false, 'Error de conexión.');
+                                if (btnMenu) btnMenu.disabled = false;
+                                if (btnNext) btnNext.disabled = false;
                                 img_answer.disabled = false;
                             }
 
-                            } catch (e) {
-                            show(false, 'Error de conexión.');
-                            btn.disabled = false;
-                            img_answer.disabled = false;
-                            }
+                        }
 
-                        });
+                        if (btnMenu) btnMenu.addEventListener('click', () => submitPractical('menu'));
+                        if (btnNext) btnNext.addEventListener('click', () => submitPractical('next'));
 
                         })();
                         </script>
-
                         {% elif challenge.content %}
 
                             {% if 'qr_dynamic' in challenge.content %}
@@ -389,7 +407,8 @@
                                 <div id="practical-wrapper"
                                     class="bg-dark rounded p-4 position-relative"
                                     data-challenge-id="{{ challenge.id }}"
-                                    data-redirect-url="{{ redirect_url }}">
+                                    data-redirect-url="{{ redirect_url }}"
+                                    data-next-url="{{ next_challenge_url or '' }}">
 
                                     <button id="qr_close"
                                             type="button"
@@ -416,10 +435,16 @@
                                                 </div>
                                             {% endif %}
 
-                                            <div class="mt-4 d-flex justify-content-center gap-2 flex-wrap">
-                                                <button id="qr_finish" class="btn btn-success px-4">
-                                                    <i class="fa fa-check me-2"></i>Terminar
+                                            <div class="mt-4 d-flex justify-content-between align-items-center gap-2 flex-wrap">
+                                                <button id="qr_finish_menu" class="btn btn-primary px-4">
+                                                    <i class="fa fa-check me-2"></i>Terminar y volver al menú
                                                 </button>
+
+                                                {% if next_challenge_url %}
+                                                <button id="qr_finish_next" class="btn btn-success px-4">
+                                                    <i class="fa fa-arrow-right me-2"></i>Siguiente pregunta
+                                                </button>
+                                                {% endif %}
                                             </div>
 
                                             <div id="qr_msg" class="mt-3"></div>
@@ -454,7 +479,8 @@
                                 <script>
                                 (function(){
                                     const wrapper  = document.getElementById('practical-wrapper');
-                                    const btnFinish = document.getElementById('qr_finish');
+                                    const btnFinishMenu = document.getElementById('qr_finish_menu');
+                                    const btnFinishNext = document.getElementById('qr_finish_next');
                                     const btnClose  = document.getElementById('qr_close');
                                     const msgBox    = document.getElementById('qr_msg');
 
@@ -467,12 +493,14 @@
                                         msgBox.innerHTML = `<div class="alert ${ok ? 'alert-success' : 'alert-danger'} mb-0">${text}</div>`;
                                     }
 
-                                    async function completeAsSafe(){
+                                    async function completeAsSafe(target){
                                         const challengeId = wrapper ? wrapper.dataset.challengeId : null;
                                         const redirectUrl = (wrapper && wrapper.dataset.redirectUrl) ? wrapper.dataset.redirectUrl : '/panel';
+                                        const nextUrl = (wrapper && wrapper.dataset.nextUrl) ? wrapper.dataset.nextUrl : redirectUrl;
                                         if (!challengeId) return;
 
-                                        btnFinish.disabled = true;
+                                        if (btnFinishMenu) btnFinishMenu.disabled = true;
+                                        if (btnFinishNext) btnFinishNext.disabled = true;
                                         btnClose.disabled  = true;
 
                                         try{
@@ -494,33 +522,36 @@
                                                 modal.show();
 
                                                 modalEl.addEventListener('hidden.bs.modal', () => {
-                                                    window.location.href = redirectUrl;
+                                                    window.location.href = (target === 'next') ? nextUrl : redirectUrl;
                                                 }, { once: true });
 
                                             } else {
                                                 showMsg(false, data.error || 'No se pudo completar el reto.');
-                                                btnFinish.disabled = false;
+                                                if (btnFinishMenu) btnFinishMenu.disabled = false;
+                                                if (btnFinishNext) btnFinishNext.disabled = false;
                                                 btnClose.disabled  = false;
                                             }
 
                                         } catch(e){
                                             showMsg(false, 'Error de conexión.');
-                                            btnFinish.disabled = false;
+                                            if (btnFinishMenu) btnFinishMenu.disabled = false;
+                                            if (btnFinishNext) btnFinishNext.disabled = false;
                                             btnClose.disabled  = false;
                                         }
                                     }
 
-                                    btnFinish.addEventListener('click', completeAsSafe);
-                                    btnClose.addEventListener('click', completeAsSafe);
+                                    if (btnFinishMenu) btnFinishMenu.addEventListener('click', () => completeAsSafe('menu'));
+                                    if (btnFinishNext) btnFinishNext.addEventListener('click', () => completeAsSafe('next'));
+                                    btnClose.addEventListener('click', () => completeAsSafe('menu'));
                                 })();
                                 </script>
-
                             {% else %}
 
                                 <div id="practical-wrapper"
                                     class="mt-2"
                                     data-challenge-id="{{ challenge.id }}"
-                                    data-redirect-url="{{ redirect_url }}">
+                                    data-redirect-url="{{ redirect_url }}"
+                                    data-next-url="{{ next_challenge_url or '' }}">
                                     {{ challenge.content | safe }}
                                 </div>
 
@@ -541,6 +572,13 @@
                         </div>
                     {% else %}
                         <h5>{{ challenge.question }}</h5>
+                        {% set ns = namespace(all_image_options=(options|length > 0)) %}
+                        {% for opt in options %}
+                            {% set o_check = (opt|string)|trim|lower %}
+                            {% if not o_check.endswith('.png') %}
+                                {% set ns.all_image_options = false %}
+                            {% endif %}
+                        {% endfor %}
 
                         {% if review_mode %}
                         {% set ua = (user_answer or '')|trim %}
@@ -549,7 +587,7 @@
                             {% set is_selected = (ua == opt|trim) %}
                             {% set is_correct = (opt|trim == challenge.correct_answer|trim) %}
 
-                            <div class="col-12 col-md-6">
+                            <div class="{% if ns.all_image_options %}col-12 col-md-6{% else %}col-12{% endif %}">
                                 <div class="quiz-option h-100
                                     {% if is_selected %}selected{% endif %}
                                     {% if review_mode and is_correct %}correct{% endif %}
@@ -597,7 +635,7 @@
 
                             <div class="row g-3 mt-3">
                             {% for opt in options %}
-                                <div class="col-12 col-md-6">
+                                <div class="{% if ns.all_image_options %}col-12 col-md-6{% else %}col-12{% endif %}">
                                     <div class="quiz-option p-2 h-100">
                                         <input type="radio" id="opt{{ loop.index }}" name="answer" value="{{ opt }}" required>
 
@@ -618,10 +656,16 @@
                             {% endfor %}
                             </div>
 
-                            <div class="mt-4 d-flex justify-content-end">
-                            <button type="submit" class="btn btn-primary">
-                                <i class="fa fa-paper-plane me-2"></i>Enviar respuesta
-                            </button>
+                            <div class="mt-4 d-flex justify-content-between align-items-center gap-2 flex-wrap">
+                                <button type="submit" name="submit_action" value="menu" class="btn btn-primary">
+                                    <i class="fa fa-paper-plane me-2"></i>Enviar y volver al menú
+                                </button>
+
+                                {% if next_challenge_url %}
+                                <button type="submit" name="submit_action" value="next" class="btn btn-success">
+                                    <i class="fa fa-arrow-right me-2"></i>Siguiente pregunta
+                                </button>
+                                {% endif %}
                             </div>
                         </form>
                         {% endif %}

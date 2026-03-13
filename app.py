@@ -429,7 +429,7 @@ def passwordValidation(password: str) -> bool:
     )
 
 
-def get_random_pending_challenge(user_id: str, subcategory_code: str, phase: str):
+def get_first_pending_challenge(user_id: str, subcategory_code: str, phase: str):
     with get_conn() as conn:
         row = conn.execute("""
             SELECT c.*
@@ -439,10 +439,35 @@ def get_random_pending_challenge(user_id: str, subcategory_code: str, phase: str
             WHERE c.subcategory_code = ?
               AND c.phase = ?
               AND (u.completed IS NULL OR u.completed = 0)
-            ORDER BY RANDOM()
+            ORDER BY c.order_index ASC, c.id ASC
             LIMIT 1
         """, (user_id, subcategory_code, phase)).fetchone()
         return dict(row) if row else None
+
+def get_next_pending_challenge_id(user_id: str, subcategory_code: str, phase: str, current_id: int):
+    with get_conn() as conn:
+        rows = conn.execute("""
+            SELECT c.id
+            FROM challenges c
+            LEFT JOIN user_challenge_progress u
+              ON u.challenge_id = c.id AND u.user_id = ?
+            WHERE c.subcategory_code = ?
+              AND c.phase = ?
+              AND (u.completed IS NULL OR u.completed = 0)
+            ORDER BY c.order_index ASC, c.id ASC
+        """, (user_id, subcategory_code, phase)).fetchall()
+
+    ids = [r["id"] for r in rows]
+
+    if not ids:
+        return None
+
+    try:
+        idx = ids.index(current_id)
+    except ValueError:
+        return ids[0]
+
+    return ids[idx + 1] if idx + 1 < len(ids) else None
 
 def normalize(text):
     if not text:
@@ -1008,6 +1033,21 @@ def challenge_page(challenge_id):
 
     redirect_url = url_for("category_page", category_code=category_code)
 
+    next_pending_id = get_next_pending_challenge_id(
+        current_user.id,
+        challenge["subcategory_code"],
+        challenge["phase"],
+        challenge_id
+    )
+
+    next_challenge_url = None
+    if next_pending_id:
+        next_challenge_url = url_for(
+            "challenge_page",
+            challenge_id=next_pending_id,
+            category_code=category_code
+        )
+
     options = []
     if not int(challenge.get("is_practical", 0)):
         raw_options = [
@@ -1041,7 +1081,8 @@ def challenge_page(challenge_id):
         subcategory_code=challenge["subcategory_code"],
         redirect_url=redirect_url,
         qr_image_b64=qr_image_b64,
-        qr_public_url=qr_public_url
+        qr_public_url=qr_public_url,
+        next_challenge_url=next_challenge_url
     )
 
 
@@ -1064,8 +1105,24 @@ def challenge_submit(challenge_id):
     mark_challenge_completed(current_user.id, challenge_id, score=score, user_answer=selected)
 
     category_code = get_category_code_by_subcategory(challenge["subcategory_code"])
-    return redirect(url_for("category_page", category_code=category_code, msg="Reto guardado"))
+    submit_action = (request.form.get("submit_action") or "menu").strip().lower()
 
+    if submit_action == "next":
+        next_pending_id = get_next_pending_challenge_id(
+            current_user.id,
+            challenge["subcategory_code"],
+            challenge["phase"],
+            challenge_id
+        )
+
+        if next_pending_id:
+            return redirect(url_for(
+                "challenge_page",
+                challenge_id=next_pending_id,
+                category_code=category_code
+            ))
+
+    return redirect(url_for("category_page", category_code=category_code, msg="Reto guardado"))
 
 @app.route("/api/pwned-check", methods=["POST"])
 @login_required
@@ -1232,7 +1289,7 @@ def next_challenge(subcategory_code, phase):
 
 
 
-    ch = get_random_pending_challenge(current_user.id, subcategory_code, phase)
+    ch = get_first_pending_challenge(current_user.id, subcategory_code, phase)
 
     if not ch:
         return redirect(url_for(
