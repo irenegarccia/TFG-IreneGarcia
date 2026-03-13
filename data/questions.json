@@ -1107,21 +1107,31 @@
           "order_index": 1,
           "challenges": {
             "pre": [
-              {
+             {
                 "title": "Seguridad en dispositivos",
-                "question": "¿Qué haces normalmente cuando terminas de utilizar tu ordenador o dispositivo móvil?",
-                "correct_answer": "Bloquear el dispositivo antes de dejarlo sin supervisión",
-                "options": [
-                  "Bloquear el dispositivo antes de dejarlo sin supervisión",
-                  "Dejarlo encendido sin bloquear",
-                  "Apagar solo la pantalla",
-                  "No hago nada en particular"
-                ],
+                "question": "Recibes una imagen por Bluetooth de un dispositivo desconocido mientras tienes el Bluetooth activado.\n\n¿Qué riesgos puede tener aceptar archivos de dispositivos desconocidos y qué harías para evitarlo?",
+                "correct_answer": null,
+                "options": [],
                 "points": 10,
                 "is_training": 1,
-                "is_practical": 0,
+                "is_practical": 1,
+                "img": "/img/bluejacking.png",
                 "content": null,
-                "order_index": 1
+                "order_index": 1,
+                "ideal_answer": "Aceptar archivos por Bluetooth de dispositivos desconocidos puede suponer varios riesgos, como la recepción de malware, archivos maliciosos o intentos de ingeniería social. Además, tener el Bluetooth siempre activado facilita ataques como el bluejacking o bluesnarfing. Para evitarlo, se recomienda mantener el Bluetooth desactivado cuando no se esté utilizando, no aceptar archivos de dispositivos desconocidos y configurar el dispositivo en modo no visible."
+              },
+              {
+                "title": "Seguridad en dispositivos",
+                "question": "En una cafetería dejas tu ordenador encendido y desbloqueado mientras te ausentas unos minutos.\n\n¿Qué riesgos puede tener esta situación y qué medidas deberías tomar para evitarlo?",
+                "correct_answer": null,
+                "options": [],
+                "points": 10,
+                "is_training": 1,
+                "is_practical": 1,
+                "img": "/img/lock_screen.png",
+                "content": null,
+                "order_index": 2,
+                "ideal_answer": "Dejar el ordenador desbloqueado en un lugar público permite que cualquier persona pueda acceder a la información que aparece en pantalla o manipular el dispositivo. Esto puede provocar robo de datos, acceso a cuentas personales o instalación de software malicioso. Para evitarlo, se debe bloquear siempre el ordenador antes de ausentarse, cerrar sesiones sensibles y, si es posible, utilizar autenticación adicional o cifrado del dispositivo."
               },
               {
                 "title": "Seguridad en dispositivos",
@@ -1137,7 +1147,7 @@
                 "is_training": 1,
                 "is_practical": 0,
                 "content": null,
-                "order_index": 2
+                "order_index": 6
               },
               {
                 "title": "Seguridad en dispositivos",
@@ -1234,8 +1244,40 @@
                 "points": 10,
                 "is_training": 0,
                 "is_practical": 1,
-                "content": "imagen_bloqueo_pantalla",
+                "content": null,
                 "order_index": 3
+              },
+              {
+                "title": "Seguridad en dispositivos",
+                "question": "¿Qué haces normalmente cuando terminas de utilizar tu ordenador o dispositivo móvil?",
+                "correct_answer": "Bloquear el dispositivo antes de dejarlo sin supervisión",
+                "options": [
+                  "Bloquear el dispositivo antes de dejarlo sin supervisión",
+                  "Dejarlo encendido sin bloquear",
+                  "Apagar solo la pantalla",
+                  "No hago nada en particular"
+                ],
+                "points": 10,
+                "is_training": 1,
+                "is_practical": 0,
+                "content": null,
+                "order_index": 4
+              },
+              {
+                "title": "Bluetooth y seguridad",
+                "question": "¿Es recomendable mantener el Bluetooth siempre activado cuando no se está utilizando?",
+                "correct_answer": "No, porque puede facilitar intentos de conexión no autorizados",
+                "options": [
+                  "No, porque puede facilitar intentos de conexión no autorizados",
+                  "Sí, porque mejora la conectividad",
+                  "Sí, no supone ningún riesgo",
+                  "Depende del modelo del dispositivo"
+                ],
+                "points": 10,
+                "is_training": 0,
+                "is_practical": 1,
+                "content": null,
+                "order_index": 5
               }
             ]
           }
@@ -1344,22 +1386,6 @@
                 "is_practical": 0,
                 "content": null,
                 "order_index": 2
-              },
-              {
-                "title": "Bluetooth y seguridad",
-                "question": "¿Es recomendable mantener el Bluetooth siempre activado cuando no se está utilizando?",
-                "correct_answer": "No, porque puede facilitar intentos de conexión no autorizados",
-                "options": [
-                  "No, porque puede facilitar intentos de conexión no autorizados",
-                  "Sí, porque mejora la conectividad",
-                  "Sí, no supone ningún riesgo",
-                  "Depende del modelo del dispositivo"
-                ],
-                "points": 10,
-                "is_training": 0,
-                "is_practical": 1,
-                "content": "imagen_bluetooth",
-                "order_index": 3
               }
             ]
           }
