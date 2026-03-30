@@ -1162,12 +1162,27 @@ def panel():
 
     total_score = sum(radar_pre.values()) + sum(radar_post.values())
 
+    with get_conn() as conn:
+        total_challenges = conn.execute("""
+            SELECT COUNT(*) AS total
+            FROM challenges
+        """).fetchone()["total"]
+
+        completed_challenges = conn.execute("""
+            SELECT COUNT(*) AS total
+            FROM user_challenge_progress
+            WHERE user_id = ? AND completed = 1
+        """, (current_user.id,)).fetchone()["total"]
+
+    progress_pct = round((completed_challenges / total_challenges) * 100) if total_challenges else 0
+
     return render_template(
         "index.html",
         user=current_user,
         total_score=total_score,
         radar_pre=radar_pre,
-        radar_post=radar_post
+        radar_post=radar_post,
+        progress_pct=progress_pct
     )
 
 

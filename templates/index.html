@@ -124,35 +124,45 @@
                         </div>
                     </div>
                     
-                    <div class="col-12 col-xl-9 d-flex">
-                        <div class="row g-2 flex-fill">
-                        {% for c in categories %}
-                        <div class="col-6 col-xl-4">
-                            <div class="bg-secondary rounded d-flex flex-column justify-content-center align-items-center p-3 w-100" style="min-height: 100%;">
-                                <i class="
-                                {% if c.category_code == 'physical_attacks' %}
-                                    fa fa-exclamation-triangle
-                                {% elif c.category_code == 'credential_management' %}
-                                    fa fa-key
-                                {% elif c.category_code == 'social_engineering' %}
-                                    fa fa-users
-                                {% elif c.category_code == 'phishing' %}
-                                    fa fa-envelope
-                                {% elif c.category_code == 'devices' %}
-                                    fa fa-mobile-alt
-                                {% elif c.category_code == 'data_protection' %}
-                                    fa fa-shield-alt
-                                {% else %}
-                                    fa fa-folder
-                                {% endif %}
-                                fa-2x text-primary"></i>
-                                <div class="text-center">
-                                    <p class="mb-1">{{ c.title }}</p>
-                                    <h6 class="mb-0">{{ radar_pre.get(c.title, 0) + radar_post.get(c.title, 0) }}</h6>
+                    <div class="col-12 col-xl-9">
+                        <div class="row g-2">
+                            {% for c in categories %}
+                            <div class="col-6 col-xl-4">
+                                <div class="bg-secondary rounded d-flex flex-column justify-content-center align-items-center p-3 h-100">
+                                    <i class="
+                                    {% if c.category_code == 'physical_attacks' %}
+                                        fa fa-exclamation-triangle
+                                    {% elif c.category_code == 'credential_management' %}
+                                        fa fa-key
+                                    {% elif c.category_code == 'social_engineering' %}
+                                        fa fa-users
+                                    {% elif c.category_code == 'phishing' %}
+                                        fa fa-envelope
+                                    {% elif c.category_code == 'devices' %}
+                                        fa fa-mobile-alt
+                                    {% elif c.category_code == 'data_protection' %}
+                                        fa fa-shield-alt
+                                    {% else %}
+                                        fa fa-folder
+                                    {% endif %}
+                                    fa-2x text-primary"></i>
+                                    <div class="text-center">
+                                        <p class="mb-1">{{ c.title }}</p>
+                                        <h6 class="mb-0">{{ radar_pre.get(c.title, 0) + radar_post.get(c.title, 0) }}</h6>
+                                    </div>
                                 </div>
                             </div>
-                            </div>
                             {% endfor %}
+
+                            <div class="col-6 col-xl-4">
+                                <div class="bg-secondary rounded d-flex flex-column justify-content-center align-items-center p-3 h-100">
+                                    <i class="fa fa-chart-line fa-2x text-primary"></i>
+                                    <div class="text-center">
+                                        <p class="mb-1">Progreso total</p>
+                                        <h6 class="mb-0">{{ progress_pct }}%</h6>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
