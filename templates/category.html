@@ -83,15 +83,23 @@
             <i class="fa fa-bars"></i>
         </a>
 
-            <div class="navbar-nav align-items-center ms-auto">
-                <span class="nav-link d-flex align-items-center">
-                    <h6 class="mb-0">{{ user.name }}</h6>
-                </span>
+                <div class="navbar-nav align-items-center ms-auto d-flex flex-row gap-2">
+                    {% if current_user.is_authenticated and current_user.is_admin == 1 %}
+                    <a href="{{ url_for('admin_panel') }}"
+                    class="btn btn-danger d-flex align-items-center"
+                    style="font-weight: 600; border-radius: 10px; padding: 8px 14px; margin-right: 10px;">
+                        <i class="fa fa-user-shield me-2"></i>Panel de Administración
+                    </a>
+                    {% endif %}
 
-                <a href="{{ url_for('logout') }}" class="nav-link text-danger">
-                    <i class="fa fa-sign-out-alt fa-lg"></i>
-                </a>
-            </div>
+                    <span class="nav-link d-flex align-items-center">
+                        <h6 class="mb-0">{{ current_user.name }}</h6>
+                    </span>
+
+                    <a href="{{ url_for('logout') }}" class="nav-link text-danger">
+                        <i class="fa fa-sign-out-alt fa-lg"></i>
+                    </a>
+                </div>
         </nav>
 
         <div class="container-fluid pt-4 px-4">

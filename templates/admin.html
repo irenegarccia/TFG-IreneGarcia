@@ -1,0 +1,549 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <title>Panel de Administración</title>
+        <meta content="width=device-width, initial-scale=1.0" name="viewport">
+
+        <link href="{{ url_for('static', filename='img/favicon.ico') }}" rel="icon">
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600&family=Roboto:wght@500;700&display=swap" rel="stylesheet">
+
+        <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0/css/all.min.css" rel="stylesheet">
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.4.1/font/bootstrap-icons.css" rel="stylesheet">
+
+        <link href="{{ url_for('static', filename='css/bootstrap.min.css') }}" rel="stylesheet">
+        <link href="{{ url_for('static', filename='css/style.css') }}" rel="stylesheet">
+    </head>
+
+    <body>
+    <div class="container-fluid position-relative d-flex p-0">
+
+        <!-- Spinner -->
+        <div id="spinner" class="bg-dark position-fixed translate-middle w-100 vh-100 top-50 start-50 d-flex align-items-center justify-content-center">
+            <div class="spinner-border text-primary" style="width: 3rem; height: 3rem;" role="status">
+                <span class="sr-only">Loading...</span>
+            </div>
+        </div>
+
+        <!-- Sidebar -->
+        <div class="sidebar pe-4 pb-3">
+            <nav class="navbar bg-secondary navbar-dark">
+                <a href="{{ url_for('panel') }}" class="navbar-brand mx-4 mb-3 d-lg-none">
+                    <h3 class="text-primary"><i class="fa fa-laptop-code me-2"></i>TFG</h3>
+                </a>
+
+                <div class="navbar-nav w-100">
+                    <a href="{{ url_for('panel') }}"
+                    class="nav-item nav-link {% if request.endpoint == 'panel' %}active{% endif %}">
+                        <i class="fa fa-tachometer-alt me-2"></i>Panel de Usuario
+                    </a>
+
+                    {% for c in categories %}
+                    <a href="{{ url_for('category_page', category_code=c.category_code) }}"
+                    class="nav-item nav-link">
+                        <i class="
+                            {% if c.category_code == 'physical_attacks' %}
+                                fa fa-exclamation-triangle
+                            {% elif c.category_code == 'credential_management' %}
+                                fa fa-key
+                            {% elif c.category_code == 'social_engineering' %}
+                                fa fa-users
+                            {% elif c.category_code == 'phishing' %}
+                                fa fa-envelope
+                            {% elif c.category_code == 'devices' %}
+                                fa fa-mobile-alt
+                            {% elif c.category_code == 'data_protection' %}
+                                fa fa-shield-alt
+                            {% else %}
+                                fa fa-folder
+                            {% endif %}
+                            me-2"></i>
+                        {{ c.title }}
+                    </a>
+                    {% endfor %}
+                </div>
+            </nav>
+        </div>
+        <!-- Sidebar End -->
+
+        <!-- Content -->
+        <div class="content">
+
+            <!-- Navbar -->
+            <nav class="navbar navbar-expand bg-secondary navbar-dark sticky-top px-4 py-0">
+                <a href="{{ url_for('panel') }}" class="d-flex align-items-center me-4 flex-shrink-0" style="text-decoration:none;">
+                    <span class="text-primary fw-bold d-flex align-items-center" style="font-size: 1.8rem;">
+                        <i class="fa fa-laptop-code me-2"></i>TFG
+                    </span>
+                </a>
+
+                <a href="#" class="sidebar-toggler flex-shrink-0">
+                    <i class="fa fa-bars"></i>
+                </a>
+
+                <div class="navbar-nav align-items-center ms-auto d-flex flex-row gap-2">
+                    {% if current_user.is_authenticated and current_user.is_admin == 1 %}
+                    <a href="{{ url_for('admin_panel') }}"
+                    class="btn btn-danger d-flex align-items-center"
+                    style="font-weight: 600; border-radius: 10px; padding: 8px 14px; margin-right: 10px;">
+                        <i class="fa fa-user-shield me-2"></i>Panel de Administración
+                    </a>
+                    {% endif %}
+
+                    <span class="nav-link d-flex align-items-center">
+                        <h6 class="mb-0">{{ current_user.name }}</h6>
+                    </span>
+
+                    <a href="{{ url_for('logout') }}" class="nav-link text-danger">
+                        <i class="fa fa-sign-out-alt fa-lg"></i>
+                    </a>
+                </div>
+            </nav>
+            <!-- Navbar End -->
+
+            <!-- Main Content -->
+            <div class="container-fluid pt-4 px-4">
+                <div class="row g-4">
+
+                    <!-- Tarjetas resumen -->
+                    <div class="col-sm-6 col-xl-3">
+                        <div class="bg-secondary rounded d-flex align-items-center justify-content-between p-4">
+                            <i class="fa fa-star fa-3x text-primary"></i>
+                            <div class="ms-3 text-end">
+                                <p class="mb-2">Puntuación total</p>
+                                <h6 class="mb-0">{{ total_score }}</h6>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-sm-6 col-xl-3">
+                        <div class="bg-secondary rounded d-flex align-items-center justify-content-between p-4">
+                            <i class="fa fa-filter fa-3x text-primary"></i>
+                            <div class="ms-3 text-end">
+                                <p class="mb-2">Filtros activos</p>
+                                <h6 class="mb-0">
+                                    {{ (1 if search_value else 0) + (1 if result_category else 0) + (1 if user_category else 0) }}
+                                </h6>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-sm-6 col-xl-3">
+                        <div class="bg-secondary rounded d-flex align-items-center justify-content-between p-4">
+                            <i class="fa fa-users fa-3x text-primary"></i>
+                            <div class="ms-3 text-end">
+                                <p class="mb-2">Número usuarios</p>
+                                <h6 class="mb-0">{{ unique_users_count }}</h6>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-sm-6 col-xl-3">
+                        <div class="bg-secondary rounded d-flex align-items-center justify-content-between p-4">
+                            <i class="fa fa-chart-line fa-3x text-primary"></i>
+                            <div class="ms-3 text-end">
+                                <p class="mb-2">Puntuación media</p>
+                                <h6 class="mb-0">{{ average_score }}</h6>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Filtros -->
+                    <div class="col-12">
+                        <div class="bg-secondary rounded p-4">
+                            <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
+                                <h3 class="mb-0">
+                                    <i class="fa fa-user-shield text-primary me-2"></i>
+                                    Panel de Administración
+                                </h3>
+
+                                <a href="{{ url_for(
+                                    'admin_export',
+                                    q=search_value,
+                                    result_category=result_category,
+                                    user_category=user_category,
+                                    gender=gender,
+                                    studies=studies,
+                                    min_age=min_age,
+                                    max_age=max_age
+                                ) }}" class="btn btn-success">
+                                    <i class="fa fa-file-excel me-2"></i>Exportar a Excel
+                                </a>
+                            </div>
+
+                            <form method="get" action="{{ url_for('admin_panel') }}" class="row g-3">
+                                <div class="col-md-4">
+                                    <label class="form-label">Buscar por ID o correo</label>
+                                    <input
+                                        type="text"
+                                        class="form-control"
+                                        name="q"
+                                        value="{{ search_value }}"
+                                        placeholder="Ej: admin o admin@tfg.es">
+                                </div>
+
+                                <div class="col-md-4">
+                                    <label class="form-label">Filtrar por categoría de resultado</label>
+                                    <select class="form-select" name="result_category">
+                                        <option value="">Todas</option>
+                                        {% for c in all_categories %}
+                                        <option value="{{ c.category_code }}" {% if result_category == c.category_code %}selected{% endif %}>
+                                            {{ c.title }}
+                                        </option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+
+                                <div class="col-md-4">
+                                    <label class="form-label">Filtrar por categoría de usuario</label>
+                                    <select class="form-select" name="user_category">
+                                        <option value="">Todas</option>
+                                        {% for uc in all_user_categories %}
+                                        <option value="{{ uc }}" {% if user_category == uc %}selected{% endif %}>
+                                            {{ uc }}
+                                        </option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+
+                                <div class="col-md-4">
+                                    <label class="form-label">Filtrar por sexo</label>
+                                    <select class="form-select" name="gender">
+                                        <option value="">Todos</option>
+                                        {% for g in all_genders %}
+                                        <option value="{{ g }}" {% if gender == g %}selected{% endif %}>{{ g }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+
+                                <div class="col-md-4">
+                                    <label class="form-label">Filtrar por estudios</label>
+                                    <select class="form-select" name="studies">
+                                        <option value="">Todos</option>
+                                        {% for s in all_studies %}
+                                        <option value="{{ s }}" {% if studies == s %}selected{% endif %}>{{ s }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+
+                                <div class="col-md-2">
+                                    <label class="form-label">Edad mínima</label>
+                                    <input type="number" class="form-control" name="min_age" value="{{ min_age }}" min="0" placeholder="Min">
+                                </div>
+
+                                <div class="col-md-2">
+                                    <label class="form-label">Edad máxima</label>
+                                    <input type="number" class="form-control" name="max_age" value="{{ max_age }}" min="0" placeholder="Max">
+                                </div>
+
+                                <div class="col-12 d-flex gap-2 flex-wrap">
+                                    <button type="submit" class="btn btn-primary">
+                                        <i class="fa fa-search me-2"></i>Aplicar filtros
+                                    </button>
+
+                                    <a href="{{ url_for('admin_panel') }}" class="btn btn-outline-light">
+                                        <i class="fa fa-undo me-2"></i>Limpiar
+                                    </a>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+
+                    <!-- Usuario encontrado -->
+                    {% if selected_user %}
+                    <div class="col-12">
+                        <div class="bg-secondary rounded p-4">
+                            <h4 class="mb-4">
+                                <i class="fa fa-user text-primary me-2"></i>Usuario encontrado
+                            </h4>
+
+                            <div class="row g-4">
+                                <div class="col-lg-4">
+                                    <div class="bg-dark rounded p-4 h-100">
+                                        <p class="mb-2"><strong>ID:</strong> {{ selected_user.id }}</p>
+                                        <p class="mb-2"><strong>Nombre:</strong> {{ selected_user.name }}</p>
+                                        <p class="mb-2"><strong>Email:</strong> {{ selected_user.email }}</p>
+                                        <p class="mb-2"><strong>Categoría:</strong> {{ selected_user.user_category }}</p>
+                                        <p class="mb-0"><strong>Admin:</strong> {{ selected_user.is_admin }}</p>
+                                    </div>
+                                </div>
+
+                                <div class="col-lg-4">
+                                    <div class="bg-dark rounded p-4 h-100">
+                                        <h6 class="mb-3">Cambiar contraseña</h6>
+                                        <form method="post" action="{{ url_for('admin_change_password', user_id=selected_user.id) }}">
+                                            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                                            <div class="mb-3">
+                                                <input type="password" class="form-control" name="new_password" placeholder="Nueva contraseña" required>
+                                            </div>
+                                            <button class="btn btn-warning w-100" type="submit">
+                                                <i class="fa fa-key me-2"></i>Guardar contraseña
+                                            </button>
+                                        </form>
+                                    </div>
+                                </div>
+
+                                <div class="col-lg-4">
+                                    <div class="bg-dark rounded p-4 h-100">
+                                        <h6 class="mb-3">Cambiar categoría de usuario</h6>
+                                        <form method="post" action="{{ url_for('admin_change_category', user_id=selected_user.id) }}">
+                                            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                                            <div class="mb-3">
+                                                <select class="form-select" name="new_category" required>
+                                                    <option value="urjc" {% if selected_user.user_category == 'urjc' %}selected{% endif %}>URJC</option>
+                                                    <option value="externo" {% if selected_user.user_category == 'externo' %}selected{% endif %}>Externo</option>
+                                                    <option value="profesor" {% if selected_user.user_category == 'profesor' %}selected{% endif %}>Profesor / Investigador</option>
+                                                </select>
+                                            </div>
+                                            <button class="btn btn-info w-100" type="submit">
+                                                <i class="fa fa-user-tag me-2"></i>Actualizar categoría
+                                            </button>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% endif %}
+
+                <div class="col-12">
+                    <div class="row g-4">
+
+                        <!-- Columna izquierda: gráfico + top -->
+                        <div class="col-xl-4">
+                            <div class="row g-4">
+
+                                <div class="col-12">
+                                    <div class="bg-secondary rounded p-4">
+                                        <h4 class="mb-4">
+                                            <i class="fa fa-chart-bar text-primary me-2"></i>Gráfico por categorías
+                                        </h4>
+                                        <canvas id="categoriesRadarChart"></canvas>
+                                    </div>
+                                </div>
+
+                                <div class="col-12">
+                                    <div class="bg-secondary rounded p-4">
+                                        <h4 class="mb-4">
+                                            <i class="fa fa-trophy text-primary me-2"></i>Top 5 Usuarios
+                                        </h4>
+
+                                        <div class="table-responsive">
+                                            <table class="table table-dark table-striped align-middle mb-0">
+                                                <thead>
+                                                    <tr>
+                                                        <th>Posición</th>
+                                                        <th>Usuario</th>
+                                                        <th>Puntuación</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    {% if top_users %}
+                                                        {% for user, score in top_users %}
+                                                        <tr>
+                                                            <td>{{ loop.index }}</td>
+                                                            <td>{{ user }}</td>
+                                                            <td>{{ score }}</td>
+                                                        </tr>
+                                                        {% endfor %}
+                                                    {% else %}
+                                                        <tr>
+                                                            <td colspan="3" class="text-center py-4">
+                                                                No hay datos suficientes.
+                                                            </td>
+                                                        </tr>
+                                                    {% endif %}
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Columna derecha: resultados -->
+                        <div class="col-xl-8">
+                            <div class="bg-secondary rounded p-4 h-100">
+                                <h4 class="mb-4">
+                                    <i class="fa fa-table text-primary me-2"></i>Resultados
+                                </h4>
+
+                                <div class="table-responsive">
+                                    <table class="table table-dark table-striped table-hover align-middle mb-0">
+                                        <thead>
+                                            <tr>
+                                                <th>ID</th>
+                                                <th>Nombre</th>
+                                                <th>Email</th>
+                                                <th>Categoría usuario</th>
+                                                <th>Categoría resultado</th>
+                                                <th>Reto</th>
+                                                <th>Fase</th>
+                                                <th>Puntuación</th>
+                                                <th>Completado</th>
+                                                <th>Fecha</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {% if results %}
+                                                {% for r in results %}
+                                                <tr>
+                                                    <td>{{ r.user_id }}</td>
+                                                    <td>{{ r.name }}</td>
+                                                    <td>{{ r.email }}</td>
+                                                    <td>{{ r.user_category }}</td>
+                                                    <td>{{ r.result_category or '-' }}</td>
+                                                    <td>{{ r.challenge_title or '-' }}</td>
+                                                    <td>{{ r.phase or '-' }}</td>
+                                                    <td>{{ r.score or 0 }}</td>
+                                                    <td>{{ r.completed or 0 }}</td>
+                                                    <td>{{ r.completed_date or '-' }}</td>
+                                                </tr>
+                                                {% endfor %}
+                                            {% else %}
+                                                <tr>
+                                                    <td colspan="10" class="text-center py-4">
+                                                        No hay resultados con los filtros aplicados.
+                                                    </td>
+                                                </tr>
+                                            {% endif %}
+                                        </tbody>
+                                    </table>
+                                </div>
+                                {% if total_pages > 1 %}
+                                    <div class="d-flex justify-content-center mt-4">
+                                        <nav>
+                                            <ul class="pagination">
+
+                                                {% if page > 1 %}
+                                                <li class="page-item">
+                                                    <a class="page-link"
+                                                    href="{{ url_for('admin_panel', page=page-1, q=search_value, result_category=result_category, user_category=user_category, gender=gender, studies=studies, min_age=min_age, max_age=max_age) }}">
+                                                        Anterior
+                                                    </a>
+                                                </li>
+                                                {% endif %}
+
+                                                {% for p in range(1, total_pages + 1) %}
+                                                <li class="page-item {% if p == page %}active{% endif %}">
+                                                    <a class="page-link"
+                                                    href="{{ url_for('admin_panel', page=p, q=search_value, result_category=result_category, user_category=user_category, gender=gender, studies=studies, min_age=min_age, max_age=max_age) }}">
+                                                        {{ p }}
+                                                    </a>
+                                                </li>
+                                                {% endfor %}
+
+                                                {% if page < total_pages %}
+                                                <li class="page-item">
+                                                    <a class="page-link"
+                                                    href="{{ url_for('admin_panel', page=page+1, q=search_value, result_category=result_category, user_category=user_category, gender=gender, studies=studies, min_age=min_age, max_age=max_age) }}">
+                                                        Siguiente
+                                                    </a>
+                                                </li>
+                                                {% endif %}
+
+                                            </ul>
+                                        </nav>
+                                    </div>
+                                    {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Footer -->
+            <div class="container-fluid pt-4 px-4">
+                <div class="bg-secondary rounded-top p-4">
+                    <div class="row">
+                        <div class="col-12 col-sm-6 text-center text-sm-start">
+                            Trabajo de Fin de Grado de <a href="#">Irene García López</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Footer End -->
+
+        </div>
+        <!-- Content End -->
+
+        <!-- Back to top -->
+        <a href="#" class="btn btn-lg btn-primary btn-lg-square back-to-top">
+            <i class="bi bi-arrow-up"></i>
+        </a>
+    </div>
+
+    <!-- JS -->
+     
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="{{ url_for('static', filename='lib/chart/chart.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='lib/easing/easing.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='lib/waypoints/waypoints.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='lib/owlcarousel/owl.carousel.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='lib/tempusdominus/js/moment.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='lib/tempusdominus/js/moment-timezone.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='lib/tempusdominus/js/tempusdominus-bootstrap-4.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+
+    <script>
+        const radarLabels = {{ chart_labels | tojson }};
+        const radarValues = {{ chart_values | tojson }};
+
+        const radarCanvas = document.getElementById("categoriesRadarChart");
+
+        if (radarCanvas && typeof Chart !== "undefined") {
+            new Chart(radarCanvas, {
+                type: "radar",
+                data: {
+                    labels: radarLabels,
+                    datasets: [{
+                        label: "Puntuación total",
+                        data: radarValues,
+                        backgroundColor: "rgba(235, 22, 22, .2)",
+                        borderColor: "rgba(235, 22, 22, 1)",
+                        pointBackgroundColor: "rgba(235, 22, 22, 1)",
+                        pointBorderColor: "#fff",
+                        pointHoverBackgroundColor: "#fff",
+                        pointHoverBorderColor: "rgba(235, 22, 22, 1)"
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: true,
+                    scales: {
+                        r: {
+                            angleLines: {
+                                color: "rgba(255,255,255,0.2)"
+                            },
+                            grid: {
+                                color: "rgba(235, 22, 22, 0.45)"
+                            },
+                            pointLabels: {
+                                color: "#ffffff",
+                                font: {
+                                    size: 14,
+                                    weight: "600"
+                                }
+                            },
+                            ticks: {
+                                backdropColor: "transparent",
+                                color: "transparent",
+                                stepSize: 10
+                            },
+                            beginAtZero: true
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    }
+                }
+            });
+        }
+    </script>
+    </body>
+</html>

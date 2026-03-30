@@ -13,6 +13,7 @@ import base64
 import io
 from datetime import datetime
 import qrcode
+from openpyxl import Workbook
 
 
 dictConfig({
@@ -111,7 +112,9 @@ def init_db():
             password TEXT NOT NULL,
             age INTEGER NOT NULL,
             gender TEXT NOT NULL,
-            studies TEXT NOT NULL
+            studies TEXT NOT NULL,
+            is_admin INTEGER NOT NULL DEFAULT 0,
+            user_category TEXT NOT NULL DEFAULT 'urjc'
         );
         """)
 
@@ -403,15 +406,41 @@ def get_challenge_by_id(challenge_id: int):
 
 def get_user_by_username(username: str):
     with get_conn() as conn:
-        cur = conn.execute("SELECT id, name, email, password, age, gender, studies FROM users WHERE id = ?", (username,))
+        cur = conn.execute("""
+            SELECT id, name, email, password, age, gender, studies, is_admin, user_category
+            FROM users
+            WHERE id = ?
+        """, (username,))
         row = cur.fetchone()
         return dict(row) if row else None
 
-def create_user(id_: str, name: str, email: str, raw_password: str, age: int, gender: str, studies: str):
+def get_user_by_id_or_email(value: str):
+    with get_conn() as conn:
+        cur = conn.execute("""
+            SELECT id, name, email, password, age, gender, studies, is_admin, user_category
+            FROM users
+            WHERE lower(id) = lower(?) OR lower(email) = lower(?)
+        """, (value, value))
+        row = cur.fetchone()
+        return dict(row) if row else None
+    
+def create_user(
+    id_: str,
+    name: str,
+    email: str,
+    raw_password: str,
+    age: int,
+    gender: str,
+    studies: str,
+    is_admin: int = 0,
+    user_category: str = "urjc"
+):
     pwd_hash = generate_password_hash(raw_password)
     with get_conn() as conn:
-        conn.execute("INSERT INTO users (id, name, email, password, age, gender, studies) VALUES (?, ?, ?, ?, ?, ?, ?)",
-                     (id_, name, email, pwd_hash, age, gender, studies))
+        conn.execute("""
+            INSERT INTO users (id, name, email, password, age, gender, studies, is_admin, user_category)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+        """, (id_, name, email, pwd_hash, age, gender, studies, is_admin, user_category))
         conn.commit()
 
 def passwordValidation(password: str) -> bool:
@@ -428,7 +457,183 @@ def passwordValidation(password: str) -> bool:
         any(char in string.punctuation for char in password)
     )
 
+def admin_required():
+    if not current_user.is_authenticated or int(current_user.is_admin) != 1:
+        abort(403)
 
+def get_all_user_categories():
+    with get_conn() as conn:
+        rows = conn.execute("""
+            SELECT DISTINCT LOWER(TRIM(user_category)) as user_category
+            FROM users
+            WHERE user_category IS NOT NULL AND TRIM(user_category) != ''
+            ORDER BY user_category
+        """).fetchall()
+
+        result = []
+        for row in rows:
+            c = row["user_category"]
+            if c == "urjc":
+                result.append("URJC")
+            elif c == "externo":
+                result.append("Externo")
+            else:
+                result.append(c.capitalize())
+        return result
+
+def get_all_genders():
+    with get_conn() as conn:
+        rows = conn.execute("""
+            SELECT DISTINCT LOWER(TRIM(gender)) as gender
+            FROM users
+            WHERE gender IS NOT NULL AND TRIM(gender) != ''
+            ORDER BY gender
+        """).fetchall()
+
+        result = []
+        for row in rows:
+            g = row["gender"]
+            if g == "mujer":
+                result.append("Mujer")
+            elif g == "hombre":
+                result.append("Hombre")
+            elif g == "otro":
+                result.append("Otro")
+            else:
+                result.append(g.capitalize())
+        return result
+
+
+def get_all_studies():
+    with get_conn() as conn:
+        rows = conn.execute("""
+            SELECT DISTINCT LOWER(TRIM(studies)) as studies
+            FROM users
+            WHERE studies IS NOT NULL AND TRIM(studies) != ''
+            ORDER BY studies
+        """).fetchall()
+
+        result = []
+        for row in rows:
+            s = row["studies"]
+            if s == "fp":
+                result.append("FP")
+            elif s == "eso":
+                result.append("ESO")
+            elif s == "postgrado":
+                result.append("Postgrado")
+            elif s == "gradouniversitario":
+                result.append("Grado Universitario")
+            elif s == "otros":
+                result.append("Otros")
+            else:
+                result.append(s.capitalize())
+        return result
+    
+def update_user_password_admin(user_id: str, raw_password: str):
+    pwd_hash = generate_password_hash(raw_password)
+    with get_conn() as conn:
+        conn.execute("""
+            UPDATE users
+            SET password = ?
+            WHERE id = ?
+        """, (pwd_hash, user_id))
+        conn.commit()
+
+
+def update_user_category_admin(user_id: str, user_category: str):
+    with get_conn() as conn:
+        conn.execute("""
+            UPDATE users
+            SET user_category = ?
+            WHERE id = ?
+        """, (user_category, user_id))
+        conn.commit()
+
+
+def get_admin_results(
+    search_value: str = "",
+    result_category: str = "",
+    user_category: str = "",
+    gender: str = "",
+    studies: str = "",
+    min_age: str = "",
+    max_age: str = "",
+    limit=None, 
+    offset=None
+):
+    query = """
+        SELECT
+            u.id AS user_id,
+            u.name,
+            u.email,
+            u.age,
+            u.gender,
+            u.studies,
+            u.user_category,
+            c.title AS result_category,
+            c.category_code,
+            ch.title AS challenge_title,
+            ch.phase,
+            COALESCE(ucp.score, 0) AS score,
+            ucp.completed,
+            ucp.completed_date
+        FROM users u
+        LEFT JOIN user_challenge_progress ucp
+            ON u.id = ucp.user_id
+        LEFT JOIN challenges ch
+            ON ucp.challenge_id = ch.id
+        LEFT JOIN subcategories s
+            ON ch.subcategory_code = s.subcategory_code
+        LEFT JOIN categories c
+            ON s.category_code = c.category_code
+        WHERE 1=1
+    """
+
+    params = []
+
+    if search_value:
+        query += " AND (lower(u.id) = lower(?) OR lower(u.email) = lower(?))"
+        params.extend([search_value, search_value])
+
+    if result_category:
+        query += " AND c.category_code = ?"
+        params.append(result_category)
+
+    if user_category:
+        query += " AND LOWER(TRIM(u.user_category)) = LOWER(TRIM(?))"
+        params.append(user_category)
+
+    if gender:
+        query += " AND LOWER(TRIM(u.gender)) = LOWER(TRIM(?))"
+        params.append(gender)
+
+    if studies:
+        query += " AND LOWER(TRIM(u.studies)) = LOWER(TRIM(?))"
+        params.append(studies)
+
+    if min_age:
+        query += " AND u.age >= ?"
+        params.append(int(min_age))
+
+    if max_age:
+        query += " AND u.age <= ?"
+        params.append(int(max_age))
+
+    count_query = f"SELECT COUNT(*) as total FROM ({query}) AS subquery_count"
+
+    query += " ORDER BY u.id, c.title, ch.phase, ch.order_index"
+
+    with get_conn() as conn:
+        total = conn.execute(count_query, params).fetchone()["total"]
+
+        if limit is not None:
+            query += " LIMIT ? OFFSET ?"
+            params.extend([limit, offset])
+
+        rows = conn.execute(query, params).fetchall()
+        return [dict(r) for r in rows], total
+    
 def get_first_pending_challenge(user_id: str, subcategory_code: str, phase: str):
     with get_conn() as conn:
         row = conn.execute("""
@@ -709,6 +914,73 @@ Devuelve SOLO un JSON válido con este formato:
 
     return {"score": score, "comment": comment}
 
+def get_admin_category_chart_data(
+    search_value: str = "",
+    result_category: str = "",
+    user_category: str = "",
+    gender: str = "",
+    studies: str = "",
+    min_age: str = "",
+    max_age: str = ""
+):
+    query = """
+        SELECT
+            c.title AS category_title,
+            COALESCE(SUM(ucp.score), 0) AS total_score
+        FROM users u
+        LEFT JOIN user_challenge_progress ucp
+            ON u.id = ucp.user_id
+        LEFT JOIN challenges ch
+            ON ucp.challenge_id = ch.id
+        LEFT JOIN subcategories s
+            ON ch.subcategory_code = s.subcategory_code
+        LEFT JOIN categories c
+            ON s.category_code = c.category_code
+        WHERE c.title IS NOT NULL
+    """
+
+    params = []
+
+    if search_value:
+        query += " AND (lower(u.id) = lower(?) OR lower(u.email) = lower(?))"
+        params.extend([search_value, search_value])
+
+    if result_category:
+        query += " AND c.category_code = ?"
+        params.append(result_category)
+
+    if user_category:
+        query += " AND LOWER(TRIM(u.user_category)) = LOWER(TRIM(?))"
+        params.append(user_category)
+
+    if gender:
+        query += " AND LOWER(TRIM(u.gender)) = LOWER(TRIM(?))"
+        params.append(gender)
+
+    if studies:
+        query += " AND LOWER(TRIM(u.studies)) = LOWER(TRIM(?))"
+        params.append(studies)
+
+    if min_age:
+        query += " AND u.age >= ?"
+        params.append(int(min_age))
+
+    if max_age:
+        query += " AND u.age <= ?"
+        params.append(int(max_age))
+
+    query += """
+        GROUP BY c.category_code, c.title
+        ORDER BY c.title
+    """
+
+    with get_conn() as conn:
+        rows = conn.execute(query, params).fetchall()
+
+    labels = [row["category_title"] for row in rows]
+    values = [row["total_score"] for row in rows]
+
+    return labels, values
 
 @app.route("/challenge/<int:challenge_id>/complete-info", methods=["POST"])
 @login_required
@@ -748,7 +1020,7 @@ login_manager.init_app(app)
 login_manager.login_view = "signin"
 
 class User(UserMixin):
-    def __init__(self, id, name, email, password, age, gender, studies):
+    def __init__(self, id, name, email, password, age, gender, studies, is_admin=0, user_category="urjc"):
         self.id = id
         self.name = name
         self.email = email
@@ -756,6 +1028,8 @@ class User(UserMixin):
         self.age = age
         self.gender = gender
         self.studies = studies
+        self.is_admin = is_admin
+        self.user_category = user_category
 
 
 @app.context_processor
@@ -766,11 +1040,20 @@ def inject_globals():
     )
 
 
-
 @login_manager.user_loader
 def load_user(user_id):
     u = get_user_by_username(user_id)
-    return User(u["id"], u["name"], u["email"], u["password"], u["age"], u["gender"], u["studies"]) if u else None
+    return User(
+        u["id"],
+        u["name"],
+        u["email"],
+        u["password"],
+        u["age"],
+        u["gender"],
+        u["studies"],
+        u["is_admin"],
+        u["user_category"]
+    ) if u else None
 
 
 @app.route("/")
@@ -787,7 +1070,17 @@ def signin():
         app.logger.info(f"Intento de inicio de sesión: usuario: {username}")
         u = get_user_by_username(username)
         if u and check_password_hash(u["password"], password):
-            login_user(User(u["id"], u["name"], u["email"], u["password"],  u["age"],  u["gender"],  u["studies"]))
+            login_user(User(
+                u["id"],
+                u["name"],
+                u["email"],
+                u["password"],
+                u["age"],
+                u["gender"],
+                u["studies"],
+                u["is_admin"],
+                u["user_category"]
+            ))
             session["username"] = u["id"]
             app.logger.info(f"Inicio de sesión correcto: usuario: {username}")
             return redirect(url_for("panel"))
@@ -805,10 +1098,11 @@ def signup():
         password = request.form.get("password", "")
         confirm_password = request.form.get("confirm_password", "")
         user_age = request.form.get("age", "").strip()
-        gender = request.form.get("gender", "")
-        studies = request.form.get("studies", "")
+        gender = request.form.get("gender", "").strip().lower()
+        studies = request.form.get("studies", "").strip().lower()
+        user_category = request.form.get("user_category", "").strip().lower()
 
-        if not name or not username or not email or not password or not confirm_password or not user_age or not gender or not studies:
+        if not name or not username or not email or not password or not confirm_password or not user_age or not gender or not studies or not user_category:
             return render_template("signup.html", error="Rellena todos los campos.")
 
         try:
@@ -831,9 +1125,19 @@ def signup():
 
         app.logger.info(f"Registro de nuevo usuario: usuario: {username}, email: {email}")
 
-        create_user(username, name, email, password, age_int, gender, studies)
+        create_user(username, name, email, password, age_int, gender, studies, user_category=user_category)
         u = get_user_by_username(username)
-        login_user(User(u["id"], u["name"], u["email"], u["password"], u["age"], u["gender"], u["studies"]))
+        login_user(User(
+            u["id"],
+            u["name"],
+            u["email"],
+            u["password"],
+            u["age"],
+            u["gender"],
+            u["studies"],
+            u["is_admin"],
+            u["user_category"]
+        ))
         session["username"] = u["id"]
         return redirect(url_for("panel"))
 
@@ -1363,7 +1667,213 @@ def api_cupp_download(token):
         mimetype="text/plain"
     )
 
+@app.route("/admin")
+@login_required
+def admin_panel():
+    admin_required()
 
+    search_value = request.args.get("q", "").strip()
+    result_category = request.args.get("result_category", "").strip()
+    user_category = request.args.get("user_category", "").strip()
+    gender = request.args.get("gender", "").strip()
+    studies = request.args.get("studies", "").strip()
+    min_age = request.args.get("min_age", "").strip()
+    max_age = request.args.get("max_age", "").strip()
+
+    selected_user = get_user_by_id_or_email(search_value) if search_value else None
+
+    page = int(request.args.get("page", 1))
+    per_page =30
+    offset = (page - 1) * per_page
+
+    results, total_results = get_admin_results(
+        search_value=search_value,
+        result_category=result_category,
+        user_category=user_category,
+        gender=gender,
+        studies=studies,
+        min_age=min_age,
+        max_age=max_age,
+        limit=per_page,
+        offset=offset
+    )
+
+    total_pages = (total_results + per_page - 1) // per_page
+
+    chart_labels, chart_values = get_admin_category_chart_data(
+        search_value=search_value,
+        result_category=result_category,
+        user_category=user_category,
+        gender=gender,
+        studies=studies,
+        min_age=min_age,
+        max_age=max_age
+    )
+    total_score = sum(row.get("score", 0) for row in results)
+    average_score = round(total_score / len(results), 2) if results else 0
+    unique_users_count = len({row["user_id"] for row in results if row.get("user_id")})
+
+    user_scores = {}
+    for row in results:
+        uid = row.get("user_id")
+        score = row.get("score", 0)
+
+        if uid:
+            user_scores[uid] = user_scores.get(uid, 0) + score
+
+    top_users = sorted(user_scores.items(), key=lambda x: x[1], reverse=True)[:5]
+
+    total_completed = sum(1 for row in results if row.get("completed"))
+
+    ages = [row.get("age") for row in results if row.get("age") is not None]
+    avg_age = round(sum(ages) / len(ages), 1) if ages else 0
+
+    gender_count = {}
+    for row in results:
+        g = row.get("gender")
+        if g:
+            gender_count[g] = gender_count.get(g, 0) + 1
+
+    most_common_gender = max(gender_count, key=gender_count.get) if gender_count else "-"
+
+    cat_count = {}
+    for row in results:
+        c = row.get("user_category")
+        if c:
+            cat_count[c] = cat_count.get(c, 0) + 1
+
+    most_common_category = max(cat_count, key=cat_count.get) if cat_count else "-"
+
+    return render_template(
+        "admin.html",
+        selected_user=selected_user,
+        results=results,
+        search_value=search_value,
+        result_category=result_category,
+        user_category=user_category,
+        gender=gender,
+        studies=studies,
+        min_age=min_age,
+        max_age=max_age,
+        all_categories=get_categories(),
+        all_user_categories=get_all_user_categories(),
+        all_genders=get_all_genders(),
+        all_studies=get_all_studies(),
+        categories=get_categories(),
+        unique_users_count=unique_users_count,
+        average_score=average_score,
+        top_users=top_users,
+        avg_age=avg_age,
+        most_common_gender=most_common_gender,
+        most_common_category=most_common_category,
+        total_score=total_score,
+        chart_labels=chart_labels,
+        chart_values=chart_values,
+        page=page,
+        total_pages=total_pages
+    )
+
+@app.route("/admin/change-password/<user_id>", methods=["POST"])
+@login_required
+def admin_change_password(user_id):
+    admin_required()
+
+    new_password = request.form.get("new_password", "").strip()
+    if not new_password:
+        return redirect(url_for("admin_panel", q=user_id))
+
+    if not passwordValidation(new_password):
+        return redirect(url_for("admin_panel", q=user_id))
+
+    update_user_password_admin(user_id, new_password)
+    return redirect(url_for("admin_panel", q=user_id))
+
+
+@app.route("/admin/change-category/<user_id>", methods=["POST"])
+@login_required
+def admin_change_category(user_id):
+    admin_required()
+
+    new_category = request.form.get("new_category", "").strip().lower()
+    if not new_category:
+        return redirect(url_for("admin_panel", q=user_id))
+
+    update_user_category_admin(user_id, new_category)
+    return redirect(url_for("admin_panel", q=user_id))
+
+
+@app.route("/admin/export")
+@login_required
+def admin_export():
+    admin_required()
+
+    search_value = request.args.get("q", "").strip()
+    result_category = request.args.get("result_category", "").strip()
+    user_category = request.args.get("user_category", "").strip()
+    gender = request.args.get("gender", "").strip()
+    studies = request.args.get("studies", "").strip()
+    min_age = request.args.get("min_age", "").strip()
+    max_age = request.args.get("max_age", "").strip()
+
+    results,_ = get_admin_results(
+        search_value=search_value,
+        result_category=result_category,
+        user_category=user_category,
+        gender=gender,
+        studies=studies,
+        min_age=min_age,
+        max_age=max_age
+    )
+
+    wb = Workbook()
+    ws = wb.active
+    ws.title = "Resultados"
+
+    ws.append([
+        "ID Usuario",
+        "Nombre",
+        "Email",
+        "Edad",
+        "Sexo",
+        "Estudios",
+        "Categoría usuario",
+        "Categoría resultado",
+        "Código categoría",
+        "Reto",
+        "Fase",
+        "Puntuación",
+        "Completado",
+        "Fecha completado"
+    ])
+
+    for row in results:
+        ws.append([
+            row.get("user_id"),
+            row.get("name"),
+            row.get("email"),
+            row.get("age"),
+            row.get("gender"),
+            row.get("studies"),
+            row.get("user_category"),
+            row.get("result_category"),
+            row.get("category_code"),
+            row.get("challenge_title"),
+            row.get("phase"),
+            row.get("score"),
+            row.get("completed"),
+            row.get("completed_date")
+        ])
+
+    output = io.BytesIO()
+    wb.save(output)
+    output.seek(0)
+
+    return send_file(
+        output,
+        as_attachment=True,
+        download_name="resultados_admin.xlsx",
+        mimetype="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+    )
 @app.route("/subcategory/<subcategory_code>/<phase>/review/<int:challenge_id>")
 @login_required
 def subcategory_review_challenge(subcategory_code, phase, challenge_id):
@@ -1615,8 +2125,17 @@ def default_admin():
     init_db()
 
     if not get_user_by_username("admin"):
-        create_user("admin", "admin", "admin@tfg.es", "Admin_22", 22, "Mujer", "Grado Universitario")
-
+        create_user(
+            "admin",
+            "admin",
+            "admin@tfg.es",
+            "Admin_22",
+            22,
+            "mujer",
+            "gradouniversitario",
+            is_admin=1,
+            user_category="urjc"
+        )
     add_data()
 
 ALLOWED_PAGES = {
