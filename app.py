@@ -828,11 +828,6 @@ def run_cupp_and_save_txt(profile: dict):
 
 
 
-def gemini_client():
-    api_key = "AIzaSyDqDvNcUGwiLa1VTfWNOToY6a3MNU54SfY" #os.environment("LLM") #"AIzaSyB8uLH7wOJRknOKAKqlKeIoBG9u10UYNqo"
-    return genai.Client(api_key=api_key)
-
-
 def get_ai_feedback(user_id, challenge_id):
     with get_conn() as conn:
         row = conn.execute("""
@@ -870,7 +865,6 @@ def is_image_option(value):
     value = normalize_option_value(value).lower()
     return value.endswith((".png", ".jpg", ".jpeg", ".webp", ".gif", ".svg"))
 def ai_evaluate_answer(question: str, ideal_answer: str, user_answer: str) -> dict:
-    client = gemini_client()
 
     prompt = f"""Eres un evaluador docente. Valora la respuesta del estudiante comparándola con una respuesta ideal.
 
@@ -1061,72 +1055,17 @@ def landing():
     app.logger.info("Acceso a la plataforma")
     return render_template("landing.html")
 
-
-@app.route("/signin", methods=["GET", "POST"])
+@app.route("/signin", methods=["GET"])
 def signin():
-    if request.method == "POST":
-        username = request.form.get("username", "").strip().lower()
-        password = request.form.get("password", "")
-        app.logger.info(f"Intento de inicio de sesión: usuario: {username}")
-        u = get_user_by_username(username)
-        if u and check_password_hash(u["password"], password):
-            login_user(User(
-                u["id"],
-                u["name"],
-                u["email"],
-                u["password"],
-                u["age"],
-                u["gender"],
-                u["studies"],
-                u["is_admin"],
-                u["user_category"]
-            ))
-            session["username"] = u["id"]
-            app.logger.info(f"Inicio de sesión correcto: usuario: {username}")
-            return redirect(url_for("panel"))
-        app.logger.warning(f"Inicio de sesión fallido: usuario: {username}")
-        return render_template("signin.html", error="Usuario o contraseña incorrectos.")
     return render_template("signin.html")
 
-
-@app.route("/signup", methods=["GET", "POST"])
-def signup():
-    if request.method == "POST":
-        name = request.form.get("name", "").strip()
-        username = request.form.get("username", "").strip().lower()
-        email = request.form.get("email", "").strip().lower()
-        password = request.form.get("password", "")
-        confirm_password = request.form.get("confirm_password", "")
-        user_age = request.form.get("age", "").strip()
-        gender = request.form.get("gender", "").strip().lower()
-        studies = request.form.get("studies", "").strip().lower()
-        user_category = request.form.get("user_category", "").strip().lower()
-
-        if not name or not username or not email or not password or not confirm_password or not user_age or not gender or not studies or not user_category:
-            return render_template("signup.html", error="Rellena todos los campos.")
-
-        try:
-            age_int = int(user_age)
-        except ValueError:
-            return render_template("signup.html", error="La edad debe ser un número entero válido.")
-
-        if age_int < 1 or age_int > 120:
-            return render_template("signup.html", error="La edad debe estar entre 1 y 120.")
-
-        if password != confirm_password:
-            return render_template("signup.html", error="Las contraseñas no coinciden.")
-        if not passwordValidation(password):
-            return render_template(
-                "signup.html",
-                error="La contraseña debe tener al menos 8 caracteres e incluir mayúsculas, minúsculas, números y símbolos."
-            )
-        if get_user_by_username(username):
-            return render_template("signup.html", error="Ese usuario ya existe.")
-
-        app.logger.info(f"Registro de nuevo usuario: usuario: {username}, email: {email}")
-
-        create_user(username, name, email, password, age_int, gender, studies, user_category=user_category)
-        u = get_user_by_username(username)
+@app.route("/signin", methods=["POST"])
+def signin_post():
+    username = request.form.get("username", "").strip().lower()
+    password = request.form.get("password", "")
+    app.logger.info(f"Intento de inicio de sesión: usuario: {username}")
+    u = get_user_by_username(username)
+    if u and check_password_hash(u["password"], password):
         login_user(User(
             u["id"],
             u["name"],
@@ -1139,9 +1078,65 @@ def signup():
             u["user_category"]
         ))
         session["username"] = u["id"]
+        app.logger.info(f"Inicio de sesión correcto: usuario: {username}")
         return redirect(url_for("panel"))
+    app.logger.warning(f"Inicio de sesión fallido: usuario: {username}")
+    return render_template("signin.html", error="Usuario o contraseña incorrectos.")
 
+@app.route("/signup", methods=["GET"])
+def signup():
     return render_template("signup.html")
+
+@app.route("/signup", methods=["POST"])
+def signup_post():
+    name = request.form.get("name", "").strip()
+    username = request.form.get("username", "").strip().lower()
+    email = request.form.get("email", "").strip().lower()
+    password = request.form.get("password", "")
+    confirm_password = request.form.get("confirm_password", "")
+    user_age = request.form.get("age", "").strip()
+    gender = request.form.get("gender", "").strip().lower()
+    studies = request.form.get("studies", "").strip().lower()
+    user_category = request.form.get("user_category", "").strip().lower()
+
+    if not name or not username or not email or not password or not confirm_password or not user_age or not gender or not studies or not user_category:
+        return render_template("signup.html", error="Rellena todos los campos.")
+
+    try:
+        age_int = int(user_age)
+    except ValueError:
+        return render_template("signup.html", error="La edad debe ser un número entero válido.")
+
+    if age_int < 1 or age_int > 120:
+        return render_template("signup.html", error="La edad debe estar entre 1 y 120.")
+
+    if password != confirm_password:
+        return render_template("signup.html", error="Las contraseñas no coinciden.")
+    if not passwordValidation(password):
+        return render_template(
+            "signup.html",
+            error="La contraseña debe tener al menos 8 caracteres e incluir mayúsculas, minúsculas, números y símbolos."
+        )
+    if get_user_by_username(username):
+        return render_template("signup.html", error="Ese usuario ya existe.")
+
+    app.logger.info(f"Registro de nuevo usuario: usuario: {username}, email: {email}")
+
+    create_user(username, name, email, password, age_int, gender, studies, user_category=user_category)
+    u = get_user_by_username(username)
+    login_user(User(
+        u["id"],
+        u["name"],
+        u["email"],
+        u["password"],
+        u["age"],
+        u["gender"],
+        u["studies"],
+        u["is_admin"],
+        u["user_category"]
+    ))
+    session["username"] = u["id"]
+    return redirect(url_for("panel"))
 
 
 @app.route("/logout")
