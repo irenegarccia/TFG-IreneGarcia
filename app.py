@@ -7,13 +7,44 @@ from werkzeug.security import generate_password_hash, check_password_hash
 import sqlite3, os, string, json, hashlib, requests, logging, subprocess, tempfile, uuid, sys, shutil, random
 from flask_wtf.csrf import CSRFProtect
 from logging.config import dictConfig
-from google import genai
 import hmac
 import base64
 import io
 from datetime import datetime
 import qrcode
 from openpyxl import Workbook
+import os
+from dotenv import load_dotenv
+import time
+from datetime import datetime
+
+def _trace(level: str, msg: str):
+    ts = datetime.now().strftime("%H:%M:%S.%f")[:-3]
+    print(f"[{ts}] [{level}] {msg}")
+
+load_dotenv()
+
+OPENROUTER_API_KEY = os.environ.get("OPENROUTER_API_KEY")
+OPENROUTER_MODEL = os.environ.get("OPENROUTER_MODEL")
+OPENROUTER_URL = "https://openrouter.ai/api/v1/chat/completions"
+_FALLBACK_MODELS_POOL = [
+    "openai/gpt-oss-20b:free",
+    "openai/gpt-oss-120b:free",
+    "meta-llama/llama-3.3-70b-instruct:free",
+    "meta-llama/llama-3.2-3b-instruct:free",
+    "nousresearch/hermes-3-llama-3.1-405b:free",
+    "qwen/qwen3.6-plus:free",
+    "nvidia/nemotron-3-super-120b-a12b:free",
+    "nvidia/nemotron-nano-12b-v2-vl:free",
+    "nvidia/nemotron-nano-9b-v2:free",
+    "arcee-ai/trinity-large-preview:free",
+    "arcee-ai/trinity-mini:free",
+    "liquid/lfm-2.5-1.2b-instruct:free",
+    "stepfun/step-3.5-flash:free",
+    "minimax/minimax-m2.5:free",
+]
+OPENROUTER_SITE_URL = os.environ.get("OPENROUTER_SITE_URL", "http://localhost:5000")
+OPENROUTER_SITE_NAME = os.environ.get("OPENROUTER_SITE_NAME", "TFG-IreneGarcia")
 
 
 dictConfig({
@@ -694,6 +725,71 @@ def split_values(text):
             values.append(v)
     return values
 
+def call_openrouter(prompt: str) -> str:
+    if not OPENROUTER_API_KEY:
+        raise ValueError("Falta OPENROUTER_API_KEY en las variables de entorno.")
+
+    headers = {
+        "Authorization": f"Bearer {OPENROUTER_API_KEY}",
+        "Content-Type": "application/json",
+        "HTTP-Referer": OPENROUTER_SITE_URL,
+        "X-Title": OPENROUTER_SITE_NAME
+    }
+
+    pool = random.sample(_FALLBACK_MODELS_POOL, len(_FALLBACK_MODELS_POOL))
+    models_to_try = ([OPENROUTER_MODEL] if OPENROUTER_MODEL else []) + pool
+    _trace("INFO", f"Orden de modelos: {models_to_try}")
+
+    last_error = None
+    for attempt, model in enumerate(models_to_try, start=1):
+        if not model:
+            continue
+        _trace("INFO", f"Intento {attempt}/{len(models_to_try)} → {model}")
+        payload = {
+            "model": model,
+            "messages": [
+                {
+                    "role": "system",
+                    "content": "Eres un evaluador docente de ciberseguridad. Debes responder solo con JSON válido y sin texto adicional."
+                },
+                {
+                    "role": "user",
+                    "content": prompt
+                }
+            ],
+            "temperature": 0.2
+        }
+
+        try:
+            t0 = time.time()
+            response = requests.post(
+                OPENROUTER_URL,
+                headers=headers,
+                json=payload,
+                timeout=60
+            )
+            elapsed = time.time() - t0
+            _trace("INFO", f"Respuesta de {model} → HTTP {response.status_code} ({elapsed:.2f}s)")
+            response.raise_for_status()
+
+            data = response.json()
+            if "choices" not in data or not data["choices"]:
+                raise Exception(f"Respuesta inesperada: {data}")
+
+            content = data["choices"][0].get("message", {}).get("content")
+            if not content:
+                raise Exception(f"Sin contenido útil: {data}")
+
+            _trace("OK", f"Éxito con {model} en el intento {attempt}")
+            return content.strip()
+
+        except Exception as e:
+            _trace("WARN", f"Fallo con {model}: {e}")
+            last_error = e
+
+    _trace("ERROR", f"Todos los modelos fallaron ({len(models_to_try)} intentos). Último error: {last_error}")
+    raise Exception(f"Todos los modelos fallaron. Último error: {last_error}")
+
 def run_cupp_and_save_txt(profile: dict):
     cupp_script = os.path.join(BASE_DIR, "cupp", "cupp.py")
     if not os.path.isfile(cupp_script):
@@ -864,6 +960,7 @@ def normalize_option_value(value):
 def is_image_option(value):
     value = normalize_option_value(value).lower()
     return value.endswith((".png", ".jpg", ".jpeg", ".webp", ".gif", ".svg"))
+
 def ai_evaluate_answer(question: str, ideal_answer: str, user_answer: str) -> dict:
 
     prompt = f"""Eres un evaluador docente. Valora la respuesta del estudiante comparándola con una respuesta ideal.
@@ -884,12 +981,10 @@ Devuelve SOLO un JSON válido con este formato:
 }}
 """.strip()
 
-    res = client.models.generate_content(
-        model="gemini-2.0-flash",
-        contents=prompt
-    )
+    _trace("INFO", "Llamando a OpenRouter...")
+    text = call_openrouter(prompt)
+    _trace("INFO", "Respuesta recibida, parseando JSON...")
 
-    text = (res.text or "").strip()
     text = text.replace("```json", "").replace("```", "").strip()
 
     start = text.find("{")
@@ -900,11 +995,12 @@ Devuelve SOLO un JSON válido con este formato:
     try:
         data = json.loads(text)
     except Exception:
+        _trace("ERROR", f"JSON inválido recibido: {text!r}")
         return {"score": 1, "comment": "No se pudo generar la respuesta de la IA (formato inválido)."}
-
 
     score = max(1, min(10, int(data.get("score", 1))))
     comment = str(data.get("comment", "")).strip()
+    _trace("OK", f"Evaluación completada → score={score}")
 
     return {"score": score, "comment": comment}
 
@@ -1965,14 +2061,31 @@ def subcategory_review_challenge(subcategory_code, phase, challenge_id):
                     msg = str(e)
                     print(msg)
 
-                    if "429" in msg or "RESOURCE_EXHAUSTED" in msg:
+                    if "429" in msg:
                         ai_feedback = {
                             "score": None,
-                            "comment": "La IA no está disponible ahora mismo por límite de cuota. Inténtalo en unos segundos o más tarde."
+                            "comment": "La IA no está disponible ahora mismo por límite de peticiones o cuota. Inténtalo más tarde."
+                        }
+                    elif "401" in msg:
+                        ai_feedback = {
+                            "score": None,
+                            "comment": "La clave de OpenRouter no es válida."
+                        }
+                    elif "403" in msg:
+                        ai_feedback = {
+                            "score": None,
+                            "comment": "Tu cuenta no tiene acceso a este modelo."
+                        }
+                    elif "400" in msg and "model" in msg.lower():
+                        ai_feedback = {
+                            "score": None,
+                            "comment": "El modelo configurado en OpenRouter no es correcto."
                         }
                     else:
-                        ai_feedback = {"score": None, "comment": f"No se pudo generar el feedback automático: {e}"}
-
+                        ai_feedback = {
+                            "score": None,
+                            "comment": f"No se pudo generar el feedback automático: {e}"
+                        }
 
     return render_template(
         "challenge.html",
