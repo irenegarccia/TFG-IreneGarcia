@@ -54,22 +54,6 @@
                 "is_practical": 0,
                 "content": null,
                 "order_index": 2
-              },
-              {
-                "title": "Dispositivos maliciosos",
-                "question": "¿Por qué los dispositivos USB pueden representar un riesgo de seguridad?",
-                "correct_answer": "Porque pueden ejecutar código malicioso al conectarse a un dispositivo",
-                "options": [
-                  "Porque se pueden romper",
-                  "Porque almacenan muchos archivos",
-                  "Porque ralentizan el sistema",
-                  "Porque pueden ejecutar código malicioso al conectarse a un dispositivo"
-                ],
-                "points": 10,
-                "is_training": 1,
-                "is_practical": 0,
-                "content": null,
-                "order_index": 3
               }
             ],
             "post": [
@@ -87,6 +71,22 @@
                 "is_practical": 0,
                 "content": null,
                 "order_index": 1
+              },
+              {
+                "title": "Dispositivos maliciosos",
+                "question": "¿Por qué los dispositivos USB pueden representar un riesgo de seguridad?",
+                "correct_answer": "Porque pueden ejecutar código malicioso al conectarse a un dispositivo",
+                "options": [
+                  "Porque se pueden romper",
+                  "Porque almacenan muchos archivos",
+                  "Porque ralentizan el sistema",
+                  "Porque pueden ejecutar código malicioso al conectarse a un dispositivo"
+                ],
+                "points": 10,
+                "is_training": 1,
+                "is_practical": 0,
+                "content": null,
+                "order_index": 2
               }
             ]
           }
@@ -115,22 +115,6 @@
               },
               {
                 "title": "Robo o pérdida de dispositivos",
-                "question": "¿Por qué la pérdida de un dispositivo puede suponer un riesgo para la seguridad de la información?",
-                "correct_answer": "Porque puede permitir el acceso no autorizado a datos personales",
-                "options": [
-                  "Porque el dispositivo deja de funcionar",
-                  "Porque puede permitir el acceso no autorizado a datos personales",
-                  "Porque se pierde la conexión a Internet",
-                  "Porque obliga a comprar un dispositivo nuevo"
-                ],
-                "points": 10,
-                "is_training": 1,
-                "is_practical": 0,
-                "content": null,
-                "order_index": 2
-              },
-              {
-                "title": "Robo o pérdida de dispositivos",
                 "question": "¿Qué información suele estar en mayor riesgo cuando se pierde un dispositivo sin protección?",
                 "correct_answer": "Datos personales, credenciales y acceso a aplicaciones",
                 "options": [
@@ -143,7 +127,7 @@
                 "is_training": 1,
                 "is_practical": 0,
                 "content": null,
-                "order_index": 3
+                "order_index": 2
               }
             ],
             "post": [
@@ -162,6 +146,22 @@
                 "is_practical": 0,
                 "content": null,
                 "order_index": 1
+              },
+              {
+                "title": "Robo o pérdida de dispositivos",
+                "question": "¿Por qué la pérdida de un dispositivo puede suponer un riesgo para la seguridad de la información?",
+                "correct_answer": "Porque puede permitir el acceso no autorizado a datos personales",
+                "options": [
+                  "Porque el dispositivo deja de funcionar",
+                  "Porque puede permitir el acceso no autorizado a datos personales",
+                  "Porque se pierde la conexión a Internet",
+                  "Porque obliga a comprar un dispositivo nuevo"
+                ],
+                "points": 10,
+                "is_training": 1,
+                "is_practical": 0,
+                "content": null,
+                "order_index": 2
               }
             ]
           }
@@ -184,22 +184,6 @@
                 "content": null,
                 "order_index": 1,
                 "ideal_answer": "En un entorno con mucha gente existe el riesgo de lectura no autorizada mediante dispositivos NFC cercanos, lo que podría permitir pequeños cargos fraudulentos o el intento de capturar datos de la tarjeta. También puede haber riesgo de robo físico del dispositivo. Para reducir estos riesgos, se debe desactivar el NFC cuando no sea necesario, activar notificaciones de movimientos bancarios y establecer límites de pago o autenticación adicional en el móvil."
-              },
-              {
-                "title": "Pagos contactless y riesgos NFC",
-                "question": "¿Qué medida ayuda a reducir el riesgo de NFC/contactless?",
-                "correct_answer": "Desactivar NFC cuando no se use",
-                "options": [
-                  "Desactivar NFC cuando no se use",
-                  "Dejar NFC siempre activado",
-                  "Usar un PIN débil",
-                  "Compartir la tarjeta con otras personas"
-                ],
-                "points": 10,
-                "is_training": 1,
-                "is_practical": 0,
-                "content": null,
-                "order_index": 2
               },
               {
                 "title": "Pagos contactless y riesgos NFC",
@@ -233,6 +217,22 @@
                 "is_practical": 0,
                 "content": null,
                 "order_index": 1
+              },
+              {
+                "title": "Pagos contactless y riesgos NFC",
+                "question": "¿Qué medida ayuda a reducir el riesgo de NFC/contactless?",
+                "correct_answer": "Desactivar NFC cuando no se use",
+                "options": [
+                  "Desactivar NFC cuando no se use",
+                  "Dejar NFC siempre activado",
+                  "Usar un PIN débil",
+                  "Compartir la tarjeta con otras personas"
+                ],
+                "points": 10,
+                "is_training": 1,
+                "is_practical": 0,
+                "content": null,
+                "order_index": 2
               }
             ]
           }
@@ -481,6 +481,20 @@
               },
               {
                 "title": "Filtración de credenciales",
+                "question": "¿Se ha visto tu contraseña comprometida en alguna brecha de seguridad?",
+                "correct_answer": "No, mi contraseña no ha aparecido en ninguna brecha",
+                "options": [
+                  "Sí, se ha visto comprometida",
+                  "No, mi contraseña no ha aparecido en ninguna brecha"
+                ],
+                "points": 10,
+                "is_training": 1,
+                "is_practical": 0,
+                "content": null,
+                "order_index": 2
+              },
+              {
+                "title": "Filtración de credenciales",
                 "question": "En la siguiente imagen se observa una mala práctica de seguridad con contraseñas.\n\n¿Qué riesgo existe y cómo debería gestionarse correctamente?",
                 "correct_answer": null,
                 "options": [],
@@ -490,7 +504,7 @@
                 "img": "/img/postit_password.png",
                 "content": null,
                 "ideal_answer": "La imagen muestra una contraseña escrita en un post-it visible. El principal riesgo es la exposición de credenciales, lo que puede permitir accesos no autorizados a sistemas o cuentas. Cualquier persona cercana podría fotografiarla o utilizarla sin permiso. La gestión correcta sería no anotar contraseñas en lugares visibles, utilizar un gestor de contraseñas seguro y usar un factor de doble autenticación.",
-                "order_index": 2
+                "order_index": 3
               },
               {
                 "title": "Filtración de información sensible",
@@ -502,21 +516,8 @@
                 "is_practical": 1,
                 "img": "/img/bank_sharescreen.png",
                 "content": null,
-                "order_index": 7,
+                "order_index": 4,
                 "ideal_answer": "El riesgo principal es la exposición accidental de información sensible, como datos bancarios o personales, a personas no autorizadas durante la videoconferencia. Esto puede derivar en fraudes, suplantación de identidad o pérdida de privacidad. Para evitarlo, se debe compartir únicamente la ventana necesaria y no toda la pantalla, cerrar previamente aplicaciones con información confidencial y revisar las notificaciones antes de iniciar la reunión."
-              },
-              {
-                "title": "Filtración de información sensible",
-                "question": "Sales del coche sin darte cuenta de que has olvidado la cartera y tu tarjeta queda expuesta.\n\n¿Qué riesgos hay y cómo los evitarías?",
-                "correct_answer": null,
-                "options": [],
-                "points": 10,
-                "is_training": 1,
-                "is_practical": 1,
-                "img": "/img/creditcard_car.png",
-                "content": null,
-                "order_index": 3,
-                "ideal_answer": "El riesgo es el robo de datos bancarios y la posibilidad de realizar pagos fraudulentos si alguien accede a la tarjeta. También puede producirse suplantación de identidad o uso indebido de la información financiera. Para evitarlo, nunca se deben dejar objetos de valor visibles en el coche, es recomendable guardarlos en un lugar seguro y activar notificaciones de movimientos bancarios para detectar usos sospechosos."
               },
               {
                 "title": "Filtración de información sensible",
@@ -528,38 +529,8 @@
                 "is_practical": 1,
                 "img": "/img/creditcard_influencer.png",
                 "content": null,
-                "order_index": 4,
+                "order_index": 5,
                 "ideal_answer": "El riesgo es la exposición pública de datos bancarios, lo que puede facilitar fraudes, compras no autorizadas o clonación de tarjeta. Al publicar en redes sociales, la información puede difundirse rápidamente y quedar almacenada permanentemente. Antes de publicar, se deben revisar cuidadosamente las imágenes, ocultar o difuminar datos sensibles y evitar mostrar documentos, tarjetas o información personal identificable."
-              },
-              {
-                "title": "Filtración de credenciales",
-                "question": "¿Se ha visto tu contraseña comprometida en alguna brecha de seguridad?",
-                "correct_answer": "No, mi contraseña no ha aparecido en ninguna brecha",
-                "options": [
-                  "Sí, se ha visto comprometida",
-                  "No, mi contraseña no ha aparecido en ninguna brecha"
-                ],
-                "points": 10,
-                "is_training": 1,
-                "is_practical": 0,
-                "content": null,
-                "order_index": 5
-              },
-              {
-                "title": "Filtración de credenciales",
-                "question": "¿Qué deberías hacer tras una filtración de datos?",
-                "correct_answer": "Cambiar contraseñas y revisar información sensible",
-                "options": [
-                  "No hacer nada",
-                  "Publicarlo en redes sociales",
-                  "Reutilizar la misma contraseña",
-                  "Cambiar contraseñas y revisar información sensible"
-                ],
-                "points": 10,
-                "is_training": 1,
-                "is_practical": 0,
-                "content": null,
-                "order_index": 6
               }
             ],
             "post": [
@@ -578,6 +549,35 @@
                 "is_practical": 0,
                 "content": null,
                 "order_index": 1
+              },
+              {
+                "title": "Filtración de credenciales",
+                "question": "¿Qué deberías hacer tras una filtración de datos?",
+                "correct_answer": "Cambiar contraseñas y revisar información sensible",
+                "options": [
+                  "No hacer nada",
+                  "Publicarlo en redes sociales",
+                  "Reutilizar la misma contraseña",
+                  "Cambiar contraseñas y revisar información sensible"
+                ],
+                "points": 10,
+                "is_training": 1,
+                "is_practical": 0,
+                "content": null,
+                "order_index": 2
+              },
+              {
+                "title": "Filtración de información sensible",
+                "question": "Sales del coche sin darte cuenta de que has olvidado la cartera y tu tarjeta queda expuesta.\n\n¿Qué riesgos hay y cómo los evitarías?",
+                "correct_answer": null,
+                "options": [],
+                "points": 10,
+                "is_training": 1,
+                "is_practical": 1,
+                "img": "/img/creditcard_car.png",
+                "content": null,
+                "order_index": 3,
+                "ideal_answer": "El riesgo es el robo de datos bancarios y la posibilidad de realizar pagos fraudulentos si alguien accede a la tarjeta. También puede producirse suplantación de identidad o uso indebido de la información financiera. Para evitarlo, nunca se deben dejar objetos de valor visibles en el coche, es recomendable guardarlos en un lugar seguro y activar notificaciones de movimientos bancarios para detectar usos sospechosos."
               }
             ]
           }
@@ -692,22 +692,6 @@
                 "is_practical": 0,
                 "content": null,
                 "order_index": 3
-              },
-              {
-                "title": "Llamadas fraudulentas",
-                "question": "Si recibes una llamada o mensaje sospechoso y respondes afirmando «Sí, soy yo», ¿qué riesgo puede derivarse de esa acción?",
-                "correct_answer": "Que la respuesta afirmativa sea grabada y utilizada para suplantación o validación fraudulenta",
-                "options": [
-                  "Ninguno, confirmar la identidad siempre es seguro",
-                  "Que la respuesta afirmativa sea grabada y utilizada para suplantación o validación fraudulenta",
-                  "Solo implica recibir más publicidad",
-                  "Únicamente confirma que el número está activo"
-                ],
-                "points": 10,
-                "is_training": 1,
-                "is_practical": 0,
-                "content": null,
-                "order_index": 4
               }
             ],
             "post": [
@@ -726,6 +710,22 @@
                 "is_practical": 0,
                 "content": null,
                 "order_index": 1
+              },
+              {
+                "title": "Llamadas fraudulentas",
+                "question": "Si recibes una llamada o mensaje sospechoso y respondes afirmando «Sí, soy yo», ¿qué riesgo puede derivarse de esa acción?",
+                "correct_answer": "Que la respuesta afirmativa sea grabada y utilizada para suplantación o validación fraudulenta",
+                "options": [
+                  "Ninguno, confirmar la identidad siempre es seguro",
+                  "Que la respuesta afirmativa sea grabada y utilizada para suplantación o validación fraudulenta",
+                  "Solo implica recibir más publicidad",
+                  "Únicamente confirma que el número está activo"
+                ],
+                "points": 10,
+                "is_training": 1,
+                "is_practical": 0,
+                "content": null,
+                "order_index": 2
               }
             ]
           }
@@ -829,36 +829,6 @@
             "pre": [
               {
                 "title": "Gestión de información sensible",
-                "question": "¿Cuál es una posible consecuencia de compartir información confidencial (por ejemplo, dirección, teléfono o datos visibles en una etiqueta de envío) en un entorno no controlado?",
-                "correct_answer": "Facilitar fraudes o suplantación de identidad",
-                "options": [
-                  "Mejorar la visibilidad en redes sociales",
-                  "Facilitar fraudes o suplantación de identidad",
-                  "Reducir el riesgo de ataques",
-                  "No tiene ninguna consecuencia relevante"
-                ],
-                "points": 10,
-                "is_training": 1,
-                "is_practical": 0,
-                "content": null,
-                "order_index": 1
-              },
-
-              {
-                "title": "Gestión de información sensible",
-                "question": "Una influencer sube una foto a las redes sociales y, sin darse cuenta, se ve una tarjeta de crédito en la imagen.\n\n¿Qué riesgos ves y qué medidas tomarías antes de publicar una imagen así?",
-                "correct_answer": null,
-                "options": [],
-                "points": 10,
-                "is_training": 1,
-                "is_practical": 1,
-                "img": "/img/creditcard_influencer.png",
-                "content": null,
-                "order_index": 3,
-                "ideal_answer": "El riesgo es la exposición pública de datos bancarios..."
-              },
-              {
-                "title": "Gestión de información sensible",
                 "question": "Una persona va en el metro y accede a su aplicación del banco, mientras tanto, la persona de al lado observa todo.\n\n¿Qué riesgos conllevan este tipo de situaciones?",
                 "correct_answer": null,
                 "options": [],
@@ -867,7 +837,7 @@
                 "is_practical": 1,
                 "img": "/img/bank_publictransport.png",
                 "content": null,
-                "order_index": 4,
+                "order_index": 1,
                 "ideal_answer": "El principal riesgo es la exposición de información financiera sensible..."
               },
               {
@@ -880,8 +850,21 @@
                 "is_practical": 1,
                 "img": "/img/order_information.png",
                 "content": null,
-                "order_index": 5,
+                "order_index": 2,
                 "ideal_answer": "El riesgo principal es la exposición de datos personales..."
+              },
+              {
+                "title": "Gestión de información sensible",
+                "question": "Una influencer sube una foto a las redes sociales y, sin darse cuenta, se ve una tarjeta de crédito en la imagen.\n\n¿Qué riesgos ves y qué medidas tomarías antes de publicar una imagen así?",
+                "correct_answer": null,
+                "options": [],
+                "points": 10,
+                "is_training": 1,
+                "is_practical": 1,
+                "img": "/img/creditcard_influencer.png",
+                "content": null,
+                "order_index": 3,
+                "ideal_answer": "El riesgo es la exposición pública de datos bancarios..."
               }
             ],
             "post": [
@@ -900,6 +883,22 @@
                 "is_practical": 0,
                 "content": null,
                 "order_index": 1
+              },
+              {
+                "title": "Gestión de información sensible",
+                "question": "¿Cuál es una posible consecuencia de compartir información confidencial (por ejemplo, dirección, teléfono o datos visibles en una etiqueta de envío) en un entorno no controlado?",
+                "correct_answer": "Facilitar fraudes o suplantación de identidad",
+                "options": [
+                  "Mejorar la visibilidad en redes sociales",
+                  "Facilitar fraudes o suplantación de identidad",
+                  "Reducir el riesgo de ataques",
+                  "No tiene ninguna consecuencia relevante"
+                ],
+                "points": 10,
+                "is_training": 1,
+                "is_practical": 0,
+                "content": null,
+                "order_index": 2
               }
             ]
           }
@@ -959,7 +958,7 @@
                 "is_training": 1,
                 "is_practical": 0,
                 "content": null,
-                "order_index": 6
+                "order_index": 3
               },
               {
                 "title": "Reconocimiento de webs y correos fraudulentos",
@@ -974,7 +973,7 @@
                 "is_training": 1,
                 "is_practical": 0,
                 "content": null,
-                "order_index": 7
+                "order_index": 4
               },
               {
                 "title": "Reconocimiento de webs y correos fraudulentos",
@@ -990,7 +989,7 @@
                 "is_training": 1,
                 "is_practical": 0,
                 "content": null,
-                "order_index": 3
+                "order_index": 5
               },
               {
                 "title": "Reconocimiento de webs y correos fraudulentos",
@@ -1006,23 +1005,7 @@
                 "is_training": 1,
                 "is_practical": 0,
                 "content": null,
-                "order_index": 4
-              },
-              {
-                "title": "Reconocimiento de webs y correos fraudulentos",
-                "question": "Una señal típica de phishing es…",
-                "correct_answer": "Enlaces o dominios sospechosos",
-                "options": [
-                  "Un dominio oficial y correcto",
-                  "Enlaces o dominios sospechosos",
-                  "Que no haya enlaces",
-                  "Que siempre tenga ortografía perfecta"
-                ],
-                "points": 10,
-                "is_training": 1,
-                "is_practical": 0,
-                "content": null,
-                "order_index": 5
+                "order_index": 6
               }
             ],
             "post": [
@@ -1088,7 +1071,23 @@
                 "is_training": 0,
                 "is_practical": 0,
                 "content": null,
-                "order_index": 1
+                "order_index": 4
+              },
+              {
+                "title": "Reconocimiento de webs y correos fraudulentos",
+                "question": "Una señal típica de phishing es…",
+                "correct_answer": "Enlaces o dominios sospechosos",
+                "options": [
+                  "Un dominio oficial y correcto",
+                  "Enlaces o dominios sospechosos",
+                  "Que no haya enlaces",
+                  "Que siempre tenga ortografía perfecta"
+                ],
+                "points": 10,
+                "is_training": 1,
+                "is_practical": 0,
+                "content": null,
+                "order_index": 5
               }
             ]
           }
@@ -1147,7 +1146,7 @@
                 "is_training": 1,
                 "is_practical": 0,
                 "content": null,
-                "order_index": 6
+                "order_index": 3
               },
               {
                 "title": "Seguridad en dispositivos",
@@ -1163,7 +1162,7 @@
                 "is_training": 1,
                 "is_practical": 0,
                 "content": null,
-                "order_index": 3
+                "order_index": 4
               },
               {
                 "title": "Seguridad en dispositivos",
@@ -1179,7 +1178,7 @@
                 "is_training": 1,
                 "is_practical": 0,
                 "content": null,
-                "order_index": 4
+                "order_index": 5
               },
               {
                 "title": "Seguridad en dispositivos",
@@ -1195,7 +1194,7 @@
                 "is_training": 1,
                 "is_practical": 0,
                 "content": null,
-                "order_index": 5
+                "order_index": 6
               }
             ],
             "post": [
@@ -1264,7 +1263,7 @@
                 "order_index": 4
               },
               {
-                "title": "Bluetooth y seguridad",
+                "title": "Seguridad en dispositivos",
                 "question": "¿Es recomendable mantener el Bluetooth siempre activado cuando no se está utilizando?",
                 "correct_answer": "No, porque puede facilitar intentos de conexión no autorizados",
                 "options": [
@@ -1278,6 +1277,22 @@
                 "is_practical": 1,
                 "content": null,
                 "order_index": 5
+              },
+              {
+                "title": "Seguridad en dispositivos",
+                "question": "¿Eres consciente de que tecnologías como Bluetooth pueden suponer una fuente de brechas de seguridad si se utilizan sin control?",
+                "correct_answer": "Sí, si permanecen activadas o se conectan a dispositivos desconocidos",
+                "options": [
+                  "Sí, si permanecen activadas o se conectan a dispositivos desconocidos",
+                  "No, Bluetooth siempre es seguro",
+                  "Solo es un riesgo en ordenadores antiguos",
+                  "No afecta a la seguridad del dispositivo"
+                ],
+                "points": 10,
+                "is_training": 1,
+                "is_practical": 0,
+                "content": null,
+                "order_index": 6
               }
             ]
           }
@@ -1323,22 +1338,6 @@
               },
               {
                 "title": "Gestión de actualizaciones y parches de seguridad",
-                "question": "¿Eres consciente de que tecnologías como Bluetooth pueden suponer una fuente de brechas de seguridad si se utilizan sin control?",
-                "correct_answer": "Sí, si permanecen activadas o se conectan a dispositivos desconocidos",
-                "options": [
-                  "Sí, si permanecen activadas o se conectan a dispositivos desconocidos",
-                  "No, Bluetooth siempre es seguro",
-                  "Solo es un riesgo en ordenadores antiguos",
-                  "No afecta a la seguridad del dispositivo"
-                ],
-                "points": 10,
-                "is_training": 1,
-                "is_practical": 0,
-                "content": null,
-                "order_index": 3
-              },
-              {
-                "title": "Gestión de actualizaciones y parches de seguridad",
                 "question": "¿Actualizas regularmente las aplicaciones instaladas en tu dispositivo?",
                 "correct_answer": "Sí, para mantenerlas protegidas frente a vulnerabilidades",
                 "options": [
@@ -1351,7 +1350,7 @@
                 "is_training": 1,
                 "is_practical": 0,
                 "content": null,
-                "order_index": 4
+                "order_index": 3
               }
             ],
             "post": [
@@ -1529,22 +1528,6 @@
                 "is_training": 1,
                 "is_practical": 0,
                 "content": null,
-                "order_index": 4
-              },
-              {
-                "title": "Privacidad y permisos de aplicaciones",
-                "question": "¿Eres consciente de que algunas aplicaciones pueden acceder a tus contactos o datos personales?",
-                "correct_answer": "Sí, dependiendo de los permisos concedidos",
-                "options": [
-                  "Sí, dependiendo de los permisos concedidos",
-                  "No, las aplicaciones no acceden a esa información",
-                  "Solo ocurre en aplicaciones antiguas",
-                  "No estoy seguro"
-                ],
-                "points": 10,
-                "is_training": 1,
-                "is_practical": 0,
-                "content": null,
                 "order_index": 2
               },
               {
@@ -1596,6 +1579,22 @@
                 "is_practical": 0,
                 "content": null,
                 "order_index": 2
+              },
+              {
+                "title": "Privacidad y permisos de aplicaciones",
+                "question": "¿Eres consciente de que algunas aplicaciones pueden acceder a tus contactos o datos personales?",
+                "correct_answer": "Sí, dependiendo de los permisos concedidos",
+                "options": [
+                  "Sí, dependiendo de los permisos concedidos",
+                  "No, las aplicaciones no acceden a esa información",
+                  "Solo ocurre en aplicaciones antiguas",
+                  "No estoy seguro"
+                ],
+                "points": 10,
+                "is_training": 1,
+                "is_practical": 0,
+                "content": null,
+                "order_index": 3
               }
             ]
           }
