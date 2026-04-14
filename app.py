@@ -942,9 +942,9 @@ def save_ai_feedback(user_id, challenge_id, score, comment):
     with get_conn() as conn:
         conn.execute("""
             UPDATE user_challenge_progress
-            SET ai_score = ?, ai_comment = ?
+            SET ai_score = ?, ai_comment = ?, score = ?
             WHERE user_id = ? AND challenge_id = ?
-        """, (score, comment, user_id, challenge_id))
+        """, (score, comment, score, user_id, challenge_id))
         conn.commit()
 
 def normalize_option_value(value):
@@ -2087,6 +2087,11 @@ def subcategory_review_challenge(subcategory_code, phase, challenge_id):
                             "comment": f"No se pudo generar el feedback automático: {e}"
                         }
 
+    final_user_score = int(progress.get("score") or 0)
+
+    if ai_feedback and ai_feedback.get("score") is not None:
+        final_user_score = int(ai_feedback["score"])
+        
     return render_template(
         "challenge.html",
         challenge=challenge,
@@ -2097,7 +2102,7 @@ def subcategory_review_challenge(subcategory_code, phase, challenge_id):
         ai_feedback=ai_feedback,
         practical_feedback=practical_feedback,
         img_practical=img_practical,
-        user_score=int(progress.get("score") or 0),
+        user_score=final_user_score,
         next_url=next_url,
         end_url=end_url,
         category_code=category_code,
