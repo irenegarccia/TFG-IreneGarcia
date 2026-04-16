@@ -420,9 +420,14 @@ def is_challenge_completed(user_id: str, challenge_id: int) -> bool:
 def mark_challenge_completed(user_id: str, challenge_id: int, score: int = 0, user_answer: str = None):
     with get_conn() as conn:
         conn.execute("""
-            INSERT OR REPLACE INTO user_challenge_progress
+            INSERT INTO user_challenge_progress
             (user_id, challenge_id, completed, completed_date, score, user_answer)
             VALUES (?, ?, 1, datetime('now'), ?, ?)
+            ON CONFLICT(user_id, challenge_id) DO UPDATE SET
+                completed = 1,
+                completed_date = datetime('now'),
+                score = excluded.score,
+                user_answer = excluded.user_answer
         """, (user_id, challenge_id, score, user_answer))
         conn.commit()
 
