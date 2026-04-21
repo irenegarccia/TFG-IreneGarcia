@@ -90,8 +90,7 @@ _training_cache = {"mtime": None, "by_sub": {}}
 QR_SECRET = os.environ.get("QR_SECRET", "CAMBIA_ESTO_EN_PRODUCCION")
 
 def get_public_base_url():
-    # En prod define PUBLIC_BASE_URL=http://tfg-irene.grafo.etsii.urjc.es
-    return os.environ.get("PUBLIC_BASE_URL", "http://localhost:5000").rstrip("/")
+    return os.environ.get("PUBLIC_BASE_URL", "https://tfg-irene.grafo.etsii.urjc.es").rstrip("/")
 
 def make_qr_token(user_id: str) -> str:
     # Token firmando: user_id.firma
