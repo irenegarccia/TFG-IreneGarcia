@@ -749,9 +749,8 @@
               {
                 "title": "Códigos QR",
                 "question": "¿Con qué frecuencia escaneas códigos QR sin verificar previamente su origen o contexto?",
-                "correct_answer": "Nunca escaneo códigos QR",
+                "correct_answer": "Solo cuando conozco claramente su procedencia",
                 "options": [
-                  "Nunca escaneo códigos QR",
                   "Solo cuando conozco claramente su procedencia",
                   "Con cierta frecuencia",
                   "Muy frecuentemente sin comprobar su origen"

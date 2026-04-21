@@ -1084,7 +1084,9 @@ def challenge_complete_info(challenge_id):
     if not challenge:
         return {"ok": False, "error": "Reto no encontrado"}, 404
 
-    if challenge.get("content") and "qr_dynamic" in (challenge.get("content") or ""):
+    content = challenge.get("content") or ""
+
+    if "qr_dynamic" in content:
         if not is_challenge_completed(current_user.id, challenge_id):
             mark_challenge_completed(
                 current_user.id,
@@ -1100,15 +1102,16 @@ def challenge_complete_info(challenge_id):
     data = request.get_json(silent=True) or {}
     user_text = (data.get("answer") or "").strip()
 
+    score = 10 if "pp_form" in content else 0
+
     mark_challenge_completed(
         current_user.id,
         challenge_id,
-        score=0,
+        score=score,
         user_answer=user_text if user_text else None
     )
 
-    return {"ok": True}
-
+    return {"ok": True, "score": score}
 
 login_manager = LoginManager()
 login_manager.init_app(app)
@@ -1630,10 +1633,12 @@ def challenge_complete(challenge_id):
             "ninguna información sensible."
         )
 
+        score = 10
+
         mark_challenge_completed(
             current_user.id,
             challenge_id,
-            score=0,
+            score=score,
             user_answer=json.dumps({"message": feedback_message}, ensure_ascii=False)
         )
     else:
