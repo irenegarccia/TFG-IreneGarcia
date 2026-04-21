@@ -86,7 +86,6 @@ app.config["DATABASE"] = DB_PATH
 QUESTIONS_JSON_PATH = os.path.join(BASE_DIR, "data", "questions.json")
 TRAINING_JSON_PATH = os.path.join(BASE_DIR, "data", "training.json")
 _training_cache = {"mtime": None, "by_sub": {}}
-# --- QR dinámico (sin tablas extra) ---
 QR_SECRET = os.environ.get("QR_SECRET", "CAMBIA_ESTO_EN_PRODUCCION")
 
 def get_public_base_url():
@@ -1813,6 +1812,16 @@ def admin_panel():
         offset=offset
     )
 
+    all_results, _ = get_admin_results(
+        search_value=search_value,
+        result_category=result_category,
+        user_category=user_category,
+        gender=gender,
+        studies=studies,
+        min_age=min_age,
+        max_age=max_age
+    )
+
     total_pages = (total_results + per_page - 1) // per_page
 
     chart_labels, chart_values = get_admin_category_chart_data(
@@ -1824,12 +1833,12 @@ def admin_panel():
         min_age=min_age,
         max_age=max_age
     )
-    total_score = sum(row.get("score", 0) for row in results)
-    average_score = round(total_score / len(results), 2) if results else 0
-    unique_users_count = len({row["user_id"] for row in results if row.get("user_id")})
+    total_score = sum(row.get("score", 0) for row in all_results)
+    average_score = round(total_score / len(all_results), 2) if all_results else 0
+    unique_users_count = len({row["user_id"] for row in all_results if row.get("user_id")})
 
     user_scores = {}
-    for row in results:
+    for row in all_results:
         uid = row.get("user_id")
         score = row.get("score", 0)
 
@@ -1838,13 +1847,13 @@ def admin_panel():
 
     top_users = sorted(user_scores.items(), key=lambda x: x[1], reverse=True)[:5]
 
-    total_completed = sum(1 for row in results if row.get("completed"))
+    total_completed = sum(1 for row in all_results if row.get("completed"))
 
-    ages = [row.get("age") for row in results if row.get("age") is not None]
+    ages = [row.get("age") for row in all_results if row.get("age") is not None]
     avg_age = round(sum(ages) / len(ages), 1) if ages else 0
 
     gender_count = {}
-    for row in results:
+    for row in all_results:
         g = row.get("gender")
         if g:
             gender_count[g] = gender_count.get(g, 0) + 1
@@ -1852,7 +1861,7 @@ def admin_panel():
     most_common_gender = max(gender_count, key=gender_count.get) if gender_count else "-"
 
     cat_count = {}
-    for row in results:
+    for row in all_results:
         c = row.get("user_category")
         if c:
             cat_count[c] = cat_count.get(c, 0) + 1
