@@ -92,7 +92,6 @@ def get_public_base_url():
     return os.environ.get("PUBLIC_BASE_URL", "https://tfg-irene.grafo.etsii.urjc.es").rstrip("/")
 
 def make_qr_token(user_id: str) -> str:
-    # Token firmando: user_id.firma
     uid = str(user_id)
     sig = hmac.new(QR_SECRET.encode(), uid.encode(), hashlib.sha256).digest()
     sig = base64.urlsafe_b64encode(sig)[:12].decode()
