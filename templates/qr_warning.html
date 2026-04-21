@@ -3,6 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="csrf-token" content="{{ csrf_token() }}">
   <title>Aviso</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
@@ -19,15 +20,43 @@
       </p>
 
       <div class="d-flex gap-2 flex-wrap mt-4">
-        <a class="btn btn-success" href="{{ url_for('category_page', category_code=category_code) }}">
+        <button id="finishBtn" class="btn btn-success">
           Terminar
-        </a>
+        </button>
       </div>
 
       <p class="text-white-50 mt-3 mb-0">
-        Nota: el reto ya ha sido evaluado al acceder al QR.
+        Nota: el reto se evaluará cuando pulses “Terminar”.
       </p>
     </div>
   </div>
+
+  <script>
+    document.getElementById("finishBtn").addEventListener("click", function () {
+      const csrf = document.querySelector('meta[name="csrf-token"]')?.getAttribute("content");
+
+      fetch("{{ url_for('qr_finish', token=token) }}", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "X-CSRFToken": csrf
+        },
+        credentials: "same-origin",
+        body: JSON.stringify({})
+      })
+      .then(response => response.json())
+      .then(data => {
+        if (data.ok && data.redirect) {
+          window.location.href = data.redirect;
+        } else {
+          alert(data.error || "Error al finalizar");
+        }
+      })
+      .catch(error => {
+        console.error(error);
+        alert("No se pudo finalizar el reto");
+      });
+    });
+  </script>
 </body>
 </html>

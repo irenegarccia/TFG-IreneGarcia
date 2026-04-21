@@ -1659,14 +1659,6 @@ def qr_dynamic_landing(token):
     if not challenge_id:
         abort(404)
 
-    if not is_challenge_completed(user_id, challenge_id):
-        mark_challenge_completed(
-            user_id,
-            challenge_id,
-            score=0,
-            user_answer="QR abierto, el usuario falló el reto"
-        )
-
     ch = get_challenge_by_id(challenge_id)
     if not ch:
         abort(404)
@@ -1675,7 +1667,42 @@ def qr_dynamic_landing(token):
     if not category_code:
         abort(404)
 
-    return render_template("qr_warning.html", category_code=category_code)
+    return render_template(
+        "qr_warning.html",
+        category_code=category_code,
+        token=token
+    )
+
+@app.route("/qr/<token>/finish", methods=["POST"])
+def qr_finish(token):
+    user_id = verify_qr_token(token)
+    if not user_id:
+        return {"ok": False, "error": "Token inválido"}, 404
+
+    challenge_id = get_qr_dynamic_challenge_id()
+    if not challenge_id:
+        return {"ok": False, "error": "Reto no encontrado"}, 404
+
+    ch = get_challenge_by_id(challenge_id)
+    if not ch:
+        return {"ok": False, "error": "Reto no encontrado"}, 404
+
+    category_code = get_category_code_by_subcategory(ch["subcategory_code"])
+    if not category_code:
+        return {"ok": False, "error": "Categoría no encontrada"}, 404
+
+    if not is_challenge_completed(user_id, challenge_id):
+        mark_challenge_completed(
+            user_id,
+            challenge_id,
+            score=0,
+            user_answer="QR abierto y terminado, el usuario falló el reto"
+        )
+
+    return {
+        "ok": True,
+        "redirect": url_for("category_page", category_code=category_code)
+    }
 
 @app.route("/subcategory/<subcategory_code>/<phase>/next")
 @login_required
