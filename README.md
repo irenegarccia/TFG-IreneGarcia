@@ -27,6 +27,8 @@ Para ejecutar el proyecto localmente, sigue los siguientes pasos:
 7. **Instalar las dependencias necesarias:**
    pip install -r requirements.txt
 
-8. **Ejecutar aplicación:**
+8. **Ejecutar aplicación:** (Recordar cambiar todos los secrets antes de lanzar)
    python3 app.py
+
+
 
